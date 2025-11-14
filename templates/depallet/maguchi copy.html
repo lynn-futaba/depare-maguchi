@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <link href="../../static/css/depallet/maguchi.css" rel="stylesheet">
+    <script src="../../static/js/jquery-3.7.0.min.js"></script>
+    <script src="../../static/js/maguchi.js"></script>
+    <title>310D デパレ作業画面</title>
+</head>
+<body>
+
+    <div class="maguchi-frame">
+        <div class="tab-switch" id="maguchi1">
+            <label id="tab0" data-id="0"><input type="radio" name="TAB" checked>未使用</label>
+            <div class="tab-content">
+                <label>取り出し部品を選択してください</label>
+                <table class="shelf" id="0">
+                    <thead>
+                        <tr>
+                            <th id="return-part">戻</th>
+                            <th id="part-id">背番号</th>
+                            <th id="part-count">在庫数</th>
+                            <th id="remove-part">取出</th>
+                        </tr>
+                       </thead>
+                    <tbody> </tbody>
+                    </table>
+                <label>取り出し完了後完了ボタンを押してください</label>
+                <button class="complete-button" onclick="ReturnKotatsu(document.getElementById('tab0'))">取出完了</button>
+            </div>
+
+            <label id="tab1" data-id="0"><input type="radio" name="TAB">未使用</label>
+            <div class="tab-content">
+                <label>取り出し部品を選択してください</label>
+                <table class="shelf" id="1">
+                    <thead>
+                        <tr>
+                            <th id="return-part">戻</th>
+                            <th id="part-id">背番号</th>
+                            <th id="part-count">在庫数</th>
+                            <th id="remove-part">取出</th>
+                        </tr>
+                    </thead>
+                    <tbody> </tbody>
+                </table>
+                <label>取り出し完了後完了ボタンを押してください</label>
+                <button class="complete-button" onclick="ReturnKotatsu(document.getElementById('tab1'))">取出完了</button>
+            </div>
+
+            <label id="tab2" data-id="0"> <input type="radio" name="TAB">未使用</label>
+            <div class="tab-content">
+                <label>取り出し部品を選択してください</label>
+                <table class="shelf" id="2">
+                    <thead>
+                        <tr>
+                            <th id="return-part">戻</th>
+                            <th id="part-id">背番号</th>
+                            <th id="part-count">在庫数</th>
+                            <th id="remove-part">取出</th>
+                        </tr>
+                    </thead>
+                    <tbody> </tbody>
+                </table>
+                <label>取り出し完了後完了ボタンを押してください</label>
+                <button class="complete-button" onclick="ReturnKotatsu(document.getElementById('tab2'))">取出完了</button>
+            </div>
+            <label id="tab3" data-id="0"> <input type="radio" name="TAB">未使用</label>
+            <div class="tab-content">
+                <label>取り出し部品を選択してください</label>
+                <table class="shelf" id="3">
+                    <thead>
+                        <tr>
+                            <th id="return-part">戻</th>
+                            <th id="part-id">背番号</th>
+                            <th id="part-count">在庫数</th>
+                            <th id="remove-part">取出</th>
+                        </tr>
+                    </thead>
+                    <tbody> </tbody>
+                </table>
+                <label>取り出し完了後完了ボタンを押してください</label>
+                
+                <button class="complete-button" onclick="ReturnKotatsu(document.getElementById('tab3'))">取出完了</button>
+            </div>
+        </div>
+    </div>
+</body>

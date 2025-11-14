@@ -1,0 +1,44 @@
+﻿#flow-rack {
+    width: 60%; 
+    height: 100%; 
+    border-collapse: collapse; /* 枠線を重ならないようにする */
+    border: 2px solid #000000; /* テーブル全体の外枠 */
+    margin-left: 10%;
+    margin-right: 10%;
+    background-color: lightyellow;
+}
+
+    /* テーブルセルのスタイル */
+    #flow-rack td #part-id {
+        height: auto; /* データセルの高さ */
+
+        border: 2px solid #000000; /* データセルの枠線 */
+        text-align: center; /* テキストを中央揃え */
+        margin: 1em; /* セル内の余白をなくす */
+    }
+
+.count {
+    display: flex;
+    justify-content: space-around; /* 配置調整: 均等配置 */
+    align-items: center; /* 縦方向の中央揃え */
+}
+
+#num {
+    border: 1px solid #000000; /* データセルの枠線 */
+    background-color: white;
+    text-align: right; /* テキストを中央揃え */
+    padding: 0 0.5em 0 5em;
+}
+
+.complete-button {
+    width: 30%; /* ボタンをセル全体の幅に広げる */
+    height: 100%; /* ボタンをセル全体の高さに広げる */
+    border: none;
+    background: none;
+    background-color: lightgray;
+    border: 2px solid #000000;
+    cursor: pointer;
+    font-size: large;
+    padding: 1em 0 1em 0;
+    margin: 1em;
+}

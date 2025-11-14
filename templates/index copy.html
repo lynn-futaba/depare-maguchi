@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <link href="../static/css/index.css" rel="stylesheet">
+    <script src="../static/js/jquery-3.7.0.min.js"></script>
+    <script src="../static/js/script.js"></script>
+    <title>310D デパレ作業画面</title>
+</head>
+<body>
+    <!-- デパレ作業画面 -->
+    <div class="operation">
+
+        <h1>Aライン</h1>
+        <div class="line-status">
+            <table class="production-table">
+                <thead>
+                    <tr>
+                        <th colspan="3">R</th>
+                        <th colspan="3">L</th>
+                    </tr>
+                    <tr>
+                        <th>生産品番</th>
+                        <th>計画生産台数</th>
+                        <th>実績生産台数</th>
+                        <th>生産品番</th>
+                        <th>計画生産台数</th>
+                        <th>実績生産台数</th>
+                </thead>
+                <tbody id="count">
+                </tbody>
+            </table>
+        </div>
+        <div class="frontage-status">
+            <table class="frontage-table">
+                <thead>
+                    <tr>
+                        <th colspan="2" 　><button onclick="Start(1)">供給間口R1</button></th>
+                    </tr>
+                    <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                    </tr>
+                </thead>
+                <tbody id="1"></tbody>
+            </table>
+            <table class="frontage-table">
+                <thead>
+                    <tr>
+                        <th colspan="2"><button onclick="Start(2)">供給間口R2</button></th>
+                    </tr>
+                    <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                    </tr>
+                </thead>
+                <tbody id="2"></tbody>
+            </table>
+            <table class="frontage-table">
+                <thead>
+                    <tr>
+                        <th colspan="2"><button onclick="Start(3)">供給間口R3</button></th>
+                    <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                    </tr>
+                </thead>
+                <tbody id="3"></tbody>
+            </table>
+            <table class="frontage-table">
+                <thead>
+                    <tr>
+                        <th colspan="2"><button onclick="Start(4)">供給間口L1</button></th>
+                    </tr>
+                    <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                    </tr>
+                </thead>
+                <tbody id="4"></tbody>
+            </table>
+            <table class="frontage-table">
+                <thead>
+                    <tr>
+                        <th colspan="2"><button onclick="Start(5)">供給間口L2</button></th>
+                    </tr>
+                    <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                    </tr>
+                </thead>
+                <tbody id="5"></tbody>
+            </table>
+            <table class="frontage-table">
+                <thead>
+                    <tr>
+                        <th colspan="2"><button onclick="Start(6)">供給間口L3</button></th>
+                    <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                    </tr>
+                </thead>
+                <tbody id="6"></tbody>
+            </table>
+        </div>
+    </div>
+</body>

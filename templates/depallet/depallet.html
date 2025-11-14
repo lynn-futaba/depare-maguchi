@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>310D デパレ作業画面</title>
+    <!-- Your custom CSS -->
+    <link href="../../static/css/depallet/depallet.css" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" />
+    <!-- jQuery -->
+    <script src="../../static/js/jquery-3.7.0.min.js"></script>
+    <!-- Your custom JS -->
+    <script src="../../static/js/index.js"></script>
+    <!-- Bootstrap JS Bundle (Popper + Bootstrap) -->
+    <script src="../../static/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        html, body, .full-height {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+        }
+        iframe {
+          border: none;
+          width: 100%;
+          height: 100%;
+        }
+      </style>
+</head>
+<body>
+    <div class="depallet" style="height: 100vh;">
+      <div>
+          <iframe src="{{ url_for('header') }}" width="100%" height="100%" class="mb-3"></iframe>
+      </div>
+      <div class="full-height d-flex justify-content-center align-items-center">
+        <div class="container" style="height: 90vh;">
+          <div class="row h-100">
+            <div class="col-7 pr-5 h-100">
+              <iframe src="{{ url_for('maguchi_page', line_area=line_area) }}"></iframe>
+            </div>
+            <div class="col-5 pl-5 h-100">
+              <iframe src="{{ url_for('flow_rack_page', line_area=line_area) }}"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+</html>

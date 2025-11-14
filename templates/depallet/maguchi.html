@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>310D デパレ作業画面 - 間口</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Your custom CSS -->
+    <link href="../../static/css/depallet/maguchi.css" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" />
+    <style>
+        /* Minimal tab style example */
+        /* .tab-switch label {
+            display: inline-block;
+            margin-right: 1rem;
+            cursor: pointer;
+            padding: 0.3rem 0.6rem;
+            background: #ddd;
+            border-radius: 4px 4px 0 0;
+        }
+        .tab-switch input[type="radio"] {
+            display: none;
+        }
+        .tab-switch input[type="radio"]:checked + label {
+            background: #007bff;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-top: none;
+        }
+        input[type="radio"]:checked + label + .tab-content {
+            display: block;
+        } */
+        /* .complete-button {
+            margin-top: 1rem;
+        }
+        table.shelf {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table.shelf th, table.shelf td {
+            border: 1px solid #aaa;
+            padding: 0.3rem 0.5rem;
+            text-align: center;
+        } */
+        .tab-content {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .tab-pane {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .nav-pills .nav-link.active {
+            background-color: #dddfd2 !important;
+            color: black !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="maguchi-frame">
+        <!-- Tabs navigation -->
+        <ul class="nav nav-pills nav-fill flex-wrap" role="tablist" style="max-width: 700px;">
+          <!-- First row: tabs 0-3 -->
+          <li class="nav-item col-3" role="presentation">
+            <button class="nav-link active btn-success" id="tab0-tab" data-bs-toggle="tab" data-bs-target="#tab0" type="button" role="tab" aria-controls="tab0">間口1</button>
+          </li>
+          <li class="nav-item col-3" role="presentation">
+            <button class="nav-link" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1">間口2</button>
+          </li>
+          <li class="nav-item col-3" role="presentation">
+            <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab" aria-controls="tab2">間口3</button>
+          </li>
+          <li class="nav-item col-3" role="presentation">
+            <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button" role="tab" aria-controls="tab3">間口4</button>
+          </li>
+          <!-- Second row: tabs 4-7 -->
+          <li class="nav-item col-3 mt-2" role="presentation">
+            <button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button" role="tab" aria-controls="tab4">取出</button>
+          </li>
+          <li class="nav-item col-3 mt-2" role="presentation">
+            <button class="nav-link" id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button" role="tab" aria-controls="tab5">取出</button>
+          </li>
+          <li class="nav-item col-3 mt-2" role="presentation">
+            <button class="nav-link" id="tab6-tab" data-bs-toggle="tab" data-bs-target="#tab6" type="button" role="tab" aria-controls="tab6">取出</button>
+          </li>
+          <li class="nav-item col-3 mt-2" role="presentation">
+            <button class="nav-link" id="tab7-tab" data-bs-toggle="tab" data-bs-target="#tab7" type="button" role="tab" aria-controls="tab7">取出</button>
+          </li>
+        </ul>
+        <!-- Tab content -->
+        <div class="tab-content mt-3">
+          <!-- Tab panes 0 to 7 -->
+          <!-- Example for tab 0 -->
+          <div class="tab-pane fade show active" id="tab0" role="tabpanel" aria-labelledby="tab0-tab" tabindex="0">
+            <label>取り出し部品を選択してください</label>
+            <table class="table table-bordered shelf" id="shelf-0">
+              <thead>
+                <tr>
+                  <th>戻</th>
+                  <th>背番号</th>
+                  <th>在庫数</th>
+                  <th>取出</th>
+                </tr>
+              </thead>
+              <tbody><!-- Dynamic content --></tbody>
+            </table>
+            <div class="d-flex justify-content-end mt-3">
+                <button class="btn btn-outline-success" onclick="ReturnKotatsu(0)">取出完了</button>
+            </div>
+          </div>
+          <!-- Repeat similar blocks for tabs 1 to 7 -->
+          <div class="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+            <label>取り出し部品を選択してください</label>
+            <table class="table table-bordered shelf" id="shelf-1">
+              <thead>
+                <tr>
+                  <th>戻</th>
+                  <th>背番号</th>
+                  <th>在庫数</th>
+                  <th>取出</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Dynamic content -->
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-end mt-3">
+                <button class="btn btn-outline-success" onclick="ReturnKotatsu(1)">取出完了</button>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+            <label>取り出し部品を選択してください</label>
+            <table class="table table-bordered shelf" id="shelf-2">
+              <thead>
+                <tr>
+                  <th>戻</th>
+                  <th>背番号</th>
+                  <th>在庫数</th>
+                  <th>取出</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Dynamic content -->
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-end mt-3">
+                <button class="btn btn-outline-success" onclick="ReturnKotatsu(2)">取出完了</button>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+            <label>取り出し部品を選択してください</label>
+            <table class="table table-bordered shelf" id="shelf-3">
+              <thead>
+                <tr>
+                  <th>戻</th>
+                  <th>背番号</th>
+                  <th>在庫数</th>
+                  <th>取出</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Dynamic content -->
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-end mt-3">
+                <button class="btn btn-outline-success" onclick="ReturnKotatsu(3)">取出完了</button>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
+            <label>取り出し部品を選択してください</label>
+            <table class="table table-bordered shelf" id="shelf-4">
+              <thead>
+                <tr>
+                  <th>戻</th>
+                  <th>背番号</th>
+                  <th>在庫数</th>
+                  <th>取出</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Dynamic content -->
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-end mt-3">
+                <button class="btn btn-outline-success" onclick="ReturnKotatsu(4)">取出完了</button>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-tab">
+            <label>取り出し部品を選択してください</label>
+            <table class="table table-bordered shelf" id="shelf-5">
+              <thead>
+                <tr>
+                  <th>戻</th>
+                  <th>背番号</th>
+                  <th>在庫数</th>
+                  <th>取出</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Dynamic content -->
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-end mt-3">
+                <button class="btn btn-outline-success" onclick="ReturnKotatsu(5)">取出完了</button>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="tab6" role="tabpanel" aria-labelledby="tab6-tab">
+            <label>取り出し部品を選択してください</label>
+            <table class="table table-bordered shelf" id="shelf-6">
+              <thead>
+                <tr>
+                  <th>戻</th>
+                  <th>背番号</th>
+                  <th>在庫数</th>
+                  <th>取出</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Dynamic content -->
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-end mt-3">
+                <button class="btn btn-outline-success" onclick="ReturnKotatsu(6)">取出完了</button>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="tab7" role="tabpanel" aria-labelledby="tab7-tab">
+            <label>取り出し部品を選択してください</label>
+            <table class="table table-bordered shelf" id="shelf-7">
+              <thead>
+                <tr>
+                  <th>戻</th>
+                  <th>背番号</th>
+                  <th>在庫数</th>
+                  <th>取出</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Dynamic content -->
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-end mt-3">
+                <button class="btn btn-outline-success" onclick="ReturnKotatsu(7)">取出完了</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    
+<!-- jQuery -->
+<script src="../../static/js/jquery-3.7.0.min.js"></script>
+<!-- Your custom JS -->
+<script src="../../static/js/maguchi.js"></script>
+<!-- Bootstrap JS Bundle (Popper + Bootstrap) -->
+<script src="../../static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

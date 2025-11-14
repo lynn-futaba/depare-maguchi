@@ -1,0 +1,115 @@
+﻿.tab-switch {
+    display: flex; /* タブを横並びに */
+    height: 100%;
+    flex-wrap: wrap; /* 幅に応じて折り返し */
+    margin: auto; /* コンテナの中央寄せ */
+    justify-content: center; /* タブの中央寄せ */
+    gap: 0 5px; /* タブ間の余白 */
+}
+
+
+/* 各タブボタンの設定 */
+    .tab-switch > label {
+        flex: 1 1 auto; /* タブが均等に幅をとるが、幅を超えると折り返す */
+        order: -1; /* 上部に表示する */
+        position: relative; /* 絶対位置指定用の基準 */
+
+        background-color: #f2f3f4; /* 背景色 */
+        color: black; /* 文字色 */
+        text-align: center; /* 文字を中央揃え */
+        cursor: pointer; /* ポインターを指アイコンに変更 */
+        transition: 0.3s all; /* 変化を滑らかに */
+        height: 10vh;
+        border: 2px solid #000000; /* タブボタンの枠線 */
+        align-content: center;
+        font-size :x-large
+    }
+
+    /* タブボタンのホバーおよび選択状態のスタイル */
+    .tab-switch > label:hover,
+    .tab-switch label:has(:checked) {
+        background-color:forestgreen; /* ホバー/選択時の背景色 */
+        color: #fff; /* ホバー/選択時の文字色 */
+    }
+
+/* ラジオボタン自体は非表示 */
+.tab-switch input {
+    display: none; /* 見た目に表示されないようにする */
+}
+
+/* タブコンテンツのスタイル */
+    .tab-switch > div {
+        display: none; /* 初期状態では非表示 */
+        width: 100%; /* コンテンツ幅を全体に */
+        height: 100%;
+        padding: 1.5em 1em; /* 内側余白 */
+        border: 2px solid #000000; /* コンテンツの枠線 */
+        background-color: lightgreen;
+    }
+
+/* 選択されたタブのコンテンツを表示 */
+.tab-switch label:has(:checked) + div {
+    display: block; /* 選択されたタブに対応するコンテンツを表示 */
+}
+
+.maguchi-tab-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.shelf {
+    color: #000000;
+    background-color: white;
+    font-size: large;
+    display: center; /* テキストを中央に配置 */
+    align-content:center;
+
+    width: 50%; /* テーブルの幅を90%に設定 */
+    height: 50%; /* テーブルの高さを100%に設定 */
+    border-collapse: collapse; /* 枠線を重ならないようにする */
+    border: 2px solid #000000; /* テーブル全体の外枠 */
+}
+/* テーブルヘッダーのスタイル */
+.shelf th {
+    width: 15%; /* ヘッダーセルの幅 */
+    /*height: 120px;*/ /* ヘッダーセルの高さ */
+    border: 2px solid #000000; /* ヘッダーセルの枠線 */
+    background-color: #afbafc; /* ヘッダーの背景色 */
+    color: #000; /* ヘッダーの文字色 */
+    text-align: center; /* テキストを中央揃え */
+    padding: 10px; /* 内側の余白 */
+}
+    /* テーブルセルのスタイル */
+    .shelf td {
+      
+        height: 5vh; /* ボタンをセル全体の高さに広げる */
+        border: 2px solid #000000; /* データセルの枠線 */
+        text-align: center; /* テキストを中央揃え */
+    }
+
+    .shelf button {
+        width:100%; /* ボタンをセル全体の幅に広げる */
+        height:5vh; /* ボタンをセル全体の高さに広げる */
+        border: none; /* ボタンの枠線を削除 */
+        background: none; /* ボタンの背景を透明にする */
+        background-color: yellow;
+        cursor: pointer; /* カーソルをポインタに変更 */
+        font-size: inherit; /* 親要素のフォントサイズを継承 */
+        color: inherit; /* 親要素の文字色を継承 */
+    }
+
+.complete-button {
+    width: 30%; /* ボタンをセル全体の幅に広げる */
+    height: 80%; /* ボタンをセル全体の高さに広げる */
+    border: none;
+    background: none;
+    background-color: lightgray;
+    border: 2px solid #000000;
+    cursor: pointer;
+    font-size: large;
+    padding: 1em 0 1em 0;
+    margin: 1em;
+}
+
+

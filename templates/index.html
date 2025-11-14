@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>310D デパレ作業画面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Your local CSS -->
+    <link href="../../static/css/depallet/depallet.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="container operation">
+        <h2 class="bg-light text-center border border-dark fw-bold my-3">
+            デパレ間口
+        </h2>
+        <button type="button" class="btn btn-secondary btn-lg">Aライン</button>
+        <h1 class="mb-4"></h1>
+        <!-- Production Status Table -->
+        <div class="line-status mb-3">
+            <table class="table table-bordered production-table text-center align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th colspan="3">R</th>
+                        <th colspan="3">L</th>
+                    </tr>
+                    <tr>
+                        <th>生産品番</th>
+                        <th>計画生産台数</th>
+                        <th>実績生産台数</th>
+                        <th>生産品番</th>
+                        <th>計画生産台数</th>
+                        <th>実績生産台数</th>
+                    </tr>
+                </thead>
+                <tbody id="count">
+                    <!-- Dynamic content -->
+                </tbody>
+            </table>
+        </div>
+        <!-- Frontage Status Tables in Bootstrap Grid -->
+        <div class="frontage-status row g-3">
+            <div class="col-12 col-md-4 col-lg-2">
+              <table class="table table-bordered frontage-table text-center align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th colspan="2" class="p-0">
+                      <button type="button" class="btn btn-info w-100" onclick="Start(1)">供給間口R1</button>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>背番号</th>
+                    <th>在庫数</th>
+                  </tr>
+                </thead>
+                <tbody id="1">
+                  <!-- Dynamic content -->
+                </tbody>
+              </table>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2">
+              <table class="table table-bordered frontage-table text-center align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th colspan="2" class="p-0">
+                      <button type="button" class="btn btn-info w-100" onclick="Start(2)">供給間口R2</button>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>背番号</th>
+                    <th>在庫数</th>
+                  </tr>
+                </thead>
+                <tbody id="2">
+                  <!-- Dynamic content -->
+                </tbody>
+              </table>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2">
+              <table class="table table-bordered frontage-table text-center align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th colspan="2" class="p-0">
+                      <button type="button" class="btn btn-info w-100" onclick="Start(3)">供給間口R3</button>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>背番号</th>
+                    <th>在庫数</th>
+                  </tr>
+                </thead>
+                <tbody id="3">
+                  <!-- Dynamic content -->
+                </tbody>
+              </table>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2">
+              <table class="table table-bordered frontage-table text-center align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th colspan="2" class="p-0">
+                      <button type="button" class="btn btn-info w-100" onclick="Start(4)">供給間口L1</button>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>背番号</th>
+                    <th>在庫数</th>
+                  </tr>
+                </thead>
+                <tbody id="4">
+                  <!-- Dynamic content -->
+                </tbody>
+              </table>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2">
+              <table class="table table-bordered frontage-table text-center align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th colspan="2" class="p-0">
+                      <button type="button" class="btn btn-info w-100" onclick="Start(5)">供給間口L2</button>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>背番号</th>
+                    <th>在庫数</th>
+                  </tr>
+                </thead>
+                <tbody id="5">
+                  <!-- Dynamic content -->
+                </tbody>
+              </table>
+            </div>
+            <div class="col-12 col-md-4 col-lg-2">
+              <table class="table table-bordered frontage-table text-center align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th colspan="2" class="p-0">
+                      <button type="button" class="btn btn-info w-100" onclick="Start(6)">供給間口L3</button>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th>背番号</th>
+                    <th>在庫数</th>
+                  </tr>
+                </thead>
+                <tbody id="6">
+                  <!-- Dynamic content -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+    </div>
+
+    
+    <!-- jQuery -->
+    <script src="../../static/js/jquery-3.7.0.min.js"></script>
+    <!-- Your custom JS -->
+    <script src="../../static/js/index.js"></script>
+    <!-- Bootstrap JS Bundle (Popper + Bootstrap) -->
+    <script src="../../static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+﻿.operation{
+    height: 98vh;
+    width: auto;
+    color: #000000;
+    background-color: #25ff58;
+    flex-direction: column;
+    display: flex; /* フレックスボックスを使用 */
+    font-size: large;
+}
+
+
+.line-status{
+    height: 20%;
+    color: #000000;
+    background-color: #afafaf;
+    font-size: large;
+    padding: 5px; /* テキストの周りに余白を追加 */
+    overflow-x: auto; /* 横スクロールを許可 */
+}
+
+/* ライン状況表示テーブル全体のスタイル */
+table.production-table {
+    width: 100%; /* テーブルの幅を90%に設定 */
+    max-width: 100%; /* 最大幅を親要素に制限 */
+    table-layout: auto; /* 自動レイアウトで列幅を調整 */
+    height: 90%; /* テーブルの高さを設定 */
+    /* overflow-x: auto; /* 横スクロールを許可 */
+    border-collapse: collapse; /* 枠線を重ならないようにする */
+    border: 2px solid #000000; /* テーブル全体の外枠 */
+}
+
+
+/* テーブルヘッダーのスタイル */
+    table.production-table th {
+        width: 16%; /* ヘッダーセルの幅 */
+        height: 4%; /* ヘッダーセルの高さ */
+        border: 2px solid #050505; /* ヘッダーセルの枠線 */
+        background-color: #cbcbcb; /* ヘッダーの背景色 */
+        color: #000; /* ヘッダーの文字色 */
+        text-align: center; /* テキストを中央揃え */
+        padding: 10px; /* 内側の余白 */
+    }
+
+/* テーブルセルのスタイル */
+    table.production-table td {
+        font-size: x-large;
+        width: 16%; /* データセルの幅 */
+        height: 8%; /* データセルの高さ */
+        border: 2px solid #000000; /* データセルの枠線 */
+        background-color: #cbcbcb; /* ヘッダーの背景色 */
+        text-align: center; /* テキストを中央揃え */
+        padding: 10px; /* 内側の余白 */
+    }
+
+
+.frontage-status {
+    height: 60%;
+    color: #000000;
+    background-color: #d5f80c;
+    font-size: large;
+    padding: 5px; /* テキストの周りに余白を追加 */
+    display: center; /* テキストを中央に配置 */
+    overflow-x: auto; /* 横スクロールを許可 */
+    display: flex; /* フレックスボックスを使用 */
+    flex-direction :row;
+}
+/* 間口単位の状態表示テーブル全体のスタイル */
+table.frontage-table {
+    margin-right: auto;
+    width: 100%; /* テーブルの幅を90%に設定 */
+    height: 100%; /* テーブルの高さを100%に設定 */
+    border-collapse: collapse; /* 枠線を重ならないようにする */
+    border: 2px solid #000000; /* テーブル全体の外枠 */
+}
+
+/* テーブルヘッダーのスタイル */
+    table.frontage-table th {
+        width: 15%; /* ヘッダーセルの幅 */
+        /*height: 120px;*/ /* ヘッダーセルの高さ */
+        border: 2px solid #000000; /* ヘッダーセルの枠線 */
+        background-color: #afbafc; /* ヘッダーの背景色 */
+        color: #000; /* ヘッダーの文字色 */
+        text-align: center; /* テキストを中央揃え */
+        padding: 10px; /* 内側の余白 */
+    }
+
+/* テーブルセルのスタイル */
+table.frontage-table td {
+    height:auto; /* データセルの高さ */
+    border: 2px solid #000000; /* データセルの枠線 */
+    background-color: #ffffff; /* ヘッダーの背景色 */
+    text-align: center; /* テキストを中央揃え */
+    padding: 10px; /* 内側の余白 */
+}
+
+
+table.frontage-table th button {
+    width: 100%; /* ボタンをセル全体の幅に広げる */
+    height: 100%; /* ボタンをセル全体の高さに広げる */
+    border: none; /* ボタンの枠線を削除 */
+    background: none; /* ボタンの背景を透明にする */
+    cursor: pointer; /* カーソルをポインタに変更 */
+    font-size: inherit; /* 親要素のフォントサイズを継承 */
+    color: inherit; /* 親要素の文字色を継承 */
+}
