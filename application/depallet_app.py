@@ -21,8 +21,8 @@ import application.utility as util
 class DepalletApplication():
 
     def __init__(self):
-        # self.LINE_ID = (1, 2)
-        self.LINE_ID = (1, 2, 3, 4)
+        self.LINE_ID = (1, 2)
+        # self.LINE_ID = (1, 2, 3, 4) #TODO: testing
         self._running  =True
         self.depallet_area =None
         self.lines =None
@@ -32,10 +32,7 @@ class DepalletApplication():
         # self.depallet_service = DepalletService(DepalletAreaRepository(self.db), WcsControler(self.db))
         # TODO: added try-except
         try:
-            self.depallet_service = DepalletService(
-                DepalletAreaRepository(self.db),
-                WcsControler(self.db)
-            )
+            self.depallet_service = DepalletService(DepalletAreaRepository(self.db), WcsControler(self.db))
         except Exception as e:
             import traceback
             print("Error initializing DepalletService:", e)

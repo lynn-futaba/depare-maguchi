@@ -8,169 +8,152 @@ from domain.infrastructure.depallet_area_repository import IDepalletAreaReposito
 
 #mysql実装
 class DepalletAreaRepository(IDepalletAreaRepository):
+
     def __init__(self,db):
          self.db =db
         
-    def get_depallet_area(self,line_id_list:list)->DepalletArea:
+    def get_depallet_area(self, line_id_list:list)->DepalletArea:
+        area = DepalletArea("A")
+        conn = None
+        cur = None
+
         try:
-
-            sql =f"SELECT frontage_id,name,priority,cell_code FROM depal.depallet_frontage"\
-                      +" join depal.line_depallet_frontage using (frontage_id)"\
-                    + " where line_id in " + str(tuple(line_id_list)) \
-                     + " group by frontage_id,name,priority,cell_code"
-            print(f"SQL Query Result >> DepalletAreaRepository -> get_depallet_area :{sql}")
-
-
+            # Get DB connection
             conn =self.db.depal_pool.get_connection()
             cur = conn.cursor(dictionary=True)
-    
-            cur.execute(sql)
-            result= cur.fetchall()
 
-            area = DepalletArea("A")
-            for row in   result:
-                frontege = DepalletFrontage(str(row["cell_code"]),row["frontage_id"],row["name"],row["priority"])     
+            # 1. Fetch depallet_frontage
+            sql =f"SELECT frontage_id, name, priority, cell_code FROM depal.depallet_frontage"\
+                      +" join depal.line_depallet_frontage using (frontage_id)"\
+                    + " where depal.line_depallet_frontage.line_id in " + str(tuple(line_id_list)) \
+                     + " group by frontage_id, name, priority, cell_code"
+            cur.execute(sql)
+            result = cur.fetchall()
+            print(f"[DepalletFrontage >> Query Result] : {result}") 
+
+            for row in result:
+                frontege = DepalletFrontage(str(row["cell_code"]), row["frontage_id"], row["name"], row["priority"])     
                 area.register_frontage(frontege)
 
-            cur.close()
-            conn.close()
+            # 2. Fetch signal for each frontage
             for frontage in area.frontages.values():
-                sql =f"SELECT * FROM depal.signal WHERE frontage_id={frontage.id};"
-                conn =self.db.depal_pool.get_connection()
-                cur = conn.cursor(dictionary=True)
+                print(f"[After Area Registration >> Frontage >> ID] : {frontage.id}")
+                sql = f"SELECT * FROM depal.signal WHERE frontage_id={frontage.id};"
                 cur.execute(sql)
-                result= cur.fetchall()
-                signals = {}
-                for row in result:
+                signal_result = cur.fetchall()
+                print(f"[Signal >> Query Result] : {signal_result}")
 
+                signals = {}
+                for row in signal_result:
                     signals[row["tag"]] = int(row["signal_id"])
 
                 frontage.signals = signals
-                
-                cur.close()
-                conn.close()
-                shelf= self.get_shelf(frontage)
+                print(f"[Signal >> frontage.signals] : {frontage.signals}")
+                shelf = self.get_shelf(frontage)
                 if shelf is not None:
+                    print("[frontage.signals >> shelf is not None]")
                     frontage.set_shelf(shelf)
         except Exception as e:
-            raise Exception(f"[DepalletAreaRepository] Error: {e}")
+            print(f"[DepalletAreaRepository >> Error] : {e}")
+        
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
         return area
 
-    # TODO
-    # def get_depallet_area(self, line_id_list: list) -> DepalletArea:
-    #     try:
-    #         if not line_id_list:
-    #             raise Exception("line_id_list is empty")
-    #         # Build SQL safely - note: str(tuple(...)) works only if len >1, else needs special handling
-    #         if len(line_id_list) == 1:
-    #             in_clause = f"({line_id_list[0]})"
-    #         else:
-    #             in_clause = str(tuple(line_id_list))
-    #         sql = (
-    #             "SELECT frontage_id, name, priority, cell_code FROM depal.depallet_frontage "
-    #             "JOIN depal.line_depallet_frontage USING (frontage_id) "
-    #             f"WHERE line_id IN {in_clause} "
-    #             "GROUP BY frontage_id, name, priority, cell_code"
-    #         )
-    #         conn = self.db.get_connection('depal')
-    #         cur = conn.cursor(dictionary=True)
-    #         cur.execute(sql)
-    #         result = cur.fetchall()
-    #         area = DepalletArea("A")
-    #         for row in result:
-    #             frontage = DepalletFrontage(
-    #                 str(row["cell_code"]),
-    #                 row["frontage_id"],
-    #                 row["name"],
-    #                 row["priority"],
-    #             )
-    #             area.register_frontage(frontage)
-    #         # Prepare signal query once, use parameterized queries inside loop
-    #         signal_sql = "SELECT * FROM depal.signal WHERE frontage_id = %s;"
-    #         for frontage in area.frontages.values():
-    #             cur.execute(signal_sql, (frontage.id,))
-    #             signals = {row["tag"]: int(row["signal_id"]) for row in cur.fetchall()}
-    #             frontage.signals = signals
-    #             shelf = self.get_shelf(frontage)
-    #             if shelf is not None:
-    #                 frontage.set_shelf(shelf)
-    #         cur.close()
-    #         conn.close()
-    #     except Exception as e:
-    #         raise Exception(f"[DepalletAreaRepository] Error: {e}")
-    #     return area
-
     def is_frontage_ready(self, frontage:DepalletFrontage)->bool:
+        value = None
         try:
-            signal_id = frontage.signals["ready"]
-            sql =f"SELECT * FROM `eip_signal`.word_output WHERE signal_id={signal_id};"
-            conn =self.db.eip_signal_pool.get_connection()
+            conn = self.db.eip_signal_pool.get_connection()
             cur = conn.cursor(dictionary=True)
-    
-            cur.execute(sql)
-            result= cur.fetchall()
-            value = None
-            for row in   result:
 
+            signal_id = frontage.signals["ready"]
+            sql = f"SELECT * FROM `eip_signal`.word_output WHERE signal_id={signal_id};"
+            cur.execute(sql)
+            result = cur.fetchall()
+            # print(f"[is_frontage_ready >> eip_signal >> Query Result] : {result}") #TODO: testing
+
+            for row in result:
                 if row["value"] == 1:
                    value = True
                 else:
-                    value = False
-          
-            cur.close()
-            conn.close()
-
+                   value = False
         except Exception as e:
             raise Exception(f"[DepalletAreaRepository] Error: {e}")
+        
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
         return value
 
     def get_shelf(self, frontage: DepalletFrontage) -> Shelf:
         try:
-            if self.is_frontage_ready(frontage)==False:
+            print(f"[Get_shelf >> frontage] : {frontage}")
+
+            if self.is_frontage_ready(frontage) == False:
+                print(f"[Get_shelf >> is_frontage_ready] : {self.is_frontage_ready(frontage)}")
                 return None
+            
             kotatsu = self.get_kotatsu(frontage)
             if kotatsu is not None:
+                print(f"[Get_shelf >> get_kotatsu] : {kotatsu is not None}")
                 return kotatsu
+            
             flow_rack = self.get_flow_rack(frontage)
+            print(f"[Get_shelf >> flow_rack] : {flow_rack}")
             if flow_rack is not None:
                 return flow_rack
+            
         except Exception as e:
             raise Exception(f"[DepalletAreaRepository] Error: {e}")
         return None
         
     def get_kotatsu(self, frontage: DepalletFrontage) -> Kotatsu:
-        parts_tag_list = ["part1_no", "part2_no", "part3_no", "part4_no", "part5_no", "part6_no","part1_count", "part2_count",
-                          "part3_count", "part4_count", "part5_count", "part6_count"]
         try:
+            conn = self.db.eip_signal_pool.get_connection()
+            cur = conn.cursor(dictionary=True)
+
+            parts_tag_list = [ "part1_no", "part2_no", "part3_no", "part4_no", "part5_no", "part6_no", "part1_count", "part2_count",
+                          "part3_count", "part4_count", "part5_count", "part6_count" ]
 
             parts_signals = [frontage.signals[k] for k in parts_tag_list if k in frontage.signals]
-            parts_signals = tuple( parts_signals)
+            parts_signals = tuple(parts_signals)
+
+            print(f"[Get_kotatsu >> parts_signals >> Result] : {parts_signals}")
       
-            sql =f"SELECT * FROM `eip_signal`.word_output WHERE signal_id IN {parts_signals} ORDER BY signal_id;"
-            conn =self.db.eip_signal_pool.get_connection()
-            cur = conn.cursor(dictionary=True)
-    
+            sql = f"SELECT * FROM `eip_signal`.word_output WHERE signal_id IN {parts_signals} ORDER BY signal_id;"
             cur.execute(sql)
-            result= cur.fetchall()
+            result = cur.fetchall()
+            print(f"[Get_kotatsu >> eip_signal >> Query Result] : {result}")
+
             inventory_list = []
             
-            for i,( no, count) in enumerate(zip(result[::2], result[1::2]),start=1):
-                if no["value"]==0:
+            for i,(no, count) in enumerate(zip(result[::2], result[1::2]),start=1):
+                if no["value"] == 0:
                     continue
                 # とりあえず背番号のみの部品として扱う
                 inventory = KotatsuInventory(0, Part(str(no["value"]),str(no["value"]),str(no["value"]),0), int(count["value"]), 
                                              frontage.signals[f"fetch{i}"],frontage.signals[f"fetch{i}_count"],frontage.signals[f"part{i}_no"],frontage.signals[f"part{i}_count"])
                 inventory_list.append(inventory)
+                print(f"[Get_kotatsu >> Inventory_list >> Result] : {result}")
           
-            cur.close()
-            conn.close()
-            
-            if len(inventory_list) ==0:
+            if len(inventory_list) == 0:
                 return None
             kotatsu = Kotatsu('kotatsu', inventory_list)
+            return kotatsu
         except Exception as e:
             raise Exception(f"[DepalletAreaRepository] Error: {e}")
-        return  kotatsu
+        
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+        
 
     def get_flow_rack(self,frontage:LineFrontage)->FlowRack:
         try:
@@ -244,24 +227,24 @@ if __name__ == "__main__":
     db = MysqlDb()
     repo = DepalletAreaRepository(db)
     area = repo.get_depallet_area((1,2))
-    f=area.get_empty_frontage()
+    f = area.get_empty_frontage()
     print(f.id)
     for f in area.frontages.values():
        r=repo.get_flow_rack(f)
        print(r)
        # #print(f.signals)
-       # status = repo. is_frontage_ready(f)
-       # # print(status)
-       # k=repo.get_kotatsu(f)
-       
-       # if k is None:
-       #     continue
-       # f.set_shelf(k)
-       # for inv in f.shelf.inventories:
-       #     print(f"Part No: {inv.part.kanban_id}, Count: {inv.case_quantity}")
-       #     inv.remove(2)
+       # TODO: comment open until last line
+       status = repo.is_frontage_ready(f)
+       print(f"[ DepalletAreaRepository >> __main__ >> status ]: {status}")
+       k = repo.get_kotatsu(f)
+       if k is None:
+           continue
+       f.set_shelf(k)
+       for inv in f.shelf.inventories:
+           print(f"Part No: {inv.part.kanban_id}, Count: {inv.case_quantity}")
+           inv.remove(2)
 
-       # repo.save_kotatsu(f)
+       repo.save_kotatsu(f)
    
 
            

@@ -7,7 +7,7 @@ from domain.services.depallet_service import DepalletService
 
 class DepalletFrontegeWatcher():
 
-    def __init__(self,depallet_frontage:DepalletFrontage,service:DepalletService,callback=None):
+    def __init__(self, depallet_frontage: DepalletFrontage, service:DepalletService,callback = None):
         self.frontage = depallet_frontage
         self.depallet_service =  service
         self.interval = 1.0  # ポーリング間隔（秒）
@@ -25,6 +25,7 @@ class DepalletFrontegeWatcher():
                      # if self.callback:  
                      #        self.callback()
                      self._last_value = current_value
+                     print(f"[Watcher] _last_value: {self._last_value}")
             except Exception as e:
                 print(f"[Watcher] Error: {e}")
             sleep(self.interval)

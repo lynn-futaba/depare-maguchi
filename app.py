@@ -88,7 +88,6 @@ class DepalletWebServer:
         def update_depallet_area():
             try:
                 depallet_area =self._depallet_app.get_depallet_area_json()
-              
                 return jsonify(depallet_area)
             except Exception as e:
                 return abort(400, str(e))

@@ -1,7 +1,8 @@
 from .shelf import Shelf
 
-#ƒfƒpƒŒŠÔŒû
+#ï¿½fï¿½pï¿½ï¿½ï¿½ÔŒï¿½
 class DepalletFrontage():
+    
     def __init__(self, cell_code:str,frontage_id: int,name:str,priority:int):
         self.cell_code = cell_code
         self.name = name
@@ -9,7 +10,7 @@ class DepalletFrontage():
         self.shelf = None
         self.priority = priority
         self.signals = {}
-        self.status = 0    # 0:emptyA1:bookingA2:using
+        self.status = 0    # 0:emptyï¿½A1:bookingï¿½A2:using
 
         if not self.validate():
             raise ValueError("Invalid cell code format.")
@@ -37,13 +38,13 @@ class DepalletFrontage():
         self.shelf = None
         self.status = 0
 
-# ƒfƒpƒŒƒGƒŠƒAiŠÔŒûƒOƒ‹[ƒvj
+# ï¿½fï¿½pï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½Aï¿½iï¿½ÔŒï¿½ï¿½Oï¿½ï¿½ï¿½[ï¿½vï¿½j
 class DepalletArea():
     def __init__(self,name):
         self.name=name
         self.frontages={}
        
-    def register_frontage(self,frontage:DepalletFrontage):
+    def register_frontage(self, frontage: DepalletFrontage):
         self.frontages[frontage.id] = frontage
 
     def get_by_id(self, id) -> DepalletFrontage | None:
@@ -60,7 +61,7 @@ class DepalletArea():
         return None
 
     def get_empty_frontage(self)->DepalletFrontage | None:
-        # priority‚Åƒ\[ƒg‚µ‚ÄA—Dæ“x‚Ì‚‚¢‡‚Éæ“¾
+        # priorityï¿½Åƒ\ï¿½[ï¿½gï¿½ï¿½ï¿½ÄAï¿½Dï¿½ï¿½xï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Éæ“¾
         sorted_frontages = sorted(
             self.frontages.values(), key=lambda f: f.priority)
         for frontage in sorted_frontages:

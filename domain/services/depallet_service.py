@@ -45,7 +45,7 @@ class DepalletService:
         try:
             if frontage.shelf is not None:
                 return  # すでにセットされている場合は何もしない
-            kotastu=self.depallet_area_repo.get_kotatsu(frontage)
+            kotastu = self.depallet_area_repo.get_kotatsu(frontage)
             if kotastu is None:
                 return
             frontage.set_shelf(kotastu)

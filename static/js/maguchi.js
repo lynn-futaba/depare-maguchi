@@ -64,37 +64,96 @@ $(document).ready(function () {
         
                 const tableId    = `shelf-${index}`;
                 const tabLabelId = `tab${index}-tab`;
-                const tbody      = $(`#${tableId} tbody`);
-        
+                const tbody  = $(`#${tableId} tbody`);
+                const thead  = $(`#${tableId} thead`);
+
+                if (thead.length === 0) return;
                 if (tbody.length === 0) return;
         
                 // 以下は今まで通り（空棚のときはクリアする処理も入れた方が親切）
-                if (!frontage.shelf || frontage.shelf === "None" || frontage.shelf.type !== 1) {
-                    console.log('Shelf is None >>>');
-                    $(`#${tabLabelId}`).text(index < 4 ? `間口${key}` : "取出").removeClass('btn-success');
+                // if (!frontage.shelf || frontage.shelf === "None" || frontage.shelf.type !== 1) {
+                //     console.log('Shelf is None >>>');
+                //     $(`#${tabLabelId}`).text(index < 4 ? `間口${key}` : "取出").removeClass('btn-success');
+                //     tbody.empty();
+                //     return;
+                // } else {
+                //     $(`#${tabLabelId}`).text(`間口${key}取出`).addClass('btn-success');
+                //     tbody.empty();
+            
+                //     Object.values(frontage.shelf.inventories).forEach(inv => {
+    
+                //         console.log('Coming inventories >>', inventories);
+                //         const row = `<tr>
+                //             <td><button onclick="Pallet(${key}, '${inv.part.kanban_id}')">＋</button></td>
+                //             <td>${inv.part.kanban_id}</td>
+                //             <td>${inv.case_quantity}</td>
+                //             <td><button onclick="Depallet(${key}, '${inv.part.kanban_id}')">ー</button></td>
+                //         </tr>`;
+                //         tbody.append(row);
+                //     });
+                // }
+
+                // --- Error handling / Empty shelf logic ---
+                // --- Updated Source Code Snippet ---
+
+                // This condition checks for:
+                // 1. Shelf is missing or "None"
+                // 2. Shelf exists but its type is NOT 2
+                if (!frontage.shelf.inventories || frontage.shelf === "None") {
+                    
+                    // This console log will trigger for:
+                    // - frontage.shelf === null
+                    // - frontage.shelf === "None"
+                    // - frontage.shelf.type === 1 (This handles your "type 1 error" case)
+                    // - frontage.shelf.type === 3, 4, etc.
+                    console.log(`Shelf for frontage ${key} is None or not the required Type 2. Clearing display.`);
+                    
+                    // Reset display for all non-Type 2 shelves
+                    // $(`#${tabLabelId}`).text(key).removeClass('btn-success'); TODO: comment out
+                    $(`#${tabLabelId}`).html(`間口${key} <br> 取出`).removeClass('btn-success');
+                    thead.empty();
                     tbody.empty();
                     return;
+                } 
+
+                // --- Valid shelf logic (Type 2 ONLY) ---
+                else {
+                    // This 'else' block ONLY executes if frontage.shelf.type IS 2.
+                    $(`#${tabLabelId}`).html(`間口${key} <br> 取出`).addClass('btn-success');
+                    thead.empty();
+                    tbody.empty();
+
+                    console.log('inventory item >>', Object.values(frontage.shelf.inventories)); 
+
+                    const row1 = `
+                            <th>戻</th>
+                            <th>背番号</th>
+                            <th>在庫数</th>
+                            <th>取出</th>`;
+                    thead.append(row1);
+
+                    Object.values(frontage.shelf.inventories).forEach(inv => {
+                        // This console log ONLY appears when type is 2.
+                        console.log('Coming inventory item >>', inv); 
+                        const row = `
+                        <tr>
+                            <td><button onclick="Pallet(${key}, '${inv.part.kanban_id}')">＋</button></td>
+                            <td>${inv.part.kanban_id}</td>
+                            <td>${inv.case_quantity}</td>
+                            <td><button onclick="Depallet(${key}, '${inv.part.kanban_id}')">ー</button></td>
+                        </tr>`;
+                        tbody.append(row);
+                    });
                 }
         
-                $(`#${tabLabelId}`).text(`間口${key}取出`).addClass('btn-success');
-                tbody.empty();
-        
-                Object.values(frontage.shelf.inventories).forEach(inv => {
-                    const row = `<tr>
-                        <td><button onclick="Pallet(${key}, '${inv.part.kanban_id}')">＋</button></td>
-                        <td>${inv.part.kanban_id}</td>
-                        <td>${inv.case_quantity}</td>
-                        <td><button onclick="Depallet(${key}, '${inv.part.kanban_id}')">ー</button></td>
-                    </tr>`;
-                    tbody.append(row);
-                });
+               
             });
         }
     };
 
     // 定期実行 
     // setInterval(refreshPage, 500);
-    setInterval(refreshPage, 5000); // TODO: added
+    setInterval(refreshPage, 1000); // TODO: added
 });
 
 //パレットおろし
@@ -141,10 +200,10 @@ function Pallet(frontage_id, part_id) {
 }
 
 // コタツ返却
-function ReturnKotatsu(element) {
-    console.log(element);
-    const frontage_id = element.getAttribute("data-id");
-    console.log(frontage_id);
+function returnKotatsu(id) {
+    console.log('returnKotatsu >>', id);
+    // const frontage_id = element.getAttribute("data-id"); TODO: comment out
+    const frontage_id = id;
 
     const result = confirm(`間口 ${frontage_id}のコタツを返却します`);
 

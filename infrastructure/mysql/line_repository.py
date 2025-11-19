@@ -63,11 +63,11 @@ class LineRepository(ILineRepository):
             conn = self.db.depal_pool.get_connection()
             cur = conn.cursor(dictionary=True)
 
-            # 1. Fetch lines
+            # 1. Fetch lines TODO: check CONSTRAINT in application layer if line_id exists or not
             sql = f"SELECT * FROM depal.line WHERE line_id IN ({','.join(['%s'] * len(line_id_list))})"
             cur.execute(sql, line_id_list)
             result = cur.fetchall()
-            print(f"[Line Table >>] Result: {result}")
+            # print(f"[Line Table >>] Query Result: {result}")
 
             for row in result:
                 line = Line(row["line_id"], row["name"], row["process"])
@@ -78,7 +78,7 @@ class LineRepository(ILineRepository):
                 sql =f"SELECT * FROM depal.line_frontage where line_id = {line.id};"
                 cur.execute(sql)
                 frontages_result = cur.fetchall()
-                print(f"[Line Frontage >>] Result: {frontages_result}")
+                # print(f"[Line Frontage >> Query Result] : {frontages_result}")
 
                 for row in frontages_result:
                     frontage_obj = LineFrontage(row["cell_code"], row["name"], row["frontage_id"], row["car_model_id"])
@@ -86,13 +86,13 @@ class LineRepository(ILineRepository):
                 
                 # 3. Fetch inventories for each frontage
                 for frontage in line.frontages.values():
-                    print(f"[Frontage >> ID] : {frontage.id}")
+                    # print(f"[Frontage >> ID] : {frontage.id}")
 
                     sql = f"SELECT * FROM depal.line_inventory inner join depal.m_product using(part_number) where depal.line_inventory.frontage_id = {frontage.id};"
                     cur.execute(sql)
 
                     inv_result = cur.fetchall()
-                    print(f"[Line Inventory >>] Result: {inv_result}")
+                    # print(f"[Line Inventory >> Query Result] : {inv_result}")
 
                     inventories = []
                     for row in inv_result:
@@ -104,7 +104,7 @@ class LineRepository(ILineRepository):
                     frontage.set_inventories(inventories)
 
         except Exception as e:
-            print(f"[LineRepository] Error: {e}")
+            print(f"[LineRepository >> Error] : {e}")
 
         finally:
             if cur:
@@ -137,13 +137,12 @@ class LineRepository(ILineRepository):
 if __name__ == "__main__":
     repo = LineRepository()
     lines = repo.get_lines((1,2))
-    # TODO: command out for loop only
-    # for line in lines: 
-    #     print(line.name)
-    #     for f in line.frontages.values():
-    #         print(f.id)
-    #         for i in f.inventories:
-    #             print(i)
+    for line in lines: 
+        print(line.name)
+        for f in line.frontages.values():
+            print(f.id)
+            for i in f.inventories:
+                print(i)
     
     # flow_rack = FlowRack(1)
     # inventory = Inventory(1, Part(1, "A", "partA"), 5)

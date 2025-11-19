@@ -64,7 +64,7 @@ $(document).ready(function () {
 
     // 定期実行 
     setInterval(refreshPage, 1000);
-    // setInterval(refreshPage, 50000); // TODO
+    // setInterval(refreshPage, 50000); // TODO: testing
 });
 
 function Start(id) {

@@ -39,7 +39,7 @@ class Kotatsu(Shelf):
     def __init__(self, shelf_id:str,inventories:list[KotatsuInventory]):
         _type = 1
         super().__init__(shelf_id,_type)
-        self.inventories =inventories
+        self.inventories = inventories
 
     def is_empty(self) -> bool:
         return all(inventory.is_empty() for inventory in self.inventories)
