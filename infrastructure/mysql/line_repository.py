@@ -75,29 +75,29 @@ class LineRepository(ILineRepository):
 
             # 2. Fetch frontages for each line
             for line in lines:
-                sql = "SELECT * FROM depal.line_frontage WHERE line_id = %s"
-                cur.execute(sql, (line.id,))
+                sql =f"SELECT * FROM depal.line_frontage where line_id = {line.id};"
+                cur.execute(sql)
                 frontages_result = cur.fetchall()
                 print(f"[Line Frontage >>] Result: {frontages_result}")
 
                 for row in frontages_result:
                     frontage_obj = LineFrontage(row["cell_code"], row["name"], row["frontage_id"], row["car_model_id"])
                     line.register_frontage(frontage_obj)
-
+                
                 # 3. Fetch inventories for each frontage
                 for frontage in line.frontages.values():
+                    print(f"[Frontage >> ID] : {frontage.id}")
 
-                    sql = f"SELECT * FROM depal.line_inventory inner join depal.m_product using(part_number) where frontage_id = {frontage.id};"
-                    cur.execute(sql, (frontage.id,))
+                    sql = f"SELECT * FROM depal.line_inventory inner join depal.m_product using(part_number) where depal.line_inventory.frontage_id = {frontage.id};"
+                    cur.execute(sql)
 
-                    
                     inv_result = cur.fetchall()
                     print(f"[Line Inventory >>] Result: {inv_result}")
 
                     inventories = []
                     for row in inv_result:
-                        # part = Part(row["part_number"], row["kanban_no"], row["name"], row["car_model_id"])
-                        part = Part(row["part_number"], row["kanban_no"], "name", row["car_model_id"])
+                        # part = Part(row["part_number"], row["kanban_no"], row["name"], row["car_model_id"]) TODO: comment out
+                        part = Part(row["part_number"], row["kanban_no"], row["supplier_name"], row["car_model_id"])
                         inventory = Inventory(row["inventory_id"], part, row["case_quantity"])
                         inventories.append(inventory)
 
@@ -137,13 +137,14 @@ class LineRepository(ILineRepository):
 if __name__ == "__main__":
     repo = LineRepository()
     lines = repo.get_lines((1,2))
-    for line in lines:
-        print(line.name)
-        for f in line.frontages.values():
-            print(f.id)
-            for i in f.inventories:
-                print(i)
-      
+    # TODO: command out for loop only
+    # for line in lines: 
+    #     print(line.name)
+    #     for f in line.frontages.values():
+    #         print(f.id)
+    #         for i in f.inventories:
+    #             print(i)
+    
     # flow_rack = FlowRack(1)
     # inventory = Inventory(1, Part(1, "A", "partA"), 5)
     # flow_rack.set_inventories([inventory])

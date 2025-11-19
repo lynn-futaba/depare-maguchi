@@ -6,7 +6,7 @@ config1 = {
     'pool_name': 'mypool',
     'pool_size': 20,
     'pool_reset_session': True,
-    'host': '10.104.16.144',
+    'host': '10.104.16.129', # 10.104.16.129
     'user': 'athena',
     # 'password': 'Ftb181148$', TODO
     'password': 'WGQKJPL8V/xQ',
@@ -17,7 +17,7 @@ config2 = {
     'pool_name': 'mypool',
     'pool_size': 20,
     'pool_reset_session': True,
-    'host': '10.104.16.144',
+    'host': '10.104.16.129', # 10.104.16.129
     'user': 'athena',
     # 'password': 'Ftb181148$', TODO
     'password': 'WGQKJPL8V/xQ',
@@ -30,7 +30,7 @@ config3 = {
     'pool_name': 'mypool',
     'pool_size': 20,
     'pool_reset_session': True,
-    'host': '10.104.16.144',
+    'host': '10.104.16.129', # 10.104.16.129
     'user': 'athena',
     # 'password': 'Ftb181148$', TODO
     'password': 'WGQKJPL8V/xQ',

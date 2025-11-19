@@ -22,15 +22,15 @@ class Line():
     def __init__(self, id, name, process):
         self.id = id
         self.name = name
-        self.frontages={}
+        self.frontages= {}
         self.process= process
        
-    def register_frontage(self,frontage:LineFrontage):
+    def register_frontage(self, frontage:LineFrontage):
         self.frontages[frontage.name] = frontage
-
+        
     def get_by_name(self, name) -> LineFrontage | None:
         try:
-            frontage= self.frontages[name]
+            frontage = self.frontages[name]
             return frontage
         except KeyError:
             return None
