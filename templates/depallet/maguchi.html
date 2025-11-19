@@ -65,193 +65,145 @@
     </style>
 </head>
 <body>
-    <div class="maguchi-frame">
-        <!-- Tabs navigation -->
-        <ul class="nav nav-pills nav-fill flex-wrap" role="tablist" style="max-width: 700px;">
-          <!-- First row: tabs 0-3 -->
-          <li class="nav-item col-3" role="presentation">
-            <button class="nav-link active btn-success" id="tab0-tab" data-bs-toggle="tab" data-bs-target="#tab0" type="button" role="tab" aria-controls="tab0">間口1</button>
-          </li>
-          <li class="nav-item col-3" role="presentation">
-            <button class="nav-link" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1">間口2</button>
-          </li>
-          <li class="nav-item col-3" role="presentation">
-            <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab" aria-controls="tab2">間口3</button>
-          </li>
-          <li class="nav-item col-3" role="presentation">
-            <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button" role="tab" aria-controls="tab3">間口4</button>
-          </li>
-          <!-- Second row: tabs 4-7 -->
-          <li class="nav-item col-3 mt-2" role="presentation">
-            <button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button" role="tab" aria-controls="tab4">取出</button>
-          </li>
-          <li class="nav-item col-3 mt-2" role="presentation">
-            <button class="nav-link" id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button" role="tab" aria-controls="tab5">取出</button>
-          </li>
-          <li class="nav-item col-3 mt-2" role="presentation">
-            <button class="nav-link" id="tab6-tab" data-bs-toggle="tab" data-bs-target="#tab6" type="button" role="tab" aria-controls="tab6">取出</button>
-          </li>
-          <li class="nav-item col-3 mt-2" role="presentation">
-            <button class="nav-link" id="tab7-tab" data-bs-toggle="tab" data-bs-target="#tab7" type="button" role="tab" aria-controls="tab7">取出</button>
-          </li>
-        </ul>
-        <!-- Tab content -->
-        <div class="tab-content mt-3">
-          <!-- Tab panes 0 to 7 -->
-          <!-- Example for tab 0 -->
-          <div class="tab-pane fade show active" id="tab0" role="tabpanel" aria-labelledby="tab0-tab" tabindex="0">
-            <label>取り出し部品を選択してください</label>
-            <table class="table table-bordered shelf" id="shelf-0">
-              <thead>
-                <tr>
-                  <th>戻</th>
-                  <th>背番号</th>
-                  <th>在庫数</th>
-                  <th>取出</th>
-                </tr>
-              </thead>
-              <tbody><!-- Dynamic content --></tbody>
-            </table>
-            <div class="d-flex justify-content-end mt-3">
-                <button class="btn btn-outline-success" onclick="ReturnKotatsu(0)">取出完了</button>
-            </div>
-          </div>
-          <!-- Repeat similar blocks for tabs 1 to 7 -->
-          <div class="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
-            <label>取り出し部品を選択してください</label>
-            <table class="table table-bordered shelf" id="shelf-1">
-              <thead>
-                <tr>
-                  <th>戻</th>
-                  <th>背番号</th>
-                  <th>在庫数</th>
-                  <th>取出</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Dynamic content -->
-              </tbody>
-            </table>
-            <div class="d-flex justify-content-end mt-3">
-                <button class="btn btn-outline-success" onclick="ReturnKotatsu(1)">取出完了</button>
-            </div>
-          </div>
-          <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
-            <label>取り出し部品を選択してください</label>
-            <table class="table table-bordered shelf" id="shelf-2">
-              <thead>
-                <tr>
-                  <th>戻</th>
-                  <th>背番号</th>
-                  <th>在庫数</th>
-                  <th>取出</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Dynamic content -->
-              </tbody>
-            </table>
-            <div class="d-flex justify-content-end mt-3">
-                <button class="btn btn-outline-success" onclick="ReturnKotatsu(2)">取出完了</button>
-            </div>
-          </div>
-          <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
-            <label>取り出し部品を選択してください</label>
-            <table class="table table-bordered shelf" id="shelf-3">
-              <thead>
-                <tr>
-                  <th>戻</th>
-                  <th>背番号</th>
-                  <th>在庫数</th>
-                  <th>取出</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Dynamic content -->
-              </tbody>
-            </table>
-            <div class="d-flex justify-content-end mt-3">
-                <button class="btn btn-outline-success" onclick="ReturnKotatsu(3)">取出完了</button>
-            </div>
-          </div>
-          <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
-            <label>取り出し部品を選択してください</label>
-            <table class="table table-bordered shelf" id="shelf-4">
-              <thead>
-                <tr>
-                  <th>戻</th>
-                  <th>背番号</th>
-                  <th>在庫数</th>
-                  <th>取出</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Dynamic content -->
-              </tbody>
-            </table>
-            <div class="d-flex justify-content-end mt-3">
-                <button class="btn btn-outline-success" onclick="ReturnKotatsu(4)">取出完了</button>
-            </div>
-          </div>
-          <div class="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-tab">
-            <label>取り出し部品を選択してください</label>
-            <table class="table table-bordered shelf" id="shelf-5">
-              <thead>
-                <tr>
-                  <th>戻</th>
-                  <th>背番号</th>
-                  <th>在庫数</th>
-                  <th>取出</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Dynamic content -->
-              </tbody>
-            </table>
-            <div class="d-flex justify-content-end mt-3">
-                <button class="btn btn-outline-success" onclick="ReturnKotatsu(5)">取出完了</button>
-            </div>
-          </div>
-          <div class="tab-pane fade" id="tab6" role="tabpanel" aria-labelledby="tab6-tab">
-            <label>取り出し部品を選択してください</label>
-            <table class="table table-bordered shelf" id="shelf-6">
-              <thead>
-                <tr>
-                  <th>戻</th>
-                  <th>背番号</th>
-                  <th>在庫数</th>
-                  <th>取出</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Dynamic content -->
-              </tbody>
-            </table>
-            <div class="d-flex justify-content-end mt-3">
-                <button class="btn btn-outline-success" onclick="ReturnKotatsu(6)">取出完了</button>
-            </div>
-          </div>
-          <div class="tab-pane fade" id="tab7" role="tabpanel" aria-labelledby="tab7-tab">
-            <label>取り出し部品を選択してください</label>
-            <table class="table table-bordered shelf" id="shelf-7">
-              <thead>
-                <tr>
-                  <th>戻</th>
-                  <th>背番号</th>
-                  <th>在庫数</th>
-                  <th>取出</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Dynamic content -->
-              </tbody>
-            </table>
-            <div class="d-flex justify-content-end mt-3">
-                <button class="btn btn-outline-success" onclick="ReturnKotatsu(7)">取出完了</button>
-            </div>
-          </div>
+
+  <div class="maguchi-frame">
+    <!-- Tabs navigation -->
+    <ul class="nav nav-pills nav-fill flex-wrap" role="tablist" style="max-width: 700px;">
+      <!-- 1st row -->
+      <li class="nav-item col-3" role="presentation">
+        <button class="nav-link active btn-success" id="tab0-tab" data-bs-toggle="tab" data-bs-target="#tab0" type="button" role="tab" aria-controls="tab0" aria-selected="true">間口1</button>
+      </li>
+      <li class="nav-item col-3" role="presentation">
+        <button class="nav-link" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1" aria-selected="false">間口2</button>
+      </li>
+      <li class="nav-item col-3" role="presentation">
+        <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab" aria-controls="tab2" aria-selected="false">間口3</button>
+      </li>
+      <li class="nav-item col-3" role="presentation">
+        <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button" role="tab" aria-controls="tab3" aria-selected="false">間口4</button>
+      </li>
+      <!-- 2nd row -->
+      <li class="nav-item col-3 mt-2" role="presentation">
+        <button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button" role="tab" aria-controls="tab4" aria-selected="false">取出</button>
+      </li>
+      <li class="nav-item col-3 mt-2" role="presentation">
+        <button class="nav-link" id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button" role="tab" aria-controls="tab5" aria-selected="false">取出</button>
+      </li>
+      <li class="nav-item col-3 mt-2" role="presentation">
+        <button class="nav-link" id="tab6-tab" data-bs-toggle="tab" data-bs-target="#tab6" type="button" role="tab" aria-controls="tab6" aria-selected="false">取出</button>
+      </li>
+      <li class="nav-item col-3 mt-2" role="presentation">
+        <button class="nav-link" id="tab7-tab" data-bs-toggle="tab" data-bs-target="#tab7" type="button" role="tab" aria-controls="tab7" aria-selected="false">取出</button>
+      </li>
+    </ul>
+    <!-- Tab content -->
+    <div class="tab-content mt-3">
+      <!-- tab 0 -->
+      <div class="tab-pane fade show active" id="tab0" role="tabpanel" aria-labelledby="tab0-tab">
+        <label>取り出し部品を選択してください</label>
+        <table class="table table-bordered shelf" id="shelf-0">
+          <thead>
+            <tr><th>戻</th><th>背番号</th><th>在庫数</th><th>取出</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="d-flex justify-content-end mt-3">
+          <button class="btn btn-outline-success" onclick="ReturnKotatsu(0)">取出完了</button>
         </div>
+      </div>
+      <!-- tab 1 -->
+      <div class="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+        <label>取り出し部品を選択してください</label>
+        <table class="table table-bordered shelf" id="shelf-1">
+          <thead>
+            <tr><th>戻</th><th>背番号</th><th>在庫数</th><th>取出</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="d-flex justify-content-end mt-3">
+          <button class="btn btn-outline-success" onclick="ReturnKotatsu(1)">取出完了</button>
+        </div>
+      </div>
+      <!-- tab 2 -->
+      <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+        <label>取り出し部品を選択してください</label>
+        <table class="table table-bordered shelf" id="shelf-2">
+          <thead>
+            <tr><th>戻</th><th>背番号</th><th>在庫数</th><th>取出</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="d-flex justify-content-end mt-3">
+          <button class="btn btn-outline-success" onclick="ReturnKotatsu(2)">取出完了</button>
+        </div>
+      </div>
+      <!-- tab 3 -->
+      <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+        <label>取り出し部品を選択してください</label>
+        <table class="table table-bordered shelf" id="shelf-3">
+          <thead>
+            <tr><th>戻</th><th>背番号</th><th>在庫数</th><th>取出</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="d-flex justify-content-end mt-3">
+          <button class="btn btn-outline-success" onclick="ReturnKotatsu(3)">取出完了</button>
+        </div>
+      </div>
+      <!-- tab 4 -->
+      <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
+        <label>取り出し部品を選択してください</label>
+        <table class="table table-bordered shelf" id="shelf-4">
+          <thead>
+            <tr><th>戻</th><th>背番号</th><th>在庫数</th><th>取出</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="d-flex justify-content-end mt-3">
+          <button class="btn btn-outline-success" onclick="ReturnKotatsu(4)">取出完了</button>
+        </div>
+      </div>
+      <!-- tab 5 -->
+      <div class="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-tab">
+        <label>取り出し部品を選択してください</label>
+        <table class="table table-bordered shelf" id="shelf-5">
+          <thead>
+            <tr><th>戻</th><th>背番号</th><th>在庫数</th><th>取出</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="d-flex justify-content-end mt-3">
+          <button class="btn btn-outline-success" onclick="ReturnKotatsu(5)">取出完了</button>
+        </div>
+      </div>
+      <!-- tab 6 -->
+      <div class="tab-pane fade" id="tab6" role="tabpanel" aria-labelledby="tab6-tab">
+        <label>取り出し部品を選択してください</label>
+        <table class="table table-bordered shelf" id="shelf-6">
+          <thead>
+            <tr><th>戻</th><th>背番号</th><th>在庫数</th><th>取出</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="d-flex justify-content-end mt-3">
+          <button class="btn btn-outline-success" onclick="ReturnKotatsu(6)">取出完了</button>
+        </div>
+      </div>
+      <!-- tab 7 -->
+      <div class="tab-pane fade" id="tab7" role="tabpanel" aria-labelledby="tab7-tab">
+        <label>取り出し部品を選択してください</label>
+        <table class="table table-bordered shelf" id="shelf-7">
+          <thead>
+            <tr><th>戻</th><th>背番号</th><th>在庫数</th><th>取出</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="d-flex justify-content-end mt-3">
+          <button class="btn btn-outline-success" onclick="ReturnKotatsu(7)">取出完了</button>
+        </div>
+      </div>
     </div>
+  </div>
     
 <!-- jQuery -->
 <script src="../../static/js/jquery-3.7.0.min.js"></script>

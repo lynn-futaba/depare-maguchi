@@ -2,10 +2,10 @@
 
 #ライン供給間口
 class LineFrontage():
-    def __init__(self,cell_code:str,name:str, frontage_id:int,car_model_id:int):
+    def __init__(self, cell_code:str,name:str, frontage_id:int,car_model_id:int):
         self.name = name
         self.id = frontage_id
-        self.car_model_id=car_model_id
+        self.car_model_id = car_model_id
         self.inventories =[]
         # if not self.validate():
         #     raise ValueError("Invalid cell code format.")
@@ -19,7 +19,7 @@ class LineFrontage():
 
 #ライン
 class Line():
-    def __init__(self,id,name, process):
+    def __init__(self, id, name, process):
         self.id = id
         self.name = name
         self.frontages={}

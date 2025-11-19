@@ -1,0 +1,96 @@
+顧客名 Kokyaku-mei Customer Name
+フタバ産業様向け Futaba Sangyō-sama-muke For Futaba Sangyo
+作成日 Sakusei-bi Creation Date
+作成番 Sakusei-ban Document Number
+システム名 Shisutemu-mei System Name
+知立工場3号棟WCS開発 Chiryū Kōjō 3-gōtō WCS KaihatsuChiryū Plant Building 3 WCS Development
+作成者Sakuseisha Author 
+サブシステム名 Sabu Shisutemu-mei Subsystem Name
+構造設計書Kōzō Sekkeisho Structural Design Document
+更新日 Kōshin-bi Update Date
+訂番 Teiban Revision Number
+モジュール名 Mojūru-mei Module Name
+更新者 Kōshinsha Updated By
+
+項名 Kōmei → Item Name
+概要(デパレ間口) Gaiyō (Depare Maguchi) → Overview (Depalletizing Port)
+デパレ間口の概要を示します。Depare Maguchi no Gaiyō o Shimeshimasu. → This section shows the overview of the depalletizing port.
+
+デパレ間口への搬送(TP箱)】
+【Depare Maguchi e no Hansō (TP hako)】 → Transport to Depalletizing Port (TP Box)
+① 設備からTP箱搬入要求が出力
+Setsubi kara TP hako hannyū yōkyū ga shutsuryoku → The equipment outputs a TP box loading request.
+→ PLC入力信号で、TP箱搬入要求・車種IDが出力される
+PLC nyūryoku shingō de, TP hako hannyū yōkyū / shashu ID ga shutsuryoku sareru → Via PLC input signal, TP box loading request and car model ID are output.
+② 対象車種ID部品の積載コタツを選定
+Taishō shashu ID buhin no sekisai kotatsu o sentei → Select the kotatsu (shelf unit) loaded with parts for the target car model ID.
+③ 回転セルにてコタツを回転後、デパレ間口に搬送
+Kaiten seru nite kotatsu o kaiten-go, depare maguchi ni hansō → Rotate the kotatsu in the rotation cell, then transport it to the depalletizing port.
+
+【積載TP箱増減】
+【Sekisai TP hako zōgen】 → Change in Loaded TP Boxes
+
+(減)
+(Gen) → Decrease
+① 設備から部品取出しが出力
+Setsubi kara buhin toridashi ga shutsuryoku → The equipment outputs a part removal signal.
+→ PLC入力信号で、部品取出し信号が出力される
+PLC nyūryoku shingō de, buhin toridashi shingō ga shutsuryoku sareru → Via PLC input signal, the part removal signal is output.
+② 対象コタツのTP箱積載数を -1
+Taishō kotatsu no TP hako sekisai-sū o minus ichi → Decrease the TP box count on the target kotatsu by 1.
+※ この時、TP箱積載数が1であれば
+Kono toki, TP hako sekisai-sū ga ichi de areba → At this time, if the TP box count is 1…
+コタツ状態を空(EMPTY)に更新
+Kotatsu jōtai o kara (EMPTY) ni kōshin → Update kotatsu status to EMPTY.
+
+(増)
+(Zō) → Increase
+① 設備から部品投入が出力
+Setsubi kara buhin tōnyū ga shutsuryoku → The equipment outputs a part insertion signal.
+→ PLC入力信号で、部品投入信号が出力される
+PLC nyūryoku shingō de, buhin tōnyū shingō ga shutsuryoku sareru → Via PLC input signal, the part insertion signal is output.
+② 対象コタツのTP箱積載数を +1
+Taishō kotatsu no TP hako sekisai-sū o purasu ichi → Increase the TP box count on the target kotatsu by 1.
+※ この時、コタツ状態が空(EMPTY)であれば
+Kono toki, kotatsu jōtai ga kara (EMPTY) de areba → At this time, if kotatsu status is EMPTY…
+コタツ状態を実(FILL)に更新
+Kotatsu jōtai o jitsu (FILL) ni kōshin → Update kotatsu status to FILL.
+
+【デパレ間口からの搬送(TP箱)】
+【Depare maguchi kara no hansō (TP hako)】 → Transport from Depalletizing Port (TP Box)
+① 設備から発進要求が出力
+Setsubi kara hasshin yōkyū ga shutsuryoku → The equipment outputs a dispatch request.
+→ PLC入力信号で、発進要求が出力される
+PLC nyūryoku shingō de, hasshin yōkyū ga shutsuryoku sareru → Via PLC input signal, the dispatch request is output.
+② 回転なしで、ストアの空きマスの搬送
+Kaiten nashi de, sutoa no aki masu no hansō → Transport to an empty slot in the store without rotation.
+
+項名
+Kōmei → Item Name
+概要(デパレ間口)
+Gaiyō (Depare Maguchi) → Overview (Depalletizing Port)
+
+★概要
+Gaiyō → Overview
+
+【デパレ間口への搬送(フローラック)】
+【Depare Maguchi e no Hansō (Flow Rack)】 → Transport to Depalletizing Port (Flow Rack)
+① 設備からフローラック搬入要求が出力
+Setsubi kara furōrakku hannyū yōkyū ga shutsuryoku → The equipment outputs a flow rack loading request.
+→ PLC入力信号で、フローラック搬入要求・車種IDが出力される
+PLC nyūryoku shingō de, furōrakku hannyū yōkyū / shashu ID ga shutsuryoku sareru → Via PLC input signal, flow rack loading request and car model ID are output.
+② 対象車種ID部品の積載コタツを選定
+Taishō shashu ID buhin no sekisai kotatsu o sentei → Select the kotatsu (shelf unit) loaded with parts for the target car model ID.
+③ 回転なし、デパレ間口に搬送
+Kaiten nashi, depare maguchi ni hansō → Transport to the depalletizing port without rotation.
+
+【デパレ間口からの搬送(フローラック)】
+【Depare Maguchi kara no Hansō (Flow Rack)】 → Transport from Depalletizing Port (Flow Rack)
+① 設備から発進要求が出力
+Setsubi kara hasshin yōkyū ga shutsuryoku → The equipment outputs a dispatch request.
+→ PLC入力信号で、発進要求が出力される
+PLC nyūryoku shingō de, hasshin yōkyū ga shutsuryoku sareru → Via PLC input signal, the dispatch request is output.
+② コタツ状態を空→実入れ替え更新
+Kotatsu jōtai o kara → jitsu irekae kōshin → Update kotatsu status from EMPTY to FILL.
+③ 回転なしで、ストアの空きマスの搬送
+Kaiten nashi de, sutoa no aki masu no hansō → Transport to an empty slot in the store without rotation.

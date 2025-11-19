@@ -24,8 +24,8 @@ DROP TABLE IF EXISTS `rack_position`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rack_position` (
   `inventory_id` int NOT NULL,
-  `rack_id` int NOT NULL,
-  PRIMARY KEY (`inventory_id`,`rack_id`)
+  `rack_position_id` int NOT NULL,
+  PRIMARY KEY (`inventory_id`,`rack_position_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `composition`;
 CREATE TABLE `composition` (
   `product_id` varchar(20) NOT NULL,
   `part_number` varchar(20) NOT NULL,
-  `quantity` varchar(45) NOT NULL,
+  `quantity_per_product` varchar(45) NOT NULL,
   PRIMARY KEY (`product_id`,`part_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

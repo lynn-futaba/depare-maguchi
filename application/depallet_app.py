@@ -21,7 +21,8 @@ import application.utility as util
 class DepalletApplication():
 
     def __init__(self):
-        self.LINE_ID = (1, 2)
+        # self.LINE_ID = (1, 2)
+        self.LINE_ID = (1, 2, 3, 4)
         self._running  =True
         self.depallet_area =None
         self.lines =None

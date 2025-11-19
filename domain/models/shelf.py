@@ -87,7 +87,7 @@ class FlowRack(Shelf):
     def __init__(self, shelf_id: str):
         _type = 2
         super().__init__(shelf_id,_type)
-        #頭からrack_id=1,2,3,4　設定なしの場合はNoneが入る
+        #頭からrack_position_id=1,2,3,4　設定なしの場合はNoneが入る
         self.rack= []
         self.dest_line_frontage_id:int = 0
 

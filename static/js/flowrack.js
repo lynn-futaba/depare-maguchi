@@ -6,7 +6,7 @@ $(document).ready(function () {
             type: "GET",
        
              success: function (data) {
-                 
+                 console.log('update Table >> flow rack', data); // TODO
                  updateTable(data);
             },
             error: function (error) {
@@ -17,12 +17,14 @@ $(document).ready(function () {
 
     function updateTable(data) {
         var flowRacks = JSON.parse(data);
-     
+        console.log('flowRacks', flowRacks);
         $("#flow-rack-no").text(`対象フローラックNo：${flowRacks["id"]} `);
 
         var flowRacktable = $('#flow-rack')
         flowRacktable.empty();
         var rack = flowRacks["rack"];
+
+        console.log('Rack >>', rack);
 
         let kanban_ids = [];
         let case_quantities = [];

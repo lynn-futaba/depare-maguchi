@@ -178,8 +178,8 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             sql =f"SELECT * FROM depal.line_inventory "\
             + "INNER JOIN depal.rack_position as r USING(inventory_id) "\
             + "INNER JOIN depal.m_product USING(part_number) "\
-            + f"RIGHT JOIN depal.position as p on r.rack_id = p.rack_id  and frontage_id ={frontage.id} "\
-            + "ORDER BY p.rack_id"
+            + f"RIGHT JOIN depal.position as p on r.rack_position_id = p.rack_position_id  and frontage_id ={frontage.id} "\
+            + "ORDER BY p.rack_position_id"
 
             conn =self.db.depal_pool.get_connection()
             cur = conn.cursor(dictionary=True)

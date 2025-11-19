@@ -54,39 +54,38 @@ $(document).ready(function () {
 
         function updateTable(data) {
             const depalletArea = JSON.parse(data);
-            const frontages = depalletArea["frontages"];
+            const frontages = depalletArea.frontages;
         
-            Object.keys(frontages).forEach((key, index) => {
-                const tableId   = `shelf-${index}`;          // 0‑based index
-                const tbody     = $(`#${tableId} tbody`);
-                const tabLabelId = `tab${index}-tab`;
-
-                console.log('tableId', tableId)
-                console.log('tbody', tbody)
-                console.log('tabLabelId', tabLabelId)
-        
+            Object.keys(frontages).forEach(key => {
                 const frontage = frontages[key];
         
-                // ---- skip empty shelf ------------------------------------------------
-                if (!frontage.shelf || frontage.shelf === "None") return;
-                if (frontage.shelf.type !== 1) return;
+                // これだけ追加（または修正）すれば完璧！
+                const index = parseInt(key) - 1;   // ← ここが最重要！！
         
-                // ---- update tab label -------------------------------------------------
-                $(`#${tabLabelId}`)
-                    .text(`間口${frontage.id}取出`)
-                    .attr('data-id', frontage.id)
-                    .addClass('btn-success');   // highlight active frontage
+                const tableId    = `shelf-${index}`;
+                const tabLabelId = `tab${index}-tab`;
+                const tbody      = $(`#${tableId} tbody`);
         
-                // ---- fill table -------------------------------------------------------
-                Object.keys(frontage.shelf.inventories).forEach(invKey => {
-                    const inv = frontage.shelf.inventories[invKey];
-                    const row = `
-                        <tr>
-                            <td><button onclick="Pallet(${frontage.id}, '${inv.part.kanban_id}')">＋</button></td>
-                            <td>${inv.part.kanban_id}</td>
-                            <td>${inv.case_quantity}</td>
-                            <td><button onclick="Depallet(${frontage.id}, '${inv.part.kanban_id}')">ー</button></td>
-                        </tr>`;
+                if (tbody.length === 0) return;
+        
+                // 以下は今まで通り（空棚のときはクリアする処理も入れた方が親切）
+                if (!frontage.shelf || frontage.shelf === "None" || frontage.shelf.type !== 1) {
+                    console.log('Shelf is None >>>');
+                    $(`#${tabLabelId}`).text(index < 4 ? `間口${key}` : "取出").removeClass('btn-success');
+                    tbody.empty();
+                    return;
+                }
+        
+                $(`#${tabLabelId}`).text(`間口${key}取出`).addClass('btn-success');
+                tbody.empty();
+        
+                Object.values(frontage.shelf.inventories).forEach(inv => {
+                    const row = `<tr>
+                        <td><button onclick="Pallet(${key}, '${inv.part.kanban_id}')">＋</button></td>
+                        <td>${inv.part.kanban_id}</td>
+                        <td>${inv.case_quantity}</td>
+                        <td><button onclick="Depallet(${key}, '${inv.part.kanban_id}')">ー</button></td>
+                    </tr>`;
                     tbody.append(row);
                 });
             });
@@ -94,8 +93,8 @@ $(document).ready(function () {
     };
 
     // 定期実行 
-    setInterval(refreshPage, 500);
-    // setInterval(refreshPage, 50000); TODO: added
+    // setInterval(refreshPage, 500);
+    setInterval(refreshPage, 5000); // TODO: added
 });
 
 //パレットおろし
