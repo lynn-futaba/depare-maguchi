@@ -1,7 +1,7 @@
 ﻿from domain.models.line import LineFrontage
 from domain.models.shelf import FlowRack, Kotatsu, Shelf
-from  domain.models.depallet import DepalletArea, DepalletFrontage
-from  domain.models.part import  Part
+from domain.models.depallet import DepalletArea, DepalletFrontage
+from domain.models.part import Part
 from domain.infrastructure.depallet_area_repository import IDepalletAreaRepository
 from domain.infrastructure.wcs_controler import IWcsControler
 
@@ -12,7 +12,7 @@ class DepalletService:
         self.depallet_area_repo = depallet_area_repo
         self.wcs = wcs
 
-    def get_depallet_area(self,line_id_list:list)->DepalletArea:
+    def get_depallet_area(self, line_id_list:list)->DepalletArea:
         try:
             if not line_id_list:
                 raise Exception("line_id_list is empty")
@@ -28,14 +28,26 @@ class DepalletService:
             raise Exception(f"Error checking frontage readiness: {e}")
     
     # デパレタイズ（コタツ<->フローラック）
-    def depalletizing(self,source:Shelf,dest:Shelf,target:Part):
+    def depalletizing(self, source:Shelf, dest:Shelf, target:Part):
+
+        # 🎯 CRITICAL FIX: Check if the part object is None before using it.
+        if target is None:
+        # Raise an exception that clearly states the required object is missing.
+            raise ValueError("Cannot depalletize: The 'target' part object passed to depalletizing service is None.")
+
+        print(f"[DepalletService >> depalletizing >> dest] : {dest.values()}")
+        print(f"[DepalletService >> depalletizing >> source] : {source.values()}")
+        print(f"[DepalletService >> depalletizing >> target] : {target.values()}")
+
         try:
             dest.add(target, 1)
+            print("[DepalletService >> depalletizing >> dest coming] :")
         except Exception as e:
             raise Exception(f"Error during depalletizing: {e}")
 
         try:    
             source.remove(target, 1)
+            print("[DepalletService >> depalletizing >> source coming] :")
         except Exception as e:
             dest.remove(target, 1)
             raise Exception(f"Error during depalletizing: {e}")
@@ -94,7 +106,7 @@ class DepalletService:
     def dispatch(self, source: DepalletFrontage):
         try:
             self.wcs.dispatch(source)
-            if isinstance(source.shelf,Kotatsu):
+            if isinstance(source.shelf, Kotatsu):
                 self._save_kotatsu(source.shelf)
             source.remove_shlef() 
             source.status = 0

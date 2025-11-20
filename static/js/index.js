@@ -64,10 +64,10 @@ $(document).ready(function () {
 
     // 定期実行 
     setInterval(refreshPage, 1000);
-    // setInterval(refreshPage, 50000); // TODO: testing
+    // setInterval(refreshPage, 5000); // TODO: testing
 });
 
-function Start(id) {
+function goToDepallet(id) {
 
     const result = confirm(`間口 ${id}を呼び出します`);
 

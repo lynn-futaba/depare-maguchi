@@ -72,7 +72,7 @@ class WcsControler( IWcsControler):
        # 搬出
     def dispatch(self,frontage:DepalletFrontage):
         try:
-            conn =self.db.wcs_pool.get_connection()
+            conn = self.db.wcs_pool.get_connection()
             conn.start_transaction()
             cur = conn.cursor()
 
@@ -92,6 +92,7 @@ class WcsControler( IWcsControler):
         except Exception as e:
             conn.rollback()
             raise Exception(f"[DepalletAreaRepository] Error: {e}")
+        
         finally:
             cur.close()
             conn.close()

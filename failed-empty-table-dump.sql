@@ -34,7 +34,7 @@ DROP TABLE IF EXISTS `parts_supply`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `parts_supply` (
   `inventory_id` int NOT NULL,
-  `time_stamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `time_stamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `case_quantity` int NOT NULL,
   PRIMARY KEY (`inventory_id`,`time_stamp`),
   KEY `line_inventory_idx` (`inventory_id`),

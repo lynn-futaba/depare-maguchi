@@ -31,18 +31,6 @@ class LineService:
             return l, r
         except Exception as e:
             raise Exception(f"Error getting product infos: {e}")
-    
-    # TODO: added this one to fix the LINE error
-    # def get_product_infos(self, lines: list[Line]) -> tuple[ProductInfo, ProductInfo]:
-    #     try:
-    #         if len(lines) < 2:
-    #             print("Warning: Less than 2 lines found, returning None.")
-    #             return None, None
-    #         r = self.product_info_repo.get_product_info(lines[0].id)
-    #         l = self.product_info_repo.get_product_info(lines[1].id)
-    #         return l, r
-    #     except Exception as e:
-    #         raise Exception(f"Error getting product infos: {e}")
 
     def supply_parts(self, frontage:DepalletFrontage):
        try:

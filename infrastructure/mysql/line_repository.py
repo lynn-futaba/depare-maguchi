@@ -114,24 +114,28 @@ class LineRepository(ILineRepository):
 
         return lines
 
-    def  supply_parts(self,flow_rack:FlowRack):
+    def supply_parts(self, flow_rack:FlowRack):
         if flow_rack.is_empty():
             raise Exception("FlowRack is empty")
-        Values = []
+        values = []
         for inventory in flow_rack.rack:
-            if  inventory is None or inventory.is_empty():
+            if inventory is None or inventory.is_empty():
                 continue
-            Values.append([inventory.id,inventory.case_quantity])
+            values.append([inventory.id, inventory.case_quantity])
         try:
-            sql = "INSERT INTO depal.parts_supply (inventory_id,case_quantity) VALUES (%s,%s);"
             conn = self.db.depal_pool.get_connection()
             cur = conn.cursor()
-            cur.executemany(sql, Values)
+            sql = "INSERT INTO depal.parts_supply (inventory_id,case_quantity) VALUES (%s,%s);"
+            cur.executemany(sql, values)
             conn.commit()
-            cur.close()
-            conn.close()
         except Exception as e:
             print(f"[LineRepository] Error: {e}")
+        
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
         
 
 if __name__ == "__main__":

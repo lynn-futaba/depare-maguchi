@@ -54,9 +54,11 @@ class Kotatsu(Shelf):
         return None
 
     def get_by_kanban(self, kanban: str)-> Part :
+        print(f"[Kotatsu model >> get_by_kanban >> inventories ] : {self.inventories.to_dict()}")
         for inventory in self.inventories:
             try:
                 if inventory.part.kanban_id == kanban:
+                    print(f"[Kotatsu model >> get_by_kanban] : {inventory}")
                     return inventory.part
             except Exception as e:
                 raise Exception(f"Error getting part by id: {e}")
@@ -107,7 +109,10 @@ class FlowRack(Shelf):
                 raise Exception(f"Error getting part by id: {e}")
 
     def get_by_kanban(self, kanban: str)-> Part :
+        print(f"[FlowRack model >> get_by_kanban >> kanban ] : {kanban}")
+        print(f"[FlowRack model >> get_by_kanban >> self.rack ] : {self.rack}")
         for inventory in self.rack:
+            print(f"[FlowRack model >> get_by_kanban >> inventory ] : {inventory}")
             try:
                 if inventory.part.kanban_id == kanban:
                     return inventory.part

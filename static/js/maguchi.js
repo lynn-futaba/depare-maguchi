@@ -5,7 +5,7 @@ $(document).ready(function () {
             url: "/update_depallet_area",
             type: "GET",
             success: function (data) {
-                console.log('update_depallet_area >>', data);
+                // console.log('update_depallet_area >>', data); // TODO: testing
                 updateTable(data);
             },
             error: function (error) {
@@ -20,12 +20,14 @@ $(document).ready(function () {
         //     var frontages = depalletArea["frontages"];
 
         //     Object.keys(frontages).forEach((key,index) => {
-                
+        //         console.log('Key >> Index', key, index);
+
         //         let tbody = $(`#${index} tbody`);
                    
         //         tbody.empty();
         //         let frontage = frontages[key];
-                
+        //         console.log('frontage >>', frontage);
+
         //         if (frontage.shelf == "None") {
         //             return;
         //         }
@@ -33,8 +35,12 @@ $(document).ready(function () {
         //             Object.keys(frontage.shelf.inventories).forEach((key) => {
 
         //                 let tab =$(`#tab${index}`).contents().filter(function () {
+        //                     console.log('contents >>,  nodeType >>', $(`#tab${index}`).contents(), this.nodeType);
+
         //                     return this.nodeType === 3;
         //                 }).first()
+
+        //                 console.log('Tab >>>', tab);
         //                 tab.replaceWith(`間口${frontage.id}取出`);
 
         //                 tab.attr('data-id', `${frontage.id}`);  
@@ -51,113 +57,83 @@ $(document).ready(function () {
         //         }
         //      });
         // }; 
-
+        // TODO: modified
         function updateTable(data) {
+
             const depalletArea = JSON.parse(data);
             const frontages = depalletArea.frontages;
-        
-            Object.keys(frontages).forEach(key => {
-                const frontage = frontages[key];
-        
-                // これだけ追加（または修正）すれば完璧！
-                const index = parseInt(key) - 1;   // ← ここが最重要！！
-        
-                const tableId    = `shelf-${index}`;
-                const tabLabelId = `tab${index}-tab`;
-                const tbody  = $(`#${tableId} tbody`);
-                const thead  = $(`#${tableId} thead`);
 
-                if (thead.length === 0) return;
-                if (tbody.length === 0) return;
-        
-                // 以下は今まで通り（空棚のときはクリアする処理も入れた方が親切）
-                // if (!frontage.shelf || frontage.shelf === "None" || frontage.shelf.type !== 1) {
-                //     console.log('Shelf is None >>>');
-                //     $(`#${tabLabelId}`).text(index < 4 ? `間口${key}` : "取出").removeClass('btn-success');
-                //     tbody.empty();
-                //     return;
-                // } else {
-                //     $(`#${tabLabelId}`).text(`間口${key}取出`).addClass('btn-success');
-                //     tbody.empty();
+                Object.keys(frontages).forEach(key => {
+                    // console.log('frontages >> key >>', frontages, key)
+
+                    const frontage = frontages[key];
+                    // console.log('frontage　>>', frontage)
+                    
+                    // shelf.type ==1 for kotatsu　、if kotatsu, it includes inventories array
+                    
+                    // これだけ追加（または修正）すれば完璧！
+                    const index = parseInt(key);   // ← ここが最重要！！ // TODO: confrim the key, hard code
+                    // console.log('frontage >> index >>', index)
             
-                //     Object.values(frontage.shelf.inventories).forEach(inv => {
-    
-                //         console.log('Coming inventories >>', inventories);
-                //         const row = `<tr>
-                //             <td><button onclick="Pallet(${key}, '${inv.part.kanban_id}')">＋</button></td>
-                //             <td>${inv.part.kanban_id}</td>
-                //             <td>${inv.case_quantity}</td>
-                //             <td><button onclick="Depallet(${key}, '${inv.part.kanban_id}')">ー</button></td>
-                //         </tr>`;
-                //         tbody.append(row);
-                //     });
-                // }
+                    const tableId  = `shelf-${index}`;
+                    const tabLabelId = `tab${index}-tab`;
+                    const tbody  = $(`#${tableId} tbody`);
+                    const maguchiNoLabel = $('#maguchi-no');
+                    const kotatsuNoLabel = $('#kotatsu-no');
 
-                // --- Error handling / Empty shelf logic ---
-                // --- Updated Source Code Snippet ---
+                    // const thead  = $(`#${tableId} thead`);
 
-                // This condition checks for:
-                // 1. Shelf is missing or "None"
-                // 2. Shelf exists but its type is NOT 2
-                if (!frontage.shelf.inventories || frontage.shelf === "None") {
+                    // if (thead.length === 0) return;
+                    if (tbody.length === 0) return;
                     
-                    // This console log will trigger for:
-                    // - frontage.shelf === null
-                    // - frontage.shelf === "None"
-                    // - frontage.shelf.type === 1 (This handles your "type 1 error" case)
-                    // - frontage.shelf.type === 3, 4, etc.
-                    console.log(`Shelf for frontage ${key} is None or not the required Type 2. Clearing display.`);
-                    
-                    // Reset display for all non-Type 2 shelves
-                    // $(`#${tabLabelId}`).text(key).removeClass('btn-success'); TODO: comment out
-                    $(`#${tabLabelId}`).html(`間口${key} <br> 取出`).removeClass('btn-success');
-                    thead.empty();
-                    tbody.empty();
-                    return;
-                } 
+                    if (frontage.shelf == "None") {
+                        return
+                    }
+                    // console.log(`Shelf for frontage ${frontage.shelf.type}`);
 
-                // --- Valid shelf logic (Type 2 ONLY) ---
-                else {
-                    // This 'else' block ONLY executes if frontage.shelf.type IS 2.
-                    $(`#${tabLabelId}`).html(`間口${key} <br> 取出`).addClass('btn-success');
-                    thead.empty();
-                    tbody.empty();
+                    if (frontage.shelf.type == 1) {
+                        $(`#${tabLabelId}`).html(`間口${frontage.id} <hr> 取出`).addClass('btn-success');
+                        maguchiNoLabel.text(`対象 : 間口 ${frontage.id}`);
+                        kotatsuNoLabel.text(`コタツ No : ${frontage.id}`);
+                        // thead.empty();
+                        tbody.empty();
+                        // const row1 = `
+                        //         <th>戻</th>
+                        //         <th>背番号</th>
+                        //         <th>在庫数</th>
+                        //         <th>取出</th>`;
+                        // thead.append(row1);
+                        // console.log('inventories >>', Object.values(frontage.shelf.inventories));
+                        Object.values(frontage.shelf.inventories).forEach(inv => {
+                            const row = `
+                                <tr>
+                                    <td><button onclick="pallet(${frontage.id}, '${inv.part.kanban_id}')"><b>＋<b></button></td>
+                                    <td>背番号 ${inv.part.kanban_id}</td>
+                                    <td>${inv.case_quantity}</td>
+                                    <td><button onclick="depallet(${frontage.id}, '${inv.part.kanban_id}')"><b>ー</b></button></td>
+                                </tr>`;
+                            tbody.append(row);
+                        });
+                    } else {
+                        $(`#${tabLabelId}`).html(`間口${frontage.id} <hr> 取出`).removeClass('btn-success');
+                        // console.log('Coming here >>>');
+                        // Reset display for all non-Type 2 shelves
+                        // $(`#${tabLabelId}`).text(key).removeClass('btn-success'); TODO: comment out
 
-                    console.log('inventory item >>', Object.values(frontage.shelf.inventories)); 
-
-                    const row1 = `
-                            <th>戻</th>
-                            <th>背番号</th>
-                            <th>在庫数</th>
-                            <th>取出</th>`;
-                    thead.append(row1);
-
-                    Object.values(frontage.shelf.inventories).forEach(inv => {
-                        // This console log ONLY appears when type is 2.
-                        console.log('Coming inventory item >>', inv); 
-                        const row = `
-                        <tr>
-                            <td><button onclick="Pallet(${key}, '${inv.part.kanban_id}')">＋</button></td>
-                            <td>${inv.part.kanban_id}</td>
-                            <td>${inv.case_quantity}</td>
-                            <td><button onclick="Depallet(${key}, '${inv.part.kanban_id}')">ー</button></td>
-                        </tr>`;
-                        tbody.append(row);
-                    });
-                }
-        
-               
-            });
+                        // 未使用
+                        // thead.empty();
+                        tbody.empty();
+                    }
+                });
+            }
         }
-    };
-
-    // 定期実行 
-    // setInterval(refreshPage, 500);
-    setInterval(refreshPage, 1000); // TODO: added
+        // 定期実行 
+        // setInterval(refreshPage, 500);
+        setInterval(refreshPage, 1000); // TODO: added
 });
 
 //パレットおろし
-function Depallet(frontage_id,part_id) {
+function depallet(frontage_id,part_id) {
     $.ajax({
         url: "/to_flow_rack",
         type: "POST",
@@ -165,20 +141,19 @@ function Depallet(frontage_id,part_id) {
         data: JSON.stringify({ "frontage_id": frontage_id,"part_id" :part_id }),
         success: function (data) {
             if (data["status"] === "success") {
-                console.log("OK");
-              
+                console.log('depallet >> to_flow_rack API', "OK");
             } else {
                 alert("depalletizing error");
             }
         },
         error: function (error) {
-
+            console.log('depallet >> to_flow_rack API >> Error', error.status + ": " + error.responseText);
             alert(error.status + ": " + error.responseText)
         }
     });
 }
-//パレット戻し
-function Pallet(frontage_id, part_id) {
+//パレット戻し, + plus
+function pallet(frontage_id, part_id) {
     $.ajax({
         url: "/to_kotatsu",
         type: "POST",
@@ -186,25 +161,23 @@ function Pallet(frontage_id, part_id) {
         data: JSON.stringify({ "frontage_id": frontage_id, "part_id": part_id }),
         success: function (data) {
             if (data["status"] === "success") {
-                console.log("OK");
-
+                console.log('pallet >> to_kotatsu API', "OK");
             } else {
                 alert("palletizing error");
             }
         },
         error: function (error) {
-  
+            console.log('pallet >> to_kotatsu API >> Error', error.status + ">> " + error.responseText);
             alert(error.status + ": " + error.responseText)
         }
     });
 }
 
-// コタツ返却
+// コタツ返却. - minus
 function returnKotatsu(id) {
-    console.log('returnKotatsu >>', id);
     // const frontage_id = element.getAttribute("data-id"); TODO: comment out
+    console.log('returnKotatsu >>', id);
     const frontage_id = id;
-
     const result = confirm(`間口 ${frontage_id}のコタツを返却します`);
 
     if (result) {
@@ -215,14 +188,13 @@ function returnKotatsu(id) {
             data: JSON.stringify({ "frontage_id": frontage_id}),
             success: function (data) {
                 if (data["status"] === "success") {
-                    console.log("OK");
-
+                    console.log('returnKotatsu API >>', "OK");
                 } else {
                     alert("error");
                 }
             },
             error: function (error) {
-
+                console.log('returnKotatsu API >> Error', error);
                 alert(error.status + ": " + error.responseText)
             }
         });

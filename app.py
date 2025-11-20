@@ -38,7 +38,7 @@ class DepalletWebServer:
         def index():
              return render_template('index.html')
 
-        @app.route("/return")
+        @app.route("/return_index")
         def returns():
             return render_template('index.html')
 
@@ -103,9 +103,12 @@ class DepalletWebServer:
         @app.route("/to_flow_rack", methods=["POST"])
         def to_flow_rack():
             try:
-                frontage = request.json.get('frontage_id')
-                part = request.json.get('part_id')
-                self._depallet_app.fetch_part(int(frontage), str(part))
+                frontage_id = request.json.get('frontage_id')
+                part_id = request.json.get('part_id')
+                print(f"[to_flow_rack >> frontage_id] : {frontage_id}")
+                print(f"[to_flow_rack >> part_id] : {part_id}")
+                self._depallet_app.fetch_part(int(frontage_id), str(part_id))
+                # self._depallet_app.fetch_part(int(frontage_id), int(part_id)) # TODO: testing
                 return jsonify({"status": "success"})
             except Exception as e:
                 return abort(400, str(e))
@@ -113,9 +116,12 @@ class DepalletWebServer:
         @app.route("/to_kotatsu", methods=["POST"])
         def to_kotatsu():
             try:
-                frontage = request.json.get('frontage_id')
-                part = request.json.get('part_id')
-                self._depallet_app.return_part(int(frontage), str(part))
+                frontage_id = request.json.get('frontage_id')
+                part_id = request.json.get('part_id')
+                print(f"[to_kotatsu >> frontage_id] : {frontage_id}")
+                print(f"[to_kotatsu >> part_id] : {part_id}")
+                self._depallet_app.return_part(int(frontage_id), str(part_id))
+                # self._depallet_app.return_part(int(frontage_id), int(part_id)) # TODO: modified
                 return jsonify({"status": "success"})
             except Exception as e:
                 return abort(400, str(e))

@@ -16,17 +16,26 @@
     <script src="../../static/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <div class="container my-4 flow-rack-frame">
-        <div class="header mb-3">
-            <h5>投入部品画面</h5>
-            <p id="flow-rack-no">対象フローラックNo：</p>
+    <div class="container flow-rack-frame">
+        <div class="row text-start">
+            <div class="col-4">
+                <h5>投入部品画面</h5>
+            </div>
+            <div class="col-6">
+                <p id="flow-rack-no">対象フローラックNo：</p>
+            </div>
+        </div>
+        <div class="row text-start my-3">
+            <label>フローラックに部品を入れてください</label>
         </div>
         <table id="flow-rack" class="table table-bordered">
             <!-- Dynamic content will be inserted here -->
         </table>
-        <label>投入完了後完了ボタンを押してください</label><br />
-        <div class="d-flex justify-content-end mt-3">
-            <button class="btn btn-outline-success" onclick="Complete()">作業完了</button>
+        <div class="row text-center mb-2">
+            <label>部品取出完了後に押してください</label>
+        </div>
+        <div class="col-8 text-end">
+            <button class="btn btn-outline-success" onclick="complete()">作業完了</button>
         </div>
     </div>
 </body>

@@ -6,7 +6,7 @@ $(document).ready(function () {
             type: "GET",
        
              success: function (data) {
-                 console.log('update Table >> flow rack', data); // TODO
+                //  console.log('update Table >> flow rack', data); // TODO
                  updateTable(data);
             },
             error: function (error) {
@@ -17,17 +17,18 @@ $(document).ready(function () {
 
     function updateTable(data) {
         var flowRacks = JSON.parse(data);
-        console.log('flowRacks', flowRacks);
+        // console.log('flowRacks', flowRacks);
         $("#flow-rack-no").text(`対象フローラックNo：${flowRacks["id"]} `);
 
         var flowRacktable = $('#flow-rack')
         flowRacktable.empty();
         var rack = flowRacks["rack"];
 
-        console.log('Rack >>', rack);
+        // console.log('Rack >>', rack);
 
         let kanban_ids = [];
         let case_quantities = [];
+
         Object.keys(rack).forEach((key) => {
             if (rack[key] == "None") {
                 kanban_ids.push("-");
@@ -93,10 +94,10 @@ $(document).ready(function () {
     }
     // 定期実行 TODO: comment out
     // setInterval(refreshPage, 500);
-    setInterval(refreshPage, 500000);
+    setInterval(refreshPage, 1000);
 });
 
-function Complete() {
+function complete() {
     const result = confirm(`作業を完了します`);
     if (result) {
         $.ajax({
@@ -109,7 +110,7 @@ function Complete() {
 
                     setTimeout(() => {
                         $.ajax({
-                            url: "/return",
+                            url: "/return_index",
                             type: "GET",
                             success: function (data) {
                                 window.top.location.href = "/"
