@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  test_configuration_service:
+    image: depalet:latest
+    container_name: depalet
+    restart: always
+    tty: true
+    ports: 
+      - "5000:5000" # 必要に応じてポートを変更
+    volumes:
+      - ./app.py:/app/app.py # ホストディレクトリの設定ファイルをコンテナにマウント（必要であれば変更）
+      - ./static:/app/static
+      - ./templates:/app/templates
+      - ./static/js:/app/static/js
+      - /etc/localtime:/etc/localtime:ro
+      # - ./config:/app/src/config # vcsリポジトリを使うときはこっち
+
+    command: sh -c "python /app/app.py"
+
+    networks:
+      test_network:
+        ipv4_address: 172.43.0.4
+    deploy:
+      resources:
+        limits:
+          memory: 600m
+
+networks:
+  test_network:
+    name: depalet_network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.43.0.0/24
