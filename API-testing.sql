@@ -68,3 +68,12 @@ SELECT signal_id FROM eip_signal.word_input where value = 1;
 
 But did not insert any data to parts_supply database   
 INSERT INTO depal.parts_supply (inventory_id,case_quantity) VALUES (%s,%s);"
+
+================================================================================
+update_maguchi_signal_input API + to_maguchi_set_values testing
+================================================================================
+# Bライン, L1 , L2 to check after click
+SELECT * from `eip_signal`.word_input WHERE signal_id IN (8504, 8503, 8502, 8501, 8500, 8260, 8246, 8231, 8216, 8201);
+
+# Bライン, L3 to check after click
+SELECT * from `eip_signal`.word_input WHERE signal_id IN (8502, 8501, 8500, 8231, 8216, 8200);

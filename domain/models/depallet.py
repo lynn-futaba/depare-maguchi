@@ -49,17 +49,17 @@ class DepalletArea():
 
     def get_by_id(self, id) -> DepalletFrontage | None:
         try:
-            print(f"[DepalletArea model >> get_by_id] : {id}")
+            # print(f"[DepalletArea model >> get_by_id] : {id}")
             frontage = self.frontages[id]
-            print(f"[DepalletArea model >> frontage] : {frontage}")
+            # print(f"[DepalletArea model >> frontage] : {frontage}")
             return frontage
         except KeyError:
             return None
 
     def get_flow_rack_frontage(self) -> DepalletFrontage | None:
-        print(f"[DepalletArea model >> get_flow_rack_frontage >> frontages] : {self.frontages.values()}")
+        # print(f"[DepalletArea model >> get_flow_rack_frontage >> frontages] : {self.frontages.values()}")
         for frontage in self.frontages.values():
-            print(f"[DepalletArea model >> get_flow_rack_frontage >> frontage] : {frontage}")
+            # print(f"[DepalletArea model >> get_flow_rack_frontage >> frontage] : {frontage}")
             if frontage.shelf is not None and frontage.shelf.type == 2:
                 return frontage
         return None

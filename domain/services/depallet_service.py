@@ -76,6 +76,24 @@ class DepalletService:
             self.depallet_area_repo.save_kotatsu(shelf)
         except Exception as e:
             raise Exception(f"Error saving kotatsu: {e}")
+    
+    # Flowrack update
+    def update_maguchi_signal_input(self, line_frontage_id):
+        try:
+            print("[DepalletService >> update_maguchi_signal_input >> line_frontage_id ]")
+            self.depallet_area_repo.update_maguchi_signal_input(line_frontage_id)
+        except Exception as e:
+            print(f"Error update maguchi by signal input: {e}")
+            raise Exception(f"Error update maguchi by signal input: {e}")
+        
+    
+    def to_maguchi_set_values(self, line_frontage_id):
+        try:
+            print("[DepalletService >> to_maguchi_set_values >> line_frontage_id ]")
+            self.depallet_area_repo.to_maguchi_set_values(line_frontage_id)
+        except Exception as e:
+            print(f"Error set values to maguchi: {e}")
+            raise Exception(f"Error set values to maguchi: {e}")
 
     # 部品要求
     def request_parts(self, area:DepalletArea,frontage:LineFrontage):

@@ -105,8 +105,8 @@ class DepalletWebServer:
             try:
                 frontage_id = request.json.get('frontage_id')
                 part_id = request.json.get('part_id')
-                print(f"[to_flow_rack >> frontage_id] : {frontage_id}")
-                print(f"[to_flow_rack >> part_id] : {part_id}")
+                # print(f"[to_flow_rack >> frontage_id] : {frontage_id}")
+                # print(f"[to_flow_rack >> part_id] : {part_id}")
                 self._depallet_app.fetch_part(int(frontage_id), str(part_id))
                 # self._depallet_app.fetch_part(int(frontage_id), int(part_id)) # TODO: testing
                 return jsonify({"status": "success"})
@@ -118,8 +118,8 @@ class DepalletWebServer:
             try:
                 frontage_id = request.json.get('frontage_id')
                 part_id = request.json.get('part_id')
-                print(f"[to_kotatsu >> frontage_id] : {frontage_id}")
-                print(f"[to_kotatsu >> part_id] : {part_id}")
+                # print(f"[to_kotatsu >> frontage_id] : {frontage_id}")
+                # print(f"[to_kotatsu >> part_id] : {part_id}")
                 self._depallet_app.return_part(int(frontage_id), str(part_id))
                 # self._depallet_app.return_part(int(frontage_id), int(part_id)) # TODO: modified
                 return jsonify({"status": "success"})
@@ -148,6 +148,30 @@ class DepalletWebServer:
                return jsonify({"status": "success"})
             except Exception as e:
                 return abort(400, str(e))
+                            
+        @app.route("/to_maguchi_signal_input", methods=["POST"])
+        def to_maguchi_signal_input():
+            try:
+                line_frontage_id = request.json.get('line_frontage_id')
+                print(f"[to_maguchi_signal_input >> line_frontage_id] : {line_frontage_id}")
+                self._depallet_app.update_maguchi_signal_input(line_frontage_id)
+                return jsonify({"status": "success"})
+            except Exception as e:
+                print(f"[to_maguchi_signal_input >> error] : {e}")
+                return abort(400, str(e))
+            
+        
+        @app.route("/to_maguchi_set_values", methods=["POST"])
+        def to_maguchi_set_values():
+            try:
+                line_frontage_id = request.json.get('line_frontage_id')
+                print(f"[to_maguchi_set_values >> line_frontage_id] : {line_frontage_id}")
+                self._depallet_app.to_maguchi_set_values(line_frontage_id)
+                return jsonify({"status": "success"})
+            except Exception as e:
+                print(f"[to_maguchi_set_values >> error] : {e}")
+                return abort(400, str(e))
+
 
 if __name__ == "__main__":
     depallet_app = None # TODO

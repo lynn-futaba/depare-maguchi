@@ -9,6 +9,7 @@ class IDepalletAreaRepository(ABC):
     @abstractmethod # TODO
     def get_depallet_area(self,line_id_list:list)->DepalletArea:
        pass
+    
     # デパレ間口の状態取得
     @abstractmethod # TODO
     def is_frontage_ready(self, frontage:DepalletFrontage)->bool:
@@ -26,6 +27,14 @@ class IDepalletAreaRepository(ABC):
 
     @abstractmethod # TODO
     def get_flow_rack(self,frontage:LineFrontage)->FlowRack:
+        pass
+
+    @abstractmethod # TODO
+    def update_maguchi_signal_input(self, line_frontage_id: int):
+        pass
+
+    @abstractmethod # TODO
+    def to_maguchi_set_values(self, line_frontage_id: int):
         pass
       
 

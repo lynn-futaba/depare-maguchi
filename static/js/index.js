@@ -6,7 +6,7 @@ $(document).ready(function () {
             type: "GET",
           
              success: function (data) {
-                console.log('update_product_info >>', data); // TODO:
+                // console.log('update_product_info >>', data); // TODO:
                  updateTable(data);
             },
             error: function (error) {
@@ -80,6 +80,30 @@ function goToDepallet(id) {
             success: function (data) {  
                 console.log('Data >> Start() status' , data);
                 if (data["status"] === "success") {
+                        $.ajax({
+                            url: "/to_maguchi_signal_input",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({ "line_frontage_id": id }),
+                            success: function (data) {
+                                console.log("to_maguchi_signal_input >> data >>", data);
+                                $.ajax({
+                                    url: "/to_maguchi_set_values",
+                                    type: "POST",
+                                    contentType: "application/json",
+                                    data: JSON.stringify({ "line_frontage_id": id }),
+                                    success: function (data) {
+                                        console.log("to_maguchi_set_values >> data >>", data);
+                                    },
+                                    error: function (error) {
+                                        alert("to_maguchi_set_values >> error");
+                                    }
+                                });
+                            },
+                            error: function (error) {
+                                alert("to_maguchi_signal_input >> error");
+                            }
+                        });
                     setTimeout(() => {
                         $.ajax({
                             url: "/depallet",

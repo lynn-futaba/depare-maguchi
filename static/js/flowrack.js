@@ -107,7 +107,7 @@ function complete() {
             data: JSON.stringify({}),
             success: function (data) {
                 if (data["status"] === "success") {
-
+                    
                     setTimeout(() => {
                         $.ajax({
                             url: "/return_index",

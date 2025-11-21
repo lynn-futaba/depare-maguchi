@@ -5,7 +5,8 @@ from domain.models.depallet import  DepalletFrontage
 from domain.models.line import LineFrontage
 from domain.models.part import Part
 
-class WcsControler( IWcsControler):
+class WcsControler(IWcsControler):
+    
     def __init__(self,db):
          self.db =db
 
@@ -38,7 +39,7 @@ class WcsControler( IWcsControler):
             cur.close()
             conn.close()
         return  
-
+    
     # フローラック要求
     def request_flow_rack(self,frontage:DepalletFrontage,line_frontage:LineFrontage):
         try:
@@ -70,6 +71,7 @@ class WcsControler( IWcsControler):
         return  
 
        # 搬出
+    
     def dispatch(self,frontage:DepalletFrontage):
         try:
             conn = self.db.wcs_pool.get_connection()

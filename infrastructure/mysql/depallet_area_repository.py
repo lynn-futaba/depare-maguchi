@@ -41,14 +41,14 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 sql = f"SELECT * FROM depal.signal WHERE frontage_id={frontage.id};"
                 cur.execute(sql)
                 signal_result = cur.fetchall()
-                print(f"[Signal >> Query Result] : {signal_result}")
+                # print(f"[Signal >> Query Result] : {signal_result}")
 
                 signals = {}
                 for row in signal_result:
                     signals[row["tag"]] = int(row["signal_id"])
 
                 frontage.signals = signals
-                print(f"[Signal >> frontage.signals] : {frontage.signals}")
+                # print(f"[Signal >> frontage.signals] : {frontage.signals}")
                 shelf = self.get_shelf(frontage)
                 if shelf is not None:
                     print("[frontage.signals >> shelf is not None]")
@@ -92,7 +92,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
     def get_shelf(self, frontage: DepalletFrontage) -> Shelf:
         try:
-            print(f"[Get_shelf >> frontage] : {frontage}")
+            # print(f"[Get_shelf >> frontage] : {frontage}")
 
             if self.is_frontage_ready(frontage) == False:
                 print(f"[Get_shelf >> is_frontage_ready] : {self.is_frontage_ready(frontage)}")
@@ -104,7 +104,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 return kotatsu
             
             flow_rack = self.get_flow_rack(frontage)
-            print(f"[Get_shelf >> flow_rack] : {flow_rack}")
+            # print(f"[Get_shelf >> flow_rack] : {flow_rack}")
             if flow_rack is not None:
                 return flow_rack
             
@@ -128,7 +128,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             sql = f"SELECT * FROM `eip_signal`.word_output WHERE signal_id IN {parts_signals} ORDER BY signal_id;"
             cur.execute(sql)
             result = cur.fetchall()
-            print(f"[Get_kotatsu >> eip_signal >> Query Result] : {result}")
+            # print(f"[Get_kotatsu >> eip_signal >> Query Result] : {result}")
 
             inventory_list = []
             
@@ -139,7 +139,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 inventory = KotatsuInventory(0, Part(str(no["value"]),str(no["value"]),str(no["value"]),0), int(count["value"]), 
                                              frontage.signals[f"fetch{i}"],frontage.signals[f"fetch{i}_count"],frontage.signals[f"part{i}_no"],frontage.signals[f"part{i}_count"])
                 inventory_list.append(inventory)
-                print(f"[Get_kotatsu >> Inventory_list >> Result] : {result}")
+                # print(f"[Get_kotatsu >> Inventory_list >> Result] : {result}")
           
             if len(inventory_list) == 0:
                 return None
@@ -221,6 +221,85 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             cur.close()
             conn.close()
         return  
+
+    def update_maguchi_signal_input(self, line_frontage_id):
+        try:
+            conn = self.db.wcs_pool.get_connection()
+            conn.start_transaction()
+            cur = conn.cursor()
+
+            updates = []  # Initialize empty list
+
+            if line_frontage_id == 4: # Bライン, L1
+                updates = [
+                    (26, 8504),
+                    (206, 8503),
+                    (205, 8502),
+                    (203, 8501),
+                    (208, 8500)
+                ]
+            elif line_frontage_id == 5: # Bライン, L2
+                updates = [
+                    (29, 8504),
+                    (204, 8503),
+                    (201, 8502),
+                    (207, 8501),
+                    (202, 8500)
+                ]
+            elif line_frontage_id == 6: # Bライン, L3
+                updates = [
+                    (300, 8502),
+                    (200, 8501),
+                    (31, 8500)
+                ]
+
+            if updates:  # Only execute if updates list is not empty
+                cur.executemany(
+                    "UPDATE `eip_signal`.word_input SET value = %s WHERE signal_id = %s",
+                    updates
+                )
+                print(f"[Update_maguchi_signal_input >> Updated] : {updates}")
+                conn.commit()
+            else:
+                print(f"No updates for line_frontage_id: {line_frontage_id}")
+
+        except Exception as e:
+            conn.rollback()
+            raise Exception(f"[update_maguchi_signal_input] Error: {e}")
+        finally:
+            cur.close()
+            conn.close()
+            
+    def to_maguchi_set_values(self, line_frontage_id):
+        try:
+            conn = self.db.wcs_pool.get_connection()
+            conn.start_transaction()
+            cur = conn.cursor()
+
+            if line_frontage_id in (4, 5): # Bライン, L1, L2
+                signal_ids = (8260, 8246, 8231, 8216, 8201)
+            elif line_frontage_id == 6: # Bライン, L3
+                signal_ids = (8231, 8216, 8200)
+            else:
+                raise ValueError(f"Invalid line_frontage_id: {line_frontage_id}")
+
+            placeholders = ','.join(['%s'] * len(signal_ids))
+            sql = f"UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id IN ({placeholders})"
+            cur.execute(sql, signal_ids)
+
+            print(f"[to_maguchi_set_values >> Updated IDs]: {signal_ids}")
+
+            conn.commit()
+        except Exception as e:
+            if conn:
+                conn.rollback()
+            raise Exception(f"[to_maguchi_set_values] Error: {e}")
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+
 
 if __name__ == "__main__":
     from mysql_db import MysqlDb
