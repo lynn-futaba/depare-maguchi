@@ -68,8 +68,14 @@ $(document).ready(function () {
 });
 
 function goToDepallet(id) {
+    // TODO: to display 供給間口 
+    const maguchiMap = {
+        1: "R1", 2: "R2", 3: "R3", 4: "L1", 5: "L2", 6: "L3"
+    };
 
-    const result = confirm(`間口 ${id}を呼び出します`);
+    const kyokuuMaguchi = maguchiMap[id] || "不明"; // Default if id is invalid
+
+    const result = confirm(`供給間口 ${kyokuuMaguchi}を呼び出します`);
 
     if (result) {
         $.ajax({
@@ -87,6 +93,7 @@ function goToDepallet(id) {
                             data: JSON.stringify({ "line_frontage_id": id }),
                             success: function (data) {
                                 console.log("to_maguchi_signal_input >> data >>", data);
+                                showInfo("✅ Signal input completed successfully!");
                                 $.ajax({
                                     url: "/to_maguchi_set_values",
                                     type: "POST",
@@ -94,14 +101,15 @@ function goToDepallet(id) {
                                     data: JSON.stringify({ "line_frontage_id": id }),
                                     success: function (data) {
                                         console.log("to_maguchi_set_values >> data >>", data);
+                                        showInfo("✅ Set values completed successfully!");
                                     },
                                     error: function (error) {
-                                        alert("to_maguchi_set_values >> error");
+                                        alert("❌ Error in to_maguchi_signal_input");
                                     }
                                 });
                             },
                             error: function (error) {
-                                alert("to_maguchi_signal_input >> error");
+                                alert("❌ Error in to_maguchi_signal_input");
                             }
                         });
                     setTimeout(() => {
@@ -112,17 +120,17 @@ function goToDepallet(id) {
                                 document.documentElement.innerHTML = data; // TODO: display depallet.html 
                             },
                             error: function (error) {
-                                alert("error");
+                                alert("❌ Error loading depallet");
                             }
                         });
                     }, 500);
 
                 } else {
-                    alert("no flow racks");
+                    alert("⚠️ No flow racks available");
                 }
             },
             error: function (error) {
-           
+                alert("❌ Error in line_frontage_click");
             }
         });
     } 

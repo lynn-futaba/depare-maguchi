@@ -8,69 +8,8 @@ from domain.infrastructure.line_repository import ILineRepository
 class LineRepository(ILineRepository):
     def __init__(self,db):
          self.db =db
-
-    # def get_lines(self, line_id_list: list) -> list[Line]:
-    #     lines = []
-    #     conn = None
-    #     cur = None
-
-    #     try:
-    #         # Get DB connection
-    #         conn = self.db.depal_pool.get_connection()
-    #         cur = conn.cursor(dictionary=True)
-
-    #         # 1. Fetch lines TODO: check CONSTRAINT in application layer if line_id exists or not
-    #         sql = f"SELECT * FROM depal.line WHERE line_id IN ({','.join(['%s'] * len(line_id_list))})"
-    #         cur.execute(sql, line_id_list)
-    #         result = cur.fetchall()
-    #         # print(f"[Line Table >>] Query Result: {result}")
-
-    #         for row in result:
-    #             line = Line(row["line_id"], row["name"], row["process"])
-    #             lines.append(line)
-
-    #         # 2. Fetch frontages for each line
-    #         for line in lines:
-    #             sql =f"SELECT * FROM depal.line_frontage where line_id = {line.id};"
-    #             cur.execute(sql)
-    #             frontages_result = cur.fetchall()
-    #             # print(f"[Line Frontage >> Query Result] : {frontages_result}")
-
-    #             for row in frontages_result:
-    #                 frontage_obj = LineFrontage(row["cell_code"], row["name"], row["frontage_id"], row["car_model_id"])
-    #                 line.register_frontage(frontage_obj)
-                
-    #             # 3. Fetch inventories for each frontage
-    #             for frontage in line.frontages.values():
-    #                 # print(f"[Frontage >> ID] : {frontage.id}")
-
-    #                 sql = f"SELECT * FROM depal.line_inventory inner join depal.m_product using(part_number) where depal.line_inventory.frontage_id = {frontage.id};"
-    #                 cur.execute(sql)
-
-    #                 inv_result = cur.fetchall()
-    #                 # print(f"[Line Inventory >> Query Result] : {inv_result}")
-
-    #                 inventories = []
-    #                 for row in inv_result:
-    #                     # part = Part(row["part_number"], row["kanban_no"], row["name"], row["car_model_id"]) TODO: comment out
-    #                     part = Part(row["part_number"], row["kanban_no"], row["supplier_name"], row["car_model_id"])
-    #                     inventory = Inventory(row["inventory_id"], part, row["case_quantity"])
-    #                     inventories.append(inventory)
-
-    #                 frontage.set_inventories(inventories)
-
-    #     except Exception as e:
-    #         print(f"[LineRepository >> Error] : {e}")
-
-    #     finally:
-    #         if cur:
-    #             cur.close()
-    #         if conn:
-    #             conn.close()
-
-    #     return lines
     
-    # TODO: Handle DB CONSTRAINTS in the application layer because there is no root or DB admin permission in the dababase
+    # TODO: Handle DB CONSTRAINTS in the application layer because there is no root or DB admin permission in the dabase
     def validate_line_ids(self, line_id_list: list) -> set[int]:
         """
         EN: Validate that the given line_id_list exists in depal.line table.
@@ -198,6 +137,43 @@ class LineRepository(ILineRepository):
                 conn.close()
 
         return lines
+    
+    def validate_inventory_ids(self, inventory_id_list: list) -> set[int]:
+        """
+        EN: Validate that the given inventory_id_list exists in depal.line_inventory table.
+        JP: 指定された inventory_id_list が depal.line_inventory テーブルに存在するか確認します。
+        Returns a set of valid inventory IDs.
+        JP: 有効な inventory_id のセットを返します。
+        """
+        conn = None
+        cur = None
+        valid_ids = set()
+
+        try:
+            conn = self.db.depal_pool.get_connection()
+            cur = conn.cursor(dictionary=True)
+
+            # EN: If no IDs provided, return empty set
+            # JP: ID が指定されていない場合、空のセットを返す
+            if not inventory_id_list:
+                return valid_ids
+
+            # EN: Check if line_id exists in depal.line
+            # JP: depal.line テーブルで line_id が存在するか確認
+            sql = f"SELECT inventory_id FROM depal.line_inventory WHERE line_id IN ({','.join(['%s'] * len(inventory_id_list))})"
+            cur.execute(sql, inventory_id_list)
+            rows = cur.fetchall()
+            valid_ids = {row["inventory_id"] for row in rows}
+
+        except Exception as e:
+            print(f"[Validation Error] : {e}")
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+
+        return valid_ids
 
     def supply_parts(self, flow_rack:FlowRack):
         if flow_rack.is_empty():
@@ -208,9 +184,25 @@ class LineRepository(ILineRepository):
                 continue
             values.append([inventory.id, inventory.case_quantity])
         try:
+            # EN: Step 1 - Validate frontage IDs
+            # JP: ステップ1 - frontage.id を検証
+            valid_ids = self.validate_inventory_ids(flow_rack.rack) # TODO: need to confirm it includes inverntory or not 
+
+            # EN: If no valid IDs, return empty list
+            # JP: 有効な ID がない場合、空のリストを返す
+            if not valid_ids:
+                print("[Info] No valid inventory_id found. / 有効な inventory_id が見つかりません。")
+                return []
+
+            # EN: Warn about invalid IDs
+            # JP: 無効な ID について警告を表示
+            invalid_ids = [invid for invid in flow_rack.rack if invid not in valid_ids]
+            if invalid_ids:
+                print(f"[Warning] Invalid inventory_id(s) skipped: {invalid_ids} / 無効な inventory_id はスキップされました: {invalid_ids}")
+
             conn = self.db.depal_pool.get_connection()
             cur = conn.cursor()
-            sql = "INSERT INTO depal.parts_supply (inventory_id,case_quantity) VALUES (%s,%s);"
+            sql = "INSERT INTO depal.parts_supply (inventory_id, case_quantity) VALUES (%s,%s);"
             cur.executemany(sql, values)
             conn.commit()
         except Exception as e:

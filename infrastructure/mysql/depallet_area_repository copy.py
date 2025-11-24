@@ -153,20 +153,73 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 cur.close()
             if conn:
                 conn.close()
+    
+    # TODO: Handle DB CONSTRAINTS in the application layer because there is no root or DB admin permission in the dababase
+    def validate_frontage_ids(self, frontage_id_list: list) -> set[int]:
+        """
+        EN: Validate that the given frontage_id exists in depal.line table.
+        JP: 指定された frontage_id が depal.line テーブルに存在するか確認します。
+        Returns a set of valid line IDs.
+        JP: 有効な line_id のセットを返します。
+        """
+        conn = None
+        cur = None
+        valid_ids = set()
+
+        try:
+            conn = self.db.depal_pool.get_connection()
+            cur = conn.cursor(dictionary=True)
+
+            # EN: If no IDs provided, return empty set
+            # JP: ID が指定されていない場合、空のセットを返す
+            if not frontage_id_list:
+                return valid_ids
+
+            # EN: Check if line_id exists in depal.line
+            # JP: depal.line テーブルで line_id が存在するか確認
+            sql = f"SELECT frontage_id FROM depal.line_frontage WHERE frontage_id IN ({','.join(['%s'] * len(frontage_id_list))})"
+            cur.execute(sql, frontage_id_list)
+            rows = cur.fetchall()
+            valid_ids = {row["frontage_id"] for row in rows}
+
+        except Exception as e:
+            print(f"[Validation Error] : {e}")
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+
+        return valid_ids
         
 
     def get_flow_rack(self, frontage:LineFrontage)->FlowRack:
         try:
-          
-            sql =f"SELECT * FROM depal.line_inventory "\
-            + "INNER JOIN depal.rack_position as r USING(inventory_id) "\
-            + "INNER JOIN depal.m_product USING(part_number) "\
-            + f"RIGHT JOIN depal.position as p on r.rack_position_id = p.rack_position_id and frontage_id ={frontage.id} "\
-            + "ORDER BY p.rack_position_id"
+            # EN: Step 1 - Validate frontage IDs
+            # JP: ステップ1 - frontage.id を検証
+            valid_ids = self.validate_frontage_ids(frontage)
+
+            # EN: If no valid IDs, return empty list
+            # JP: 有効な ID がない場合、空のリストを返す
+            if not valid_ids:
+                print("[Info] No valid frontage_id found. / 有効な frontage_id が見つかりません。")
+                return []
+
+            # EN: Warn about invalid IDs
+            # JP: 無効な ID について警告を表示
+            invalid_ids = [fid for fid in frontage if fid not in valid_ids]
+            if invalid_ids:
+                print(f"[Warning] Invalid frontage_id(s) skipped: {invalid_ids} / 無効な frontage_id はスキップされました: {invalid_ids}")
 
             conn =self.db.depal_pool.get_connection()
             cur = conn.cursor(dictionary=True)
-    
+
+            sql = f"SELECT * FROM depal.line_inventory "\
+            + "INNER JOIN depal.rack_position as r USING(inventory_id) "\
+            + "INNER JOIN depal.m_product USING(part_number) "\
+            + f"RIGHT JOIN depal.position as p on r.rack_position_id = p.rack_position_id  and frontage_id ={frontage.id} "\
+            + "ORDER BY p.rack_position_id"
+
             cur.execute(sql)
             result= cur.fetchall()
             inventory_list = []
@@ -179,14 +232,20 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                                           Part(str(row["part_number"]),str(row["kanban_no"]),str(row["part_number"]),int(row["car_model_id"])), 
                                           0)
                 inventory_list.append(inventory)
-          
-            cur.close()
-            conn.close()
 
             flow_rack = FlowRack('flow_rack')
             flow_rack.set_inventories(inventory_list)
         except Exception as e:
            raise Exception(f"[DepalletAreaRepository] Error: {e}")
+        
+        finally:
+            # EN: Close cursor and connection
+            # JP: カーソルと接続を閉じる
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+
         return  flow_rack
 
     def save_kotatsu(self, shelf: Kotatsu):
@@ -332,7 +391,6 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 cur.close()
             if conn:
                 conn.close()
-
 
 if __name__ == "__main__":
     from mysql_db import MysqlDb

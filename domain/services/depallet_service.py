@@ -35,19 +35,19 @@ class DepalletService:
         # Raise an exception that clearly states the required object is missing.
             raise ValueError("Cannot depalletize: The 'target' part object passed to depalletizing service is None.")
 
-        print(f"[DepalletService >> depalletizing >> dest] : {dest.values()}")
-        print(f"[DepalletService >> depalletizing >> source] : {source.values()}")
-        print(f"[DepalletService >> depalletizing >> target] : {target.values()}")
+        # print(f"[DepalletService >> depalletizing >> dest] : {dest.values()}")
+        # print(f"[DepalletService >> depalletizing >> source] : {source.values()}")
+        # print(f"[DepalletService >> depalletizing >> target] : {target.values()}")
 
         try:
             dest.add(target, 1)
-            print("[DepalletService >> depalletizing >> dest coming] :")
+            # print("[DepalletService >> depalletizing >> dest coming] :")
         except Exception as e:
             raise Exception(f"Error during depalletizing: {e}")
 
         try:    
             source.remove(target, 1)
-            print("[DepalletService >> depalletizing >> source coming] :")
+            # print("[DepalletService >> depalletizing >> source coming] :")
         except Exception as e:
             dest.remove(target, 1)
             raise Exception(f"Error during depalletizing: {e}")
@@ -62,8 +62,7 @@ class DepalletService:
                 return
             frontage.set_shelf(kotastu)
             for inventory in frontage.shelf.inventories:
-                print(
-                    f"Kotatsu Inventory - Part ID: {inventory.part.id}, Case Quantity: {inventory.case_quantity}")
+                print(f"Kotatsu Inventory - Part ID: {inventory.part.id}, Case Quantity: {inventory.case_quantity}")
         except Exception as e:
             raise Exception(f"Error setting kotatsu: {e}")
 

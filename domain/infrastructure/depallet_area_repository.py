@@ -26,7 +26,7 @@ class IDepalletAreaRepository(ABC):
         pass
 
     @abstractmethod # TODO
-    def get_flow_rack(self,frontage:LineFrontage)->FlowRack:
+    def get_flow_rack(self, frontage:LineFrontage)->FlowRack:
         pass
 
     @abstractmethod # TODO

@@ -1,5 +1,4 @@
-﻿import mysql.connector
-from mysql.connector import Error
+﻿from mysql.connector import Error
 from mysql.connector import pooling
 
 config1 = {
@@ -8,7 +7,7 @@ config1 = {
     'pool_reset_session': True,
     'host': '10.104.16.129', # 10.104.16.129
     'user': 'athena',
-    # 'password': 'Ftb181148$', TODO
+    # 'password': 'Ftb181148$', # TODO
     'password': 'WGQKJPL8V/xQ',
     'database': 'depal'
 }
@@ -19,9 +18,9 @@ config2 = {
     'pool_reset_session': True,
     'host': '10.104.16.129', # 10.104.16.129
     'user': 'athena',
-    # 'password': 'Ftb181148$', TODO
+    # 'password': 'Ftb181148$', # TODO
     'password': 'WGQKJPL8V/xQ',
-    # 'database': 'wcs' TODO
+    # 'database': 'wcs' # TODO
     'database': 'futaba-chiryu-3building'
 }
 
@@ -32,9 +31,9 @@ config3 = {
     'pool_reset_session': True,
     'host': '10.104.16.129', # 10.104.16.129
     'user': 'athena',
-    # 'password': 'Ftb181148$', TODO
+    # 'password': 'Ftb181148$', # TODO
     'password': 'WGQKJPL8V/xQ',
-    # 'database': 'wcs' TODO
+    # 'database': 'wcs' # TODO
     'database': 'eip_signal'
 }
 

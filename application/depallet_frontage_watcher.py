@@ -25,7 +25,7 @@ class DepalletFrontegeWatcher():
                      # if self.callback:  
                      #        self.callback()
                      self._last_value = current_value
-                     print(f"[Watcher] _last_value: {self._last_value}")
+                    #  print(f"[Watcher] _last_value: {self._last_value}") # TODO: added print
             except Exception as e:
                 print(f"[Watcher] Error: {e}")
             sleep(self.interval)
