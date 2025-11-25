@@ -63,8 +63,10 @@ $(document).ready(function () {
     };
 
     // 定期実行 
-    setInterval(refreshPage, 1000);
-    // setInterval(refreshPage, 5000); // TODO: testing
+    // setInterval(refreshPage, 1000); // TODO
+    $('#refreshButton').on('click', function () {
+        refreshPage();
+    });
 });
 
 function goToDepallet(id) {

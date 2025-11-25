@@ -4,6 +4,7 @@ from .shelf import Shelf
 class DepalletFrontage():
     
     def __init__(self, cell_code:str,frontage_id: int,name:str,priority:int):
+
         self.cell_code = cell_code
         self.name = name
         self.id = frontage_id
@@ -40,9 +41,12 @@ class DepalletFrontage():
 
 # �f�p���G���A�i�Ԍ��O���[�v�j
 class DepalletArea():
+
     def __init__(self,name):
-        self.name=name
-        self.frontages={}
+
+        self.name = name
+        self.frontages= {}
+        self.update_frontages = {} # TODO: added
        
     def register_frontage(self, frontage: DepalletFrontage):
         self.frontages[frontage.id] = frontage

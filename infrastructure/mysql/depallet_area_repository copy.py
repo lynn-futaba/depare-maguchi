@@ -358,10 +358,10 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             cur = conn.cursor()
 
             if line_frontage_id == 1: # Bライン, R1 => 5,4,3,2,1
-                signal_ids = (8062, 8046, 8031, 8016, 8000)
+                signal_ids = (8061, 8046, 8031, 8016, 8000)
 
             elif line_frontage_id == 2: # Bライン, R2 => 5,4,3,2,1
-                signal_ids = (8062, 8046, 8032, 8016, 8000)
+                signal_ids = (8061, 8046, 8032, 8016, 8000)
 
             elif line_frontage_id == 3: # Bライン, R3 => 5,4,3
                 signal_ids = (8060, 8046, 8032)

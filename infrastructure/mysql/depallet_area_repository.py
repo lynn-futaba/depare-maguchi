@@ -6,11 +6,27 @@ from domain.models.line import LineFrontage
 
 from domain.infrastructure.depallet_area_repository import IDepalletAreaRepository
 
+
+import json
+import os
+
 #mysql実装
 class DepalletAreaRepository(IDepalletAreaRepository):
 
     def __init__(self,db):
-         self.db =db
+
+        self.db =db
+        
+        # TODO : Load config dynamically
+        config_path = os.path.join(os.path.dirname(__file__), "../../config/take_count_config.json")
+        with open(config_path, "r", encoding="utf-8") as f:
+            self.take_count_map = json.load(f)
+
+    # TODO: Get take count
+    def get_take_count(self, kanban_no: str) -> str:
+            """Return take_count for given kanban_no from config."""
+            return self.take_count_map.get(kanban_no, "-0")
+
         
     def get_depallet_area(self, line_id_list:list)->DepalletArea:
         area = DepalletArea("A")
@@ -55,14 +71,14 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                     frontage.set_shelf(shelf)
         except Exception as e:
             print(f"[DepalletAreaRepository >> Error] : {e}")
-        
+                
         finally:
             if cur:
                 cur.close()
             if conn:
                 conn.close()
         return area
-
+    
     def is_frontage_ready(self, frontage:DepalletFrontage)->bool:
         value = None
         try:
@@ -299,10 +315,10 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             cur = conn.cursor()
 
             if line_frontage_id == 1: # Bライン, R1 => 5,4,3,2,1
-                signal_ids = (8062, 8046, 8031, 8016, 8000)
+                signal_ids = (8061, 8046, 8031, 8016, 8000)
 
             elif line_frontage_id == 2: # Bライン, R2 => 5,4,3,2,1
-                signal_ids = (8062, 8046, 8032, 8016, 8000)
+                signal_ids = (8061, 8046, 8032, 8016, 8000)
 
             elif line_frontage_id == 3: # Bライン, R3 => 5,4,3
                 signal_ids = (8060, 8046, 8032)
@@ -333,30 +349,112 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             if conn:
                 conn.close()
 
+    
+    def update_depallet_area(self, plat_list: list = None):
+        """
+        Build update_frontages for plats 20–29 (or custom plat_list).
+        Each plat key contains a list of shelf details.
+        """
+        conn = None
+        cur = None
+        try:
+            conn = self.db.depal_pool.get_connection()
+            cur = conn.cursor(dictionary=True)
+
+            # ✅ Prepare plat filter
+            if not plat_list:
+                plat_list = [str(i) for i in range(20, 30)]  # Default: 20–29
+
+            placeholders = ','.join(['%s'] * len(plat_list))
+
+            sql = f"""
+            SELECT 
+                mb.plat,
+                ts.step_kanban_no,
+                ts.load_num,
+                ts.shelf_code
+            FROM `futaba-chiryu-3building`.t_shelf_status AS ts
+            INNER JOIN `futaba-chiryu-3building`.t_location_status AS tl
+                ON ts.shelf_code = tl.shelf_code
+            INNER JOIN `futaba-chiryu-3building`.m_basis_location AS mb
+                ON tl.cell_code = mb.cell_code
+            WHERE mb.plat IN ({placeholders});
+            """
+
+            cur.execute(sql, plat_list)
+            rows = cur.fetchall()
+
+            update_frontages = {}
+            for row in rows:
+                plat_value = row["plat"]
+                if plat_value not in update_frontages:
+                    update_frontages[plat_value] = []
+                    update_frontages[plat_value].append({
+                    "step_kanban_no": row["step_kanban_no"],
+                    "load_num": row["load_num"],
+                    "shelf_code": row["shelf_code"],
+                    "take_count": self.take_count_map.get(row["step_kanban_no"], "-0")
+                })
+
+            return update_frontages
+
+        except Exception as e:
+            print(f"[DepalletAreaRepository >> Error] : {e}")
+            return {}
+
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+
+    
+    # # TODO: retrieve plat 
+    # def _get_first_plat(self, cur, shelf_code):
+    #     """Helper to get first plat for a shelf_code."""
+    #     cell_code_sql = """
+    #     SELECT cell_code FROM `futaba-chiryu-3building`.t_location_status
+    #     WHERE shelf_code = %s;
+    #     """
+    #     cur.execute(cell_code_sql, (shelf_code,))
+    #     cell_code_result = cur.fetchall()
+    #     if not cell_code_result:
+    #         return None
+
+    #     first_cell_code = cell_code_result[0]["cell_code"]
+    #     plat_sql = """
+    #     SELECT plat FROM `futaba-chiryu-3building`.m_basis_location
+    #     WHERE cell_code = %s;
+    #     """
+    #     cur.execute(plat_sql, (first_cell_code,))
+    #     plat_result = cur.fetchall()
+    #     return plat_result[0]["plat"] if plat_result else None
+
 
 if __name__ == "__main__":
     from mysql_db import MysqlDb
     db = MysqlDb()
     repo = DepalletAreaRepository(db)
-    area = repo.get_depallet_area((1,2))
+    area = repo.get_depallet_area((1,2,3,4)) # TODO: added 3,4
+    new_area = repo.update_depallet_area((20, 21, 22, 23, 24, 25, 26, 27, 28, 29)) # TODO: added
     f = area.get_empty_frontage()
     print(f.id)
     for f in area.frontages.values():
-       r=repo.get_flow_rack(f)
+       r = repo.get_flow_rack(f)
        print(r)
        # #print(f.signals)
        # TODO: comment open until last line
-       status = repo.is_frontage_ready(f)
-       print(f"[ DepalletAreaRepository >> __main__ >> status ]: {status}")
-       k = repo.get_kotatsu(f)
-       if k is None:
-           continue
-       f.set_shelf(k)
-       for inv in f.shelf.inventories:
-           print(f"Part No: {inv.part.kanban_id}, Count: {inv.case_quantity}")
-           inv.remove(2)
+        #    status = repo.is_frontage_ready(f)
+        #    print(f"[ DepalletAreaRepository >> __main__ >> status ]: {status}")
+        #    k = repo.get_kotatsu(f)
+        #    if k is None:
+        #        continue
+        #    f.set_shelf(k)
+        #    for inv in f.shelf.inventories:
+        #        print(f"Part No: {inv.part.kanban_id}, Count: {inv.case_quantity}")
+        #        inv.remove(2)
 
-       repo.save_kotatsu(f)
+        #    repo.save_kotatsu(f)
    
 
            

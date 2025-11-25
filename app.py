@@ -84,11 +84,21 @@ class DepalletWebServer:
             except Exception as e:
                 return abort(400, 'Invalid request')
 
-        @app.route("/update_depallet_area")
+        @app.route("/get_depallet_area") # TODO: changed 
+        def get_depallet_area():
+            try:
+                depallet_area = self._depallet_app.get_depallet_area_json()
+                print(f"[app.py >> update_depallet_area >> depallet_area] : {depallet_area}")
+                return jsonify(depallet_area)
+            except Exception as e:
+                return abort(400, str(e))
+            
+        @app.route("/update_depallet_area") # TODO: added 
         def update_depallet_area():
             try:
-                depallet_area =self._depallet_app.get_depallet_area_json()
-                return jsonify(depallet_area)
+                new_depallet_area = self._depallet_app.update_depallet_area_json()
+                print(f"[app.py >> update_depallet_area >> new_depallet_area] : {new_depallet_area}")
+                return jsonify(new_depallet_area)
             except Exception as e:
                 return abort(400, str(e))
 
@@ -176,7 +186,7 @@ class DepalletWebServer:
 if __name__ == "__main__":
     depallet_app = None # TODO
     try:
-        depallet_app= DepalletApplication()
+        depallet_app = DepalletApplication()
         print(depallet_app)
         depallet_app.start()
         web_server = DepalletWebServer(depallet_app)

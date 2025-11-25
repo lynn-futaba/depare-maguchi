@@ -36,6 +36,10 @@ class IDepalletAreaRepository(ABC):
     @abstractmethod # TODO
     def to_maguchi_set_values(self, line_frontage_id: int):
         pass
+
+    @abstractmethod # TODO: added
+    def update_depallet_area(self, plat_list:list)->DepalletArea:
+       pass
       
 
    

@@ -14,6 +14,7 @@ from infrastructure.mysql.product_repository import ProductInfoRepository
 from infrastructure.mysql.mysql_db import MysqlDb
 
 from .depallet_frontage_watcher import DepalletFrontegeWatcher, WatcherManager
+from .new_depallet_frontage_watcher import NewDepalletFrontegeWatcher, NewWatcherManager # TODO:
 
 import application.utility as util
 
@@ -21,30 +22,28 @@ import application.utility as util
 class DepalletApplication():
 
     def __init__(self):
-        self.LINE_ID = (1, 2)
-        # self.LINE_ID = (1, 2, 3, 4) #TODO: testing
+        self.LINE_ID = (1, 2, 3, 4) #TODO: added 3,4
+        self.PLAT_ID = (20, 21, 22, 23, 24, 25, 26, 27, 28, 29) # TODO: plat of maguchi 5,4,3,2,1 for both LINE A and B
+
         self._running  =True
-        self.depallet_area =None
-        self.lines =None
+        self.depallet_area = None
+        self.new_depallet_area = None # TODO: added
+        self.lines = None
         self.product_r = None
         self.product_l = None
-        self.db = MysqlDb()
-        self.depallet_service = DepalletService(DepalletAreaRepository(self.db), WcsControler(self.db))
-        # TODO: added try-except
-        # try:
-        #     self.depallet_service = DepalletService(DepalletAreaRepository(self.db), WcsControler(self.db))
-        # except Exception as e:
-        #     import traceback
-        #     print("Error initializing DepalletService:", e)
-        #     traceback.print_exc()
-        #     raise
 
+        self.db = MysqlDb()
+
+        self.depallet_service = DepalletService(DepalletAreaRepository(self.db), WcsControler(self.db))
         self.line_service = LineService(LineRepository(self.db), ProductInfoRepository(self.db))
+        
         self.manager = WatcherManager()
+        self.new_manager = NewWatcherManager() # TODO:
 
         self.lines = self.line_service.get_lines(self.LINE_ID)
         self.product_r, self.product_l = self.line_service.get_product_infos(self.lines)
         self.depallet_area = self.depallet_service.get_depallet_area(self.LINE_ID)
+        self.new_depallet_area = self.depallet_service.update_depallet_area(self.PLAT_ID) # TODO: added
 
     def start(self):
         for frontage in self.depallet_area.frontages.values():
@@ -54,6 +53,17 @@ class DepalletApplication():
 
     def stop(self):
         self.manager.stop_all()
+
+     # TODO: added 
+    def new_start(self):
+        for new_frontage in self.new_depallet_area.update_frontages.values():
+            watcher = NewDepalletFrontegeWatcher(new_frontage, self.depallet_service)
+            self.new_manager.add_watcher(watcher)
+        self.new_manager.start_all()
+
+    # TODO:
+    def new_stop(self):
+        self.new_manager.stop_all()
 
     def update_line_data(self):
         self.lines = self.line_service.get_lines(self.LINE_ID)
@@ -118,18 +128,13 @@ class DepalletApplication():
         print("[DepalletApplication >> update_maguchi_signal_input >> line_frontage_id ]")
         try:
             self.depallet_service.update_maguchi_signal_input(line_frontage_id)
-            # self.depallet_area_repository.update_maguchi_signal_input(line_frontage_id)
-            
         except Exception as e:
             raise Exception(f"DepalletApplication >> update_maguchi_signal_input >> Error: {e}")
 
     def to_maguchi_set_values(self, line_frontage_id):
         print("[DepalletApplication >> to_maguchi_set_values >> line_frontage_id ] :")
         try:
-            
             self.depallet_service.to_maguchi_set_values(line_frontage_id)
-            # self.depallet_area_repository.to_maguchi_set_values(line_frontage_id)
-            
         except Exception as e:
             raise Exception(f"DepalletApplication >> to_maguchi_set_values >> Error: {e}")
 
@@ -207,13 +212,20 @@ class DepalletApplication():
         flow_rack_frontage = self.depallet_area.get_flow_rack_frontage()
         if  flow_rack_frontage is None:
             return "{}"
-        return util.to_json( flow_rack_frontage.shelf)
+        return util.to_json(flow_rack_frontage.shelf)
+    
+    # TODO: Added 
+    def update_depallet_area_json(self):
+        return util.to_json(self.new_depallet_area)
+    
+    
 
 
 if __name__ == "__main__":
 
    app = DepalletApplication()
    app.start()
+   app.new_start()
    try:
         while True:
             sleep(1)
@@ -221,9 +233,12 @@ if __name__ == "__main__":
             print("----------------------")
             print(app.get_depallet_area_json())
             print("----------------------")
+            print(app.update_depallet_area_json())
+            print("----------------------")
             print(app.get_product_infos_json())
    except KeyboardInterrupt:
        app.manager.stop_all()
+       app.new_manager.stop_all()
        print("Stopped by user")
 
   

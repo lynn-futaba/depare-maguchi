@@ -10,9 +10,13 @@ services:
       - "5000:5000" # 必要に応じてポートを変更
     volumes:
       - ./app.py:/app/app.py # ホストディレクトリの設定ファイルをコンテナにマウント（必要であれば変更）
+      - ./application:/app/application
+      - ./domain:/app/domain
+      - ./infrastructure:/app/infrastructure
       - ./static:/app/static
       - ./templates:/app/templates
       - ./static/js:/app/static/js
+
       - /etc/localtime:/etc/localtime:ro
       # - ./config:/app/src/config # vcsリポジトリを使うときはこっち
 

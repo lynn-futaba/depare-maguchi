@@ -79,10 +79,10 @@ SELECT * from `eip_signal`.word_input WHERE signal_id IN (8504, 8503, 8502, 8501
 SELECT * from `eip_signal`.word_input WHERE signal_id IN (8502, 8501, 8500, 8231, 8216, 8200);
 
 # Bライン, R1 to check after click (5, 4, 3, 2, 1)
-SELECT * from `eip_signal`.word_input WHERE signal_id IN (8404, 8403, 8402, 8401, 8400, 8062, 8046, 8031, 8016, 8000);
+SELECT * from `eip_signal`.word_input WHERE signal_id IN (8404, 8403, 8402, 8401, 8400, 8061, 8046, 8031, 8016, 8000);
 
 # Bライン, R2 to check after click (5, 4, 3, 2, 1)
-SELECT * from `eip_signal`.word_input WHERE signal_id IN (8404, 8403, 8402, 8401, 8400, 8062, 8046, 8032, 8016, 8000);
+SELECT * from `eip_signal`.word_input WHERE signal_id IN (8404, 8403, 8402, 8401, 8400, 8061, 8046, 8032, 8016, 8000);
 
 # Bライン, R3 to check after click (5, 4, 3)
 SELECT * from `eip_signal`.word_input WHERE signal_id IN (8404, 8403, 8402, 8060, 8046, 8032);

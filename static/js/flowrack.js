@@ -93,8 +93,10 @@ $(document).ready(function () {
 
     }
     // 定期実行 TODO: comment out
-    // setInterval(refreshPage, 500);
-    setInterval(refreshPage, 1000);
+    // setInterval(refreshPage, 500); 
+    $('#refreshButton').on('click', function () {
+        refreshPage();
+    });
 });
 
 function complete() {

@@ -1,14 +1,14 @@
-﻿from time import sleep
+from time import sleep
 import threading
 
 from domain.models.depallet import DepalletFrontage
 from domain.services.depallet_service import DepalletService
 
 
-class DepalletFrontegeWatcher():
+class NewDepalletFrontegeWatcher():
 
     def __init__(self, depallet_frontage: DepalletFrontage, service:DepalletService, callback = None):
-        self.frontage = depallet_frontage
+
         self.new_frontage = depallet_frontage
         self.depallet_service =  service
         self.interval = 1.0  # ポーリング間隔（秒）
@@ -21,11 +21,9 @@ class DepalletFrontegeWatcher():
             try:
                 current_value = self.depallet_service.is_frontage_ready(self.frontage)
 
-                if  current_value != self._last_value:
-                     self.depallet_service.set_kotatsu(self.frontage)
-                     # if self.callback:  
-                     #        self.callback()
-                     self._last_value = current_value
+                if current_value != self._last_value:
+                    # self.depallet_service.set_kotatsu(self.frontage)
+                    self._last_value = current_value
                     #  print(f"[Watcher] _last_value: {self._last_value}") # TODO: added print
             except Exception as e:
                 print(f"[Watcher] Error: {e}")
@@ -41,11 +39,11 @@ class DepalletFrontegeWatcher():
         self._thread.join()
 
 
-class WatcherManager:
+class NewWatcherManager:
     def __init__(self):
         self.watchers = []
 
-    def add_watcher(self, watcher: DepalletFrontegeWatcher):
+    def add_watcher(self, watcher: NewDepalletFrontegeWatcher):
         self.watchers.append(watcher)
 
     def start_all(self):
@@ -67,10 +65,10 @@ if __name__ == "__main__":
     db = MysqlDb()
     repo = DepalletAreaRepository(db)
     w_repo = WcsControler(db)
-    area = repo.get_depallet_area([1,2])
+    area = repo.update_depallet_area([1,2])
     f = area.get_by_id(1)
     service = DepalletService(repo, w_repo)
-    w = DepalletFrontegeWatcher(f,service)
+    w = NewDepalletFrontegeWatcher(f,service)
     w.start()
     try:
         while True:
