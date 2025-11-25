@@ -17,7 +17,7 @@
 </head>
 <body>
     <div class="container flow-rack-frame">
-        <div class="row">
+        <div class="row col-2 mb-3">
             <button id="refreshButton" class="btn btn-primary">更新</button>
         </div>
         <div class="row text-start">
@@ -31,9 +31,11 @@
         <div class="row text-start my-3">
             <label>フローラックに部品を入れてください</label>
         </div>
-        <table id="flow-rack" class="table table-bordered">
-            <!-- Dynamic content will be inserted here -->
-        </table>
+        <div class="row">
+            <table id="flow-rack" class="table table-bordered">
+                <!-- Dynamic content will be inserted here -->
+            </table>
+        </div>
         <div class="row text-center mb-2">
             <label>部品取出完了後に押してください</label>
         </div>

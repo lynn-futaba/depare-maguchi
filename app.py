@@ -150,11 +150,11 @@ class DepalletWebServer:
                 return abort(400, str(e))
 
         @app.route("/complete", methods=["POST"])
-        def complate():
+        def complete():
             try:
                loop = asyncio.new_event_loop()
                asyncio.set_event_loop(loop)
-               loop.run_in_executor(None, self._depallet_app.complate)
+               loop.run_in_executor(None, self._depallet_app.complete)
                return jsonify({"status": "success"})
             except Exception as e:
                 return abort(400, str(e))

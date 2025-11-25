@@ -182,7 +182,7 @@ class DepalletApplication():
         except Exception as e:
             raise Exception(f"Error returning kotatsu: {e}")
      
-    def complate(self):
+    def complete(self):
         try:
             flow_rack_frontage = self.depallet_area.get_flow_rack_frontage()
             if flow_rack_frontage is None:
