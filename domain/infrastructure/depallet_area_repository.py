@@ -30,16 +30,22 @@ class IDepalletAreaRepository(ABC):
         pass
 
     @abstractmethod # TODO
-    def update_maguchi_signal_input(self, line_frontage_id: int):
+    def insert_target_ids(self, line_frontage_id: int):
         pass
 
     @abstractmethod # TODO
-    def to_maguchi_set_values(self, line_frontage_id: int):
+    def call_target_ids(self, line_frontage_id: int):
         pass
 
     @abstractmethod # TODO: added
-    def update_depallet_area(self, plat_list:list)->DepalletArea:
+    def get_depallet_area_by_plat(self, plat_list:list, button_id: int)->DepalletArea:
        pass
+
+    @abstractmethod # TODO: added
+    def update_BLine_AMR_return(self, line_frontage_id:int):
+       pass
+
+    
       
 
    

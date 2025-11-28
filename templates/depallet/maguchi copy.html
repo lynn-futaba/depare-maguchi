@@ -29,157 +29,163 @@
 </head>
 <body>
 
-  <div class="maguchi-frame">
-    <!-- Tabs navigation / if no 未使用-->
+<div class="row col-2 text-start mb-3"><button id="refreshButton" class="btn btn-warning">更新</button></div>
 
-    <div class="row col-3 text-start"><button id="refreshButton" class="btn btn-primary">更新</button></div>
-    <ul class="nav nav-pills nav-fill flex-wrap" role="tablist" style="max-width: 700px;">
-      <li class="nav-item col-2" role="presentation">
-        <button class="nav-link" id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button" role="tab" aria-controls="tab5" aria-selected="false">間口5</button>
-      </li>
-      <li class="nav-item col-2" role="presentation">
-        <button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button" role="tab" aria-controls="tab4" aria-selected="false">間口4</button>
-      </li>
-      <li class="nav-item col-2" role="presentation">
-        <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button" role="tab" aria-controls="tab3" aria-selected="false">間口3</button>
-      </li>
-      <li class="nav-item col-2" role="presentation">
-        <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab" aria-controls="tab2" aria-selected="false">間口2</button>
-      </li>
-      <li class="nav-item col-2" role="presentation">
-        <button class="nav-link active btn-success" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1">間口1</button>
-      </li>
-    </ul>
+<div class="maguchi-frame">
+  <!-- Tabs navigation / if no 未使用-->
 
-    <div class="row mt-3">
-      <div class="col-4">
-        <label>部品取出</label>
-      </div>
-      <div class="col-4">
-        <label id="maguchi-no"></label>
-      </div>
-      <div class="col-4">
-        <label id="kotatsu-no"></label>
+  <ul class="nav nav-pills nav-fill flex-wrap" role="tablist" style="max-width: 700px;">
+    <li class="nav-item col-2" role="presentation">
+      <button class="nav-link" id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button" role="tab" aria-controls="tab5" aria-selected="false">間口5</button>
+    </li>
+    <li class="nav-item col-2" role="presentation">
+      <button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button" role="tab" aria-controls="tab4" aria-selected="false">間口4</button>
+    </li>
+    <li class="nav-item col-2" role="presentation">
+      <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button" role="tab" aria-controls="tab3" aria-selected="false">間口3</button>
+    </li>
+    <li class="nav-item col-2" role="presentation">
+      <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab" aria-controls="tab2" aria-selected="false">間口2</button>
+    </li>
+    <li class="nav-item col-2" role="presentation">
+      <button class="nav-link active btn-success" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1">間口1</button>
+    </li>
+  </ul>
+
+  <div class="row my-5 bg-light border border-dark fw-bold" id="display-title">
+    <div class="col-3">
+      <label>部品取出 |</label>
+    </div>
+    <div class="col-3">
+      <label id="maguchi-no"></label>
+    </div>
+    <div class="col-3">
+      <label id="kanban-no"></label>
+    </div>
+    <div class="col-3">
+      <label id="kotatsu-no"></label>
+    </div>
+  </div>
+
+  <!-- Tab content -->
+  <div class="tab-content">
+    <!-- tab 5 -->
+    <div class="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-tab">
+      <div class="row">
+        <div class="col-8">
+          <label>取出部品を選択してください</label>
+          <table class="table table-bordered" id="shelf-5">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      
+        <!-- <div class="col-4">
+          <div class="row mt-5">
+            <label>部品取出完了後に押してください</label>
+          </div>
+          <div class="row col-6 mt-2">
+            <button class="btn btn-outline-success" onclick="returnKotatsu(5)">取出完了</button>
+          </div>
+        </div> -->
       </div>
     </div>
 
-    <!-- Tab content -->
-    <div class="tab-content mt-3">
-      <!-- tab 5 -->
-      <div class="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-tab">
-        <div class="row">
-          <div class="col-8">
-            <label>取出部品を選択してください</label>
-            <table class="table table-bordered shelf" id="shelf-5">
-              <thead></thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        
-          <div class="col-4 mt-4">
-            <div class="row mt-5">
-              <label>部品取出完了後に押してください</label>
-            </div>
-            <div class="row col-6 mt-2">
-              <button class="btn btn-outline-success" onclick="returnKotatsu(5)">取出完了</button>
-            </div>
-          </div>
+    <!-- tab 4 -->
+    <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
+      <div class="row">
+        <div class="col-8">
+          <label>取出部品を選択してください</label>
+          <table class="table table-bordered" id="shelf-4">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
         </div>
-      </div>
-
-      <!-- tab 4 -->
-      <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
-        <div class="row">
-          <div class="col-6">
-            <label>取出部品を選択してください</label>
-            <table class="table table-bordered shelf" id="shelf-4">
-              <thead></thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        
-          <div class="col-6 mt-4">
-            <div class="row mt-5">
-              <label>部品取出完了後に押してください</label>
-            </div>
-            <div class="row col-6 mt-2">
-              <button class="btn btn-outline-success" onclick="returnKotatsu(4)">取出完了</button>
-            </div>
-          </div>
-        </div>
-      </div>
       
-      <!-- tab 3 -->
-      <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
-        <div class="row">
-          <div class="col-6">
-            <label>取出部品を選択してください</label>
-            <table class="table table-bordered shelf" id="shelf-3">
-              <thead></thead>
-              <tbody></tbody>
-            </table>
+        <!-- <div class="col-4">
+          <div class="row mt-5">
+            <label>部品取出完了後に押してください</label>
           </div>
-        
-          <div class="col-6 mt-4">
-            <div class="row mt-5">
-              <label>部品取出完了後に押してください</label>
-            </div>
-            <div class="row col-6 mt-2">
-              <button class="btn btn-outline-success" onclick="returnKotatsu(3)">取出完了</button>
-            </div>
+          <div class="row col-6 mt-2">
+            <button class="btn btn-outline-success" onclick="returnKotatsu(4)">取出完了</button>
           </div>
-        </div>
+        </div> -->
       </div>
+    </div>
+    
+    <!-- tab 3 -->
+    <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
+      <div class="row">
+        <div class="col-8">
+          <label>取出部品を選択してください</label>
+          <table class="table table-bordered" id="shelf-3">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      
+        <!-- <div class="col-4">
+          <div class="row mt-5">
+            <label>部品取出完了後に押してください</label>
+          </div>
+          <div class="row col-6 mt-2">
+            <button class="btn btn-outline-success" onclick="returnKotatsu(3)">取出完了</button>
+          </div>
+        </div> -->
+      </div>
+    </div>
 
-      <!-- tab 2 -->
-      <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
-        <div class="row">
-          <div class="col-6">
-            <label>取出部品を選択してください</label>
-            <table class="table table-bordered shelf" id="shelf-2">
-              <thead></thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        
-          <div class="col-6 mt-4">
-            <div class="row mt-5">
-              <label>部品取出完了後に押してください</label>
-            </div>
-            <div class="row col-6 mt-2">
-              <button class="btn btn-outline-success" onclick="returnKotatsu(2)">取出完了</button>
-            </div>
-          </div>
+    <!-- tab 2 -->
+    <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+      <div class="row">
+        <div class="col-8">
+          <label>取出部品を選択してください</label>
+          <table class="table table-bordered" id="shelf-2">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
         </div>
+      
+        <!-- <div class="col-4">
+          <div class="row mt-5">
+            <label>部品取出完了後に押してください</label>
+          </div>
+          <div class="row col-6 mt-2">
+            <button class="btn btn-outline-success" onclick="returnKotatsu(2)">取出完了</button>
+          </div>
+        </div> -->
       </div>
-      <!-- tab 1 -->
-      <div class="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
-        <div class="row">
-          <div class="col-6">
-            <label>取出部品を選択してください</label>
-            <table class="table table-bordered shelf" id="shelf-1">
-              <thead></thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        
-          <div class="col-6 mt-4">
-            <div class="row mt-5">
-              <label>部品取出完了後に押してください</label>
-            </div>
-            <div class="row col-6 mt-2">
-              <button class="btn btn-outline-success" onclick="returnKotatsu(1)">取出完了</button>
-            </div>
-          </div>
+    </div>
+
+    <!-- tab 1 -->
+    <div class="tab-pane fade" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+      <div class="row">
+        <div class="col-8">
+          <label>取出部品を選択してください</label>
+          <table class="table table-bordered" id="shelf-1">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
         </div>
+      
+        <!-- <div class="col-4">
+          <div class="row mt-5">
+            <label>部品取出完了後に押してください</label>
+          </div>
+          <div class="row col-6 mt-2">
+            <button class="btn btn-outline-success" onclick="returnKotatsu(1)">取出完了</button>
+          </div>
+        </div> -->
       </div>
     </div>
   </div>
+</div>
     
 <!-- jQuery -->
 <script src="../../static/js/jquery-3.7.0.min.js"></script>
 <!-- Your custom JS -->
-<script src="../../static/js/maguchi.js"></script>
+<script src="../../static/js/depallet-maguchi.js"></script>
+<script src="../../static/js/common.js"></script>
 <!-- Bootstrap JS Bundle (Popper + Bootstrap) -->
 <script src="../../static/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -10,7 +10,7 @@ from domain.services.line_service import LineService
 from infrastructure.mysql.depallet_area_repository import DepalletAreaRepository
 from infrastructure.mysql.wcs_controler import WcsControler
 from infrastructure.mysql.line_repository import LineRepository
-from infrastructure.mysql.product_repository import ProductInfoRepository
+from infrastructure.mysql.product_info_repository import ProductInfoRepository
 from infrastructure.mysql.mysql_db import MysqlDb
 
 from .depallet_frontage_watcher import DepalletFrontegeWatcher, WatcherManager
@@ -23,9 +23,10 @@ class DepalletApplication():
 
     def __init__(self):
         self.LINE_ID = (1, 2, 3, 4) #TODO: added 3,4
-        self.PLAT_ID = (20, 21, 22, 23, 24, 25, 26, 27, 28, 29) # TODO: plat of maguchi 5,4,3,2,1 for both LINE A and B
+        self.PLAT_ID_LIST = (20, 21, 22, 23, 24, 25, 26, 27, 28, 29) # TODO: plat of maguchi 5,4,3,2,1 for both LINE A and B
+        self.button_id = 0 # TODO: button id from R1, R2, R3, L1, L2, L3 for both A and B Line from frontend
 
-        self._running  =True
+        self._running  = True
         self.depallet_area = None
         self.new_depallet_area = None # TODO: added
         self.lines = None
@@ -41,9 +42,10 @@ class DepalletApplication():
         self.new_manager = NewWatcherManager() # TODO:
 
         self.lines = self.line_service.get_lines(self.LINE_ID)
-        self.product_r, self.product_l = self.line_service.get_product_infos(self.lines)
+        self.a_product_r, self.a_product_l, self.b_product_r, self.b_product_l = self.line_service.get_product_infos(self.lines)
         self.depallet_area = self.depallet_service.get_depallet_area(self.LINE_ID)
-        self.new_depallet_area = self.depallet_service.update_depallet_area(self.PLAT_ID) # TODO: added
+        print(f"[DepalletApplication >> self.button_id ] : {self.button_id}")
+        self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST, self.button_id) # TODO: added
 
     def start(self):
         for frontage in self.depallet_area.frontages.values():
@@ -67,7 +69,7 @@ class DepalletApplication():
 
     def update_line_data(self):
         self.lines = self.line_service.get_lines(self.LINE_ID)
-        self.product_r, self.product_l = self.line_service.get_product_infos(self.lines)
+        self.a_product_r, self.a_product_l, self.b_product_r, self.b_product_l = self.line_service.get_product_infos(self.lines)
 
     def depallet_start(self,line_frontage_id: int):
         self.request_target_flow_rack(line_frontage_id)
@@ -124,19 +126,28 @@ class DepalletApplication():
             raise Exception(f"Error depalletizing: {e}")
         
         
-    def update_maguchi_signal_input(self, line_frontage_id):
-        print("[DepalletApplication >> update_maguchi_signal_input >> line_frontage_id ]")
+    def insert_target_ids(self, line_frontage_id):
+        print("[DepalletApplication >> insert_target_ids >> line_frontage_id ]")
         try:
-            self.depallet_service.update_maguchi_signal_input(line_frontage_id)
+            self.depallet_service.insert_target_ids(line_frontage_id)
         except Exception as e:
-            raise Exception(f"DepalletApplication >> update_maguchi_signal_input >> Error: {e}")
+            raise Exception(f"DepalletApplication >> insert_target_ids >> Error: {e}")
 
-    def to_maguchi_set_values(self, line_frontage_id):
-        print("[DepalletApplication >> to_maguchi_set_values >> line_frontage_id ] :")
+    def call_target_ids(self, line_frontage_id):
+        print("[DepalletApplication >> call_target_ids >> line_frontage_id ] :")
         try:
-            self.depallet_service.to_maguchi_set_values(line_frontage_id)
+            self.depallet_service.call_target_ids(line_frontage_id)
         except Exception as e:
-            raise Exception(f"DepalletApplication >> to_maguchi_set_values >> Error: {e}")
+            raise Exception(f"DepalletApplication >> call_target_ids >> Error: {e}")
+        
+    def update_BLine_AMR_return(self, line_frontage_id):
+        print("[DepalletApplication >> update_BLine_AMR_return >> line_frontage_id ] :")
+        try:
+            self.depallet_service.update_BLine_AMR_return(line_frontage_id)
+        except Exception as e:
+            raise Exception(f"DepalletApplication >> update_BLine_AMR_return >> Error: {e}")
+        
+    
 
      # コタツに部品を戻す
     def return_part(self, frontage_id:int, part_id:int):
@@ -202,8 +213,8 @@ class DepalletApplication():
     def get_lines_json(self):
         return util.to_json(self.lines)
 
-    def get_product_infos_json(self):
-        return util.to_json(self.product_l), util.to_json(self.product_r)
+    def get_product_infos_json(self): # TODO: changed to a_product_r, self.a_product_l, self.b_product_r, self.b_product_l
+        return util.to_json(self.a_product_r), util.to_json(self.a_product_l), util.to_json(self.b_product_r), util.to_json(self.b_product_l) 
 
     def get_depallet_area_json(self):
         return util.to_json(self.depallet_area)
@@ -215,16 +226,14 @@ class DepalletApplication():
         return util.to_json(flow_rack_frontage.shelf)
     
     # TODO: Added 
-    def update_depallet_area_json(self):
+    def get_depallet_area_by_plat_json(self, id):
+        self.button_id = id
         return util.to_json(self.new_depallet_area)
     
-    
-
-
 if __name__ == "__main__":
 
    app = DepalletApplication()
-   app.start()
+#  app.start()
    app.new_start()
    try:
         while True:
@@ -233,11 +242,11 @@ if __name__ == "__main__":
             print("----------------------")
             print(app.get_depallet_area_json())
             print("----------------------")
-            print(app.update_depallet_area_json())
+            print(app.get_depallet_area_by_plat_json())
             print("----------------------")
             print(app.get_product_infos_json())
    except KeyboardInterrupt:
-       app.manager.stop_all()
+    #  app.manager.stop_all()
        app.new_manager.stop_all()
        print("Stopped by user")
 

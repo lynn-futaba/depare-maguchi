@@ -1,6 +1,6 @@
 
 // common.js
-function showInfo(message, duration = 100000) {
+function showInfo(message, duration = 5000) {
     let alertBox = document.getElementById("info-alert");
     if (!alertBox) {
         alertBox = document.createElement("div");

@@ -2,7 +2,7 @@ $(document).ready(function () {
  
     function refreshPage() {
         $.ajax({
-            url: "/update_product_info",
+            url: "/api/update_product_info",
             type: "GET",
           
              success: function (data) {
@@ -15,26 +15,42 @@ $(document).ready(function () {
         });
 
         function updateTable(data) {
-            
-            // var lData = JSON.parse(data[0]); // TODO: comment out
-            // var rData = JSON.parse(data[1]); // TODO: comment out
-            var rData = JSON.parse(data[0]); // TODO: add
-            var lData = JSON.parse(data[1]); // TODO: add
-            var lineData = JSON.parse(data[2]);
-            let tbody1 = $('#count');
-           
-            tbody1.empty();
 
-            let row1 = `
+            let aProductRData = JSON.parse(data[0]); // TODO: add
+            let aProductLData = JSON.parse(data[1]); // TODO: add
+            let bProductRData = JSON.parse(data[2]); // TODO: add
+            let bProductLData = JSON.parse(data[3]); // TODO: add
+            let lineData = JSON.parse(data[4]);
+
+            let tbodyAProduct = $('#a-product');
+            let tbodyBProduct = $('#b-product');
+
+            tbodyAProduct.empty();
+            tbodyBProduct.empty();
+
+            let displayAProduct = `
                 <tr>
-                    <td>${rData.product.kanban_id}</td>
-                    <td>${rData.planned_num}</td>
-                    <td>${rData.output_num}</td>
-                    <td>${lData.product.kanban_id}</td>
-                    <td>${lData.planned_num}</td>
-                    <td>${lData.output_num}</td>
-                </tr>`;
-            tbody1.append(row1);
+                    <td>${aProductRData.product.kanban_id}</td>
+                    <td>${aProductRData.planned_num}</td>
+                    <td>${aProductRData.output_num}</td>
+                    <td>${aProductLData.product.kanban_id}</td>
+                    <td>${aProductLData.planned_num}</td>
+                    <td>${aProductLData.output_num}</td>
+                </tr>
+            `;
+            tbodyAProduct.append(displayAProduct);
+
+            let displayBProduct = `
+                <tr>
+                    <td>${bProductRData.product.kanban_id}</td>
+                    <td>${bProductRData.planned_num}</td>
+                    <td>${bProductRData.output_num}</td>
+                    <td>${bProductLData.product.kanban_id}</td>
+                    <td>${bProductLData.planned_num}</td>
+                    <td>${bProductLData.output_num}</td>
+                </tr>
+            `;
+            tbodyBProduct.append(displayBProduct);
           
             Object.keys(lineData).forEach((key) => {
 
@@ -69,10 +85,10 @@ $(document).ready(function () {
     });
 });
 
-function goToDepallet(id) {
+function callToBLINEAMR(id) {
     // TODO: to display 供給間口 
     const maguchiMap = {
-        1: "R1", 2: "R2", 3: "R3", 4: "L1", 5: "L2", 6: "L3"
+        1: "Bライン(R1)", 2: "Bライン(R2)", 3: "Bライン(R3)", 4: "Bライン(L1)", 5: "Bライン(L2)", 6: "Bライン(L3)"
     };
 
     const kyokuuMaguchi = maguchiMap[id] || "不明"; // Default if id is invalid
@@ -81,7 +97,7 @@ function goToDepallet(id) {
 
     if (result) {
         $.ajax({
-            url: "/line_frontage_click",
+            url: "/api/line_frontage_click",
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify({ "frontage_id": id }),
@@ -89,44 +105,106 @@ function goToDepallet(id) {
                 console.log('Data >> Start() status' , data);
                 if (data["status"] === "success") {
                         $.ajax({
-                            url: "/to_maguchi_signal_input",
+                            url: "/api/insert_target_ids",
                             type: "POST",
                             contentType: "application/json",
                             data: JSON.stringify({ "line_frontage_id": id }),
                             success: function (data) {
-                                console.log("to_maguchi_signal_input >> data >>", data);
-                                showInfo("✅ Signal input completed successfully!");
+                                console.log("insert_target_ids・間口に搬送対象idを入力 >> data >>", data);
+                                alert("✅ 間口に搬送対象idを入力 完了しました!");
                                 $.ajax({
-                                    url: "/to_maguchi_set_values",
+                                    url: "/api/call_target_ids",
                                     type: "POST",
                                     contentType: "application/json",
                                     data: JSON.stringify({ "line_frontage_id": id }),
                                     success: function (data) {
-                                        console.log("to_maguchi_set_values >> data >>", data);
-                                        showInfo("✅ Set values completed successfully!");
+                                        console.log("call_target_ids >> data >>", data);
+                                        alert("✅ 間口に搬送対象を呼び出ました!");
+                                        const nextPageUrl = `/depallet?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
+                                        window.open(nextPageUrl, "_blank"); // Opens new tab
                                     },
                                     error: function (error) {
-                                        alert("❌ Error in to_maguchi_signal_input");
+                                        alert("❌　間口に搬送対象を呼び出せません");
                                     }
                                 });
                             },
                             error: function (error) {
-                                alert("❌ Error in to_maguchi_signal_input");
+                                alert("❌ 間口に搬送対象idを入力出来ません", error);
                             }
                         });
-                    setTimeout(() => {
+                    // setTimeout(() => { // TODO: comment out
+                        // $.ajax({
+                        //     url: "/depallet",
+                        //     type: "GET",
+                        //     success: function (data) {
+                        //         // document.documentElement.innerHTML = data; // TODO: display depallet.html 
+                        //         const nextPageUrl = `/depallet.html?id=${encodeURIComponent(id)}`;
+                        //         // Open in a new tab
+                        //         window.open(nextPageUrl, "_blank");
+                        //     },
+                        //     error: function (error) {
+                        //         alert("❌ Error loading depallet");
+                        //     }
+                        // });
+                    // }, 500);
+                } else {
+                    alert("⚠️ No flow racks available");
+                }
+            },
+            error: function (error) {
+                alert("❌ Error in line_frontage_click");
+            }
+        });
+    } 
+}
+
+function callToALINEAMR(id) {
+    // TODO: to display 供給間口 
+    const maguchiMap = {
+        7: "Aライン R1", 8: "Aライン R2", 9: "Aライン R3", 10: "Aライン L1", 11: "Aライン L2", 12: "Aライン L3"
+    };
+
+    const kyokuuMaguchi = maguchiMap[id] || "不明 invalid ID"; // Default if id is invalid
+
+    const result = confirm(`供給間口 ${kyokuuMaguchi}を呼び出します`);
+
+    if (result) {
+        $.ajax({
+            url: "/api/line_frontage_click",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ "frontage_id": id }),
+            success: function (data) {  
+                console.log('Data >> Start() status' , data);
+                if (data["status"] === "success") {
                         $.ajax({
-                            url: "/depallet",
-                            type: "GET",
+                            url: "/api/insert_target_ids",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({ "line_frontage_id": id }),
                             success: function (data) {
-                                document.documentElement.innerHTML = data; // TODO: display depallet.html 
+                                console.log("insert_target_ids・間口に搬送対象idを入力 >> data >>", data);
+                                alert("✅ 間口に搬送対象idを入力 完了しました!");
+                                $.ajax({
+                                    url: "/api/call_target_ids",
+                                    type: "POST",
+                                    contentType: "application/json",
+                                    data: JSON.stringify({ "line_frontage_id": id }),
+                                    success: function (data) {
+                                        console.log("call_target_ids >> data >>", data);
+                                        alert("✅ 間口に搬送対象を呼び出ました!");
+                                        const nextPageUrl = `/depallet?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
+                                        window.open(nextPageUrl, "_blank"); // Opens new tab
+                                    },
+                                    error: function (error) {
+                                        alert("❌　間口に搬送対象を呼び出せません", error);
+                                    }
+                                });
                             },
                             error: function (error) {
-                                alert("❌ Error loading depallet");
+                                alert("❌ 間口に搬送対象idを入力出来ません");
                             }
                         });
-                    }, 500);
-
                 } else {
                     alert("⚠️ No flow racks available");
                 }

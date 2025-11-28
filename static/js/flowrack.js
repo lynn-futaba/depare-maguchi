@@ -2,7 +2,7 @@ $(document).ready(function () {
  
     function refreshPage() {
         $.ajax({
-            url: "/update_flow_rack",
+            url: "/api/update_flow_rack",
             type: "GET",
        
              success: function (data) {
@@ -103,7 +103,7 @@ function complete() {
     const result = confirm(`作業を完了します`);
     if (result) {
         $.ajax({
-            url: "/complete",
+            url: "/api/complete",
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify({}),

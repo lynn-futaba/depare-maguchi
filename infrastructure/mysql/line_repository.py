@@ -100,6 +100,7 @@ class LineRepository(ILineRepository):
 
         except Exception as e:
             print(f"[Validation Error] : {e}")
+
         finally:
             if cur:
                 cur.close()
@@ -200,19 +201,23 @@ class LineRepository(ILineRepository):
         return lines
 
     def supply_parts(self, flow_rack:FlowRack):
+
         if flow_rack.is_empty():
             raise Exception("FlowRack is empty")
+        
         values = []
         for inventory in flow_rack.rack:
             if inventory is None or inventory.is_empty():
                 continue
             values.append([inventory.id, inventory.case_quantity])
+
         try:
             conn = self.db.depal_pool.get_connection()
             cur = conn.cursor()
             sql = "INSERT INTO depal.parts_supply (inventory_id,case_quantity) VALUES (%s,%s);"
             cur.executemany(sql, values)
             conn.commit()
+
         except Exception as e:
             print(f"[LineRepository] Error: {e}")
         
@@ -224,6 +229,7 @@ class LineRepository(ILineRepository):
         
 
 if __name__ == "__main__":
+    
     repo = LineRepository()
     lines = repo.get_lines((1,2))
     for line in lines: 

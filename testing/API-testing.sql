@@ -70,7 +70,7 @@ Error ==> But did not insert any data to parts_supply database
 INSERT INTO depal.parts_supply (inventory_id,case_quantity) VALUES (%s,%s);"
 
 ================================================================================
-update_maguchi_signal_input API + to_maguchi_set_values testing
+insert_target_ids API + call_target_ids testing
 ================================================================================
 # Bライン, L1 , L2 to check after click (5, 4, 3, 2, 1)
 SELECT * from `eip_signal`.word_input WHERE signal_id IN (8504, 8503, 8502, 8501, 8500, 8260, 8246, 8231, 8216, 8201);
@@ -86,3 +86,21 @@ SELECT * from `eip_signal`.word_input WHERE signal_id IN (8404, 8403, 8402, 8401
 
 # Bライン, R3 to check after click (5, 4, 3)
 SELECT * from `eip_signal`.word_input WHERE signal_id IN (8404, 8403, 8402, 8060, 8046, 8032);
+
+==================================================================================
+Bライン L1
+
+-- 間口に搬送対象idを入力 Bライン L1
+SELECT * FROM eip_signal.word_input where signal_id in (8504,8503,8502,8501,8500);
+-- 間口に搬送対象を呼び出す Bライン L1
+SELECT * FROM eip_signal.word_input where signal_id in (8260,8246,8231,8216,8201);
+
+-- 間口に搬送対象idを入力
+-- 呼び出し信号をリセット
+SELECT * FROM eip_signal.word_input where signal_id in (8260, 8246, 8231, 8216, 8201);
+-- 搬送指示 間口からストアに搬送
+SELECT * FROM eip_signal.word_input where signal_id in (8262, 8247, 8232, 8217, 8202);
+-- 搬送対象idをリセット
+SELECT * FROM eip_signal.word_input where signal_id in (8504, 8503, 8502, 8501, 8500);
+-- 搬送指示リセット
+SELECT * FROM eip_signal.word_input where signal_id in (8262, 8247, 8232, 8217, 8202);

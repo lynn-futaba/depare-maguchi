@@ -18,7 +18,7 @@ update_product_info dump
     ]"
 ]
 
-update_depallet_area dump
+/api/get_depallet_area_by_plat dump
 {
   "name": "A",
   "frontages": {

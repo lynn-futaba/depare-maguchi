@@ -1,4 +1,6 @@
-﻿import time
+﻿import os
+import json
+import time
 import threading
 import asyncio
 
@@ -6,6 +8,7 @@ from flask import Flask, render_template, request, jsonify, abort, flash
 
 from application.depallet_app import DepalletApplication
 
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), "./config/take_count_config.json")
 
 class DepalletWebServer:
     def __init__(self,depallet_app):
@@ -42,36 +45,38 @@ class DepalletWebServer:
         def returns():
             return render_template('index.html')
 
-        @app.route("/header")
-        def header():
-            return render_template('depallet/header.html')
+        # @app.route("/header")
+        # def header():
+        #     return render_template('depallet/header.html')
 
-        @app.route("/maguchi")
-        def maguchi_page():
-            return render_template('depallet/maguchi.html')
+        # @app.route("/maguchi")
+        # def maguchi_page():
+        #     return render_template('depallet/maguchi.html')
 
-        @app.route("/flow_rack")
-        def flow_rack_page():
-            return render_template('depallet/flowrack.html') 
+        # @app.route("/flow_rack")
+        # def flow_rack_page():
+        #     return render_template('depallet/flowrack.html') 
 
         @app.route("/depallet", methods=["GET"])
         def depallet():
             try:
-                return render_template(['./depallet/depallet.html'])
+                id_value = request.args.get("id")
+                name_value = request.args.get("name")
+                return render_template('depallet-maguchi.html', id = id_value, name = name_value)
             except Exception as e:
                 return abort(400, 'Invalid request')
 
-        @app.route("/update_product_info",methods=["GET"])
+        @app.route("/api/update_product_info",methods=["GET"])
         def update_product_info():
             try:
                 self._depallet_app.update_line_data()
-                l,  r =self._depallet_app.get_product_infos_json()
-                line_area_json =self._depallet_app.get_lines_json()
-                return jsonify([l,r,line_area_json])
+                a_product_r, a_product_l, b_product_r, b_product_l = self._depallet_app.get_product_infos_json() # TODO: l,r to product_r, product_l
+                line_area_json = self._depallet_app.get_lines_json()
+                return [a_product_r, a_product_l, b_product_r, b_product_l, line_area_json] # TODO: l,r to product_r, product_l
             except Exception as e:
                 return str(e), 500
 
-        @app.route("/line_frontage_click", methods=["POST"])
+        @app.route("/api/line_frontage_click", methods=["POST"])
         def line_frontage_click():
             #クリックしたら部品とフローラックを呼ぶ
             id = request.json.get('frontage_id')
@@ -84,25 +89,26 @@ class DepalletWebServer:
             except Exception as e:
                 return abort(400, 'Invalid request')
 
-        @app.route("/get_depallet_area") # TODO: changed 
+        @app.route("/api/get_depallet_area") # TODO: changed 
         def get_depallet_area():
             try:
                 depallet_area = self._depallet_app.get_depallet_area_json()
-                print(f"[app.py >> update_depallet_area >> depallet_area] : {depallet_area}")
+                print(f"[app.py >> get_depallet_area_by_plat >> depallet_area] : {depallet_area}")
                 return jsonify(depallet_area)
             except Exception as e:
                 return abort(400, str(e))
             
-        @app.route("/update_depallet_area") # TODO: added 
-        def update_depallet_area():
+        @app.route("/api/get_depallet_area_by_plat") # TODO: added 
+        def get_depallet_area_by_plat():
             try:
-                new_depallet_area = self._depallet_app.update_depallet_area_json()
-                print(f"[app.py >> update_depallet_area >> new_depallet_area] : {new_depallet_area}")
-                return jsonify(new_depallet_area)
+                button_id = request.args.get("id")  # returns None if not provided
+                new_depallet_area = self._depallet_app.get_depallet_area_by_plat_json(button_id)
+                print(f"[app.py >> get_depallet_area_by_plat >> new_depallet_area] : {new_depallet_area}")
+                return new_depallet_area
             except Exception as e:
                 return abort(400, str(e))
 
-        @app.route("/update_flow_rack")
+        @app.route("/api/update_flow_rack")
         def update_flow_rack():
             try:
                flow_rack =self._depallet_app.get_flow_rack_json()
@@ -110,7 +116,7 @@ class DepalletWebServer:
             except Exception as e:
                 return abort(400, str(e))
     
-        @app.route("/to_flow_rack", methods=["POST"])
+        @app.route("/api/to_flow_rack", methods=["POST"])
         def to_flow_rack():
             try:
                 frontage_id = request.json.get('frontage_id')
@@ -123,7 +129,7 @@ class DepalletWebServer:
             except Exception as e:
                 return abort(400, str(e))
 
-        @app.route("/to_kotatsu", methods=["POST"])
+        @app.route("/api/to_kotatsu", methods=["POST"])
         def to_kotatsu():
             try:
                 frontage_id = request.json.get('frontage_id')
@@ -136,7 +142,7 @@ class DepalletWebServer:
             except Exception as e:
                 return abort(400, str(e))
 
-        @app.route("/return_kotatsu", methods=["POST"])
+        @app.route("/api/return_kotatsu", methods=["POST"])
         def return_kotatsu():
             try:
                frontage = request.json.get('frontage_id')
@@ -149,7 +155,7 @@ class DepalletWebServer:
             except Exception as e:
                 return abort(400, str(e))
 
-        @app.route("/complete", methods=["POST"])
+        @app.route("/api/complete", methods=["POST"])
         def complete():
             try:
                loop = asyncio.new_event_loop()
@@ -159,29 +165,83 @@ class DepalletWebServer:
             except Exception as e:
                 return abort(400, str(e))
                             
-        @app.route("/to_maguchi_signal_input", methods=["POST"])
-        def to_maguchi_signal_input():
+        @app.route("/api/insert_target_ids", methods=["POST"])
+        def insert_target_ids():
             try:
                 line_frontage_id = request.json.get('line_frontage_id')
-                print(f"[to_maguchi_signal_input >> line_frontage_id] : {line_frontage_id}")
-                self._depallet_app.update_maguchi_signal_input(line_frontage_id)
+                print(f"[insert_target_ids >> line_frontage_id] : {line_frontage_id}")
+                self._depallet_app.insert_target_ids(line_frontage_id)
                 return jsonify({"status": "success"})
             except Exception as e:
-                print(f"[to_maguchi_signal_input >> error] : {e}")
+                print(f"[insert_target_ids >> error] : {e}")
                 return abort(400, str(e))
             
         
-        @app.route("/to_maguchi_set_values", methods=["POST"])
-        def to_maguchi_set_values():
+        @app.route("/api/call_target_ids", methods=["POST"])
+        def call_target_ids():
             try:
                 line_frontage_id = request.json.get('line_frontage_id')
-                print(f"[to_maguchi_set_values >> line_frontage_id] : {line_frontage_id}")
-                self._depallet_app.to_maguchi_set_values(line_frontage_id)
+                print(f"[call_target_ids >> line_frontage_id] : {line_frontage_id}")
+                self._depallet_app.call_target_ids(line_frontage_id)
                 return jsonify({"status": "success"})
             except Exception as e:
-                print(f"[to_maguchi_set_values >> error] : {e}")
+                print(f"[call_target_ids >> error] : {e}")
                 return abort(400, str(e))
+        
+        @app.route("/api/update_BLine_AMR_return", methods=["POST"])
+        def update_BLine_AMR_return():
+            try:
+                # line_frontage_id will be an array/list (e.g., [4])
+                line_frontage_id = request.json.get('line_frontage_id') 
+                
+                # Check if it's a list and process each ID
+                if isinstance(line_frontage_id, list):
+                    print(f"[update_BLine_AMR_return >> line_frontage_ids] : {line_frontage_id}")
+                    # You will likely need to loop through the IDs in your model/application logic
+                    for id in line_frontage_id:
+                        # Assuming your update_BLine_AMR_return handles a single ID per call or is updated to handle the list
+                        self._depallet_app.update_BLine_AMR_return(id) 
+                else:
+                    # Handle the case where it might be a single item or unexpected format
+                    print(f"[update_BLine_AMR_return >> single line_frontage_id] : {line_frontage_id}")
+                    self._depallet_app.update_BLine_AMR_return(line_frontage_id)
+                    
+                return jsonify({"status": "success"})
+            except Exception as e:
+                print(f"[update_BLine_AMR_return >> error] : {e}")
+                return abort(400, str(e))
+    
+        file_lock = threading.Lock()
 
+        
+        @app.route('/api/update_take_count', methods=['POST'])
+        def update_take_count():
+            kanban_no = request.json.get('kanban_no')
+            new_take_count = str(request.json.get('new_take_count'))
+
+            try:
+                with file_lock:
+                    # Load config
+                    with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
+                        config = json.load(f)
+
+                    # Check if key exists
+                    if kanban_no not in config:
+                        return jsonify({
+                            "status": "error",
+                            "message": f"Kanban No '{kanban_no}' not found in config"
+                        }), 404
+
+                    # Update value
+                    config[kanban_no] = new_take_count
+
+                    # Save back
+                    with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
+                        json.dump(config, f, ensure_ascii=False, indent=4)
+
+                return jsonify({"status": "success", "updated": {kanban_no: new_take_count}})
+            except Exception as e:
+                return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == "__main__":
     depallet_app = None # TODO

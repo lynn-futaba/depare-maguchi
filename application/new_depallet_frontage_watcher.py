@@ -65,10 +65,10 @@ if __name__ == "__main__":
     db = MysqlDb()
     repo = DepalletAreaRepository(db)
     w_repo = WcsControler(db)
-    area = repo.update_depallet_area([1,2])
+    area = repo.get_depallet_area_by_plat([1,2,3,4])  
     f = area.get_by_id(1)
     service = DepalletService(repo, w_repo)
-    w = NewDepalletFrontegeWatcher(f,service)
+    w = NewDepalletFrontegeWatcher(f, service)
     w.start()
     try:
         while True:

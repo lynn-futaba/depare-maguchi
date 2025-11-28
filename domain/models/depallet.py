@@ -3,7 +3,7 @@ from .shelf import Shelf
 #�f�p���Ԍ�
 class DepalletFrontage():
     
-    def __init__(self, cell_code:str,frontage_id: int,name:str,priority:int):
+    def __init__(self, cell_code:str, frontage_id: int, name:str, priority:int):
 
         self.cell_code = cell_code
         self.name = name

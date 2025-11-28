@@ -281,7 +281,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             conn.close()
         return  
 
-    def update_maguchi_signal_input(self, line_frontage_id):
+    def insert_target_ids(self, line_frontage_id):
         try:
             conn = self.db.wcs_pool.get_connection()
             conn.start_transaction()
@@ -346,12 +346,12 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
         except Exception as e:
             conn.rollback()
-            raise Exception(f"[update_maguchi_signal_input] Error: {e}")
+            raise Exception(f"[insert_target_ids] Error: {e}")
         finally:
             cur.close()
             conn.close()
             
-    def to_maguchi_set_values(self, line_frontage_id):
+    def call_target_ids(self, line_frontage_id):
         try:
             conn = self.db.wcs_pool.get_connection()
             conn.start_transaction()
@@ -379,13 +379,13 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             sql = f"UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id IN ({placeholders})"
             cur.execute(sql, signal_ids)
 
-            print(f"[to_maguchi_set_values >> Updated IDs]: {signal_ids}")
+            print(f"[call_target_ids >> Updated IDs]: {signal_ids}")
 
             conn.commit()
         except Exception as e:
             if conn:
                 conn.rollback()
-            raise Exception(f"[to_maguchi_set_values] Error: {e}")
+            raise Exception(f"[call_target_ids] Error: {e}")
         finally:
             if cur:
                 cur.close()

@@ -17,12 +17,13 @@ class DepalletService:
             if not line_id_list:
                 raise Exception("line_id_list is empty")
             area = self.depallet_area_repo.get_depallet_area(line_id_list)
-            print(f"[DepalletService >> get_depallet_area >> area Result] : {area}") # TODO: testing
+            # print(f"[DepalletService >> get_depallet_area >> area Result] : {area}") # TODO: testing
             return area
+        
         except Exception as e:
             raise Exception(f"Error loading depallet area: {e}")
     
-    def is_frontage_ready(self, frontage:DepalletFrontage)->bool:
+    def is_frontage_ready(self, frontage:DepalletFrontage)->bool:    
         try:
             return self.depallet_area_repo.is_frontage_ready(frontage)
         except Exception as e:
@@ -124,30 +125,39 @@ class DepalletService:
         
     
     # update maguchi signal 1
-    def update_maguchi_signal_input(self, line_frontage_id):
+    def insert_target_ids(self, line_frontage_id):
         try:
-            print("[DepalletService >> update_maguchi_signal_input >> line_frontage_id ]")
-            self.depallet_area_repo.update_maguchi_signal_input(line_frontage_id)
+            print("[DepalletService >> insert_target_ids >> line_frontage_id ]")
+            self.depallet_area_repo.insert_target_ids(line_frontage_id)
         except Exception as e:
             print(f"Error update maguchi by signal input: {e}")
             raise Exception(f"Error update maguchi by signal input: {e}")
         
     # update maguchi signal 2
-    def to_maguchi_set_values(self, line_frontage_id):
+    def call_target_ids(self, line_frontage_id):
         try:
-            print("[DepalletService >> to_maguchi_set_values >> line_frontage_id ]")
-            self.depallet_area_repo.to_maguchi_set_values(line_frontage_id)
+            print("[DepalletService >> call_target_ids >> line_frontage_id ]")
+            self.depallet_area_repo.call_target_ids(line_frontage_id)
         except Exception as e:
             print(f"Error set values to maguchi: {e}")
             raise Exception(f"Error set values to maguchi: {e}")
         
-    # update new depallet area
-    def update_depallet_area(self, plat_list:list):
+
+    def update_BLine_AMR_return(self, line_frontage_id):
         try:
-            if not plat_list:
-                raise Exception("plat_list is empty")
-            new_area = self.depallet_area_repo.update_depallet_area(plat_list)
-            print(f"[DepalletService >> update_depallet_area >> new_area Result] : {new_area}") # TODO: testing
+            print("[DepalletService >> update_BLine_AMR_return >> line_frontage_id ]")
+            self.depallet_area_repo.update_BLine_AMR_return(line_frontage_id)
+        except Exception as e:
+            print(f"Error set values to update_BLine_AMR_return: {e}")
+            raise Exception(f"Error set values to update_BLine_AMR_return: {e}")
+                
+    # update new depallet area
+    def get_depallet_area_by_plat(self, plat_id_list:list, button_id: int):
+        try:
+            if not plat_id_list and button_id:
+                raise Exception("plat_list is empty, button_id is 0")
+            new_area = self.depallet_area_repo.get_depallet_area_by_plat(plat_id_list, button_id)
+            print(f"[DepalletService >> get_depallet_area_by_plat >> new_area Result] : {new_area}") # TODO: testing
             return new_area
         except Exception as e:
             raise Exception(f"Error loading depallet area: {e}")
