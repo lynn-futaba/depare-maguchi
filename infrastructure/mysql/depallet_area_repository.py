@@ -257,79 +257,6 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             cur.close()
             conn.close()
         return  
-        
-    # TODO: 間口に搬送対象idを入力
-    # def insert_target_ids(self, line_frontage_id):
-    #     try:
-    #         conn = self.db.wcs_pool.get_connection()
-    #         conn.start_transaction()
-    #         cur = conn.cursor()
-
-    #         updates = []  # Initialize empty list (values,signals)
-
-    #         if line_frontage_id == 1: # Bライン, R1 => 5,4,3,2,1
-    #             updates = [ # (values,signals)
-    #                 (107, 8404),
-    #                 (103, 8403),
-    #                 (105, 8402),
-    #                 (106, 8401),
-    #                 (18, 8400)
-    #             ]
-    #         elif line_frontage_id == 2: # Bライン, R2 => 5,4,3,2,1
-    #             updates = [
-    #                 (102, 8404),
-    #                 (108, 8403),
-    #                 (101, 8402),
-    #                 (104, 8401),
-    #                 (21, 8400)
-    #             ]
-    #         elif line_frontage_id == 3: # Bライン, R3 => 5,4,3
-    #             updates = [
-    #                 (23, 8404),
-    #                 (100, 8403),
-    #                 (301, 8402)
-    #             ]
-    #         elif line_frontage_id == 4: # Bライン, L1 => 5,4,3,2,1
-    #             updates = [
-    #                 (26, 8504),
-    #                 (206, 8503),
-    #                 (205, 8502),
-    #                 (203, 8501),
-    #                 (208, 8500)
-    #             ]
-    #         elif line_frontage_id == 5: # Bライン, L2 => 5,4,3,2,1
-    #             updates = [
-    #                 (29, 8504),
-    #                 (204, 8503),
-    #                 (201, 8502),
-    #                 (207, 8501),
-    #                 (202, 8500)
-    #             ]
-    #         elif line_frontage_id == 6: # Bライン, L3 => 5,4,3,2,1
-    #             updates = [
-    #                 (300, 8502),
-    #                 (200, 8501),
-    #                 (31, 8500)
-    #             ]
-
-    #         if updates:  # Only execute if updates list is not empty
-    #             cur.executemany(
-    #                 "UPDATE `eip_signal`.word_input SET value = %s WHERE signal_id = %s",
-    #                 updates
-    #             )
-    #             # print(f"[Update_maguchi_signal_input >> Updated] : {updates}")
-    #             conn.commit()
-    #         else:
-    #             print(f"No updates for line_frontage_id: {line_frontage_id}")
-
-    #     except Exception as e:
-    #         conn.rollback()
-    #         raise Exception(f"[insert_target_ids] Error: {e}")
-    #     finally:
-    #         cur.close()
-    #         conn.close()
-
-
     
     # TODO: 間口に搬送対象idを入力
     def insert_target_ids(self, line_frontage_id):
@@ -372,10 +299,16 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             cur.execute(sql)
             result = cur.fetchall()
 
-
-            # Filter EMPTY rows and sort by earliest update_datetime
+    # Filter EMPTY rows and sort by earliest update_datetime
             empty_rows = [row for row in result if row["kotatsu_status"] == "EMPTY" and row["step_kanban_no"]]
             empty_rows.sort(key=lambda r: r["update_datetime"])
+
+            print(f"[insert_target_ids] Found {len(empty_rows)} EMPTY shelves.")
+
+            if not empty_rows:
+                print("[insert_target_ids] No EMPTY shelves found for plat=29.")
+                conn.rollback()
+                return
 
             # Replace car_model_id only in first mapping
             step_kanban_no = empty_rows[0]["step_kanban_no"]
@@ -386,7 +319,12 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             product = cur.fetchone()
             car_model_id = product["car_model_id"] if product else None
 
-            creates[0] = (car_model_id, creates[0][1])  # Replace first tuple's value with car_model_id
+            if car_model_id is None:
+                print("[insert_target_ids] No car_model_id found for kanban_no.")
+                conn.rollback()
+                return
+
+            creates[0] = (car_model_id, creates[0][1])
 
             # ✅ Update signals once
             cur.executemany(
@@ -395,6 +333,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             )
             conn.commit()
             print(f"[insert_target_ids] Signal updates completed for line_frontage_id={line_frontage_id}")
+
 
         except Exception as e:
             conn.rollback()

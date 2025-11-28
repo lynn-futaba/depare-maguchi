@@ -9,6 +9,14 @@ $(document).ready(function () {
     console.log('idValue >>>', idValue);
     const nameValue = params.get("name");
 
+    
+    if (nameValue.includes("L")) {
+        document.getElementById("layout-L").style.display = "block";
+    } else {
+        document.getElementById("layout-normal").style.display = "block";
+    }
+
+
     $.ajax({
         url: "/api/get_depallet_area_by_plat",
         type: "GET",

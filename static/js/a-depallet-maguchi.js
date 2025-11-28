@@ -196,7 +196,7 @@ function getDepalletAreaByPlat(data, idValue, nameValue) {
     }
     
     $.ajax({
-        url: "/api/update_BLine_AMR_return",
+        url: "/api/update_ALine_AMR_return",
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
@@ -212,7 +212,7 @@ function getDepalletAreaByPlat(data, idValue, nameValue) {
                 console.warn("Update failed:", response.message);
             }
         },
-        error: function(xhr, status, error) {
+        error: function(error) {
             console.error("Error updating AMR return:", error);
             alert("サーバーエラーが発生しました (Server error occurred).");
         }
@@ -262,26 +262,6 @@ function submitWorkCompletion() {
     }
     
     console.log("Final Data for Submission:", finalData);
-    
-    // TODO: Implement your actual AJAX/Fetch call to the backend API here
-    // Example:
-    /*
-    $.ajax({
-        url: '/api/complete_work',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(finalData),
-        success: function(response) {
-            alert('作業完了しました！');
-            // Reload or refresh the UI as needed
-        },
-        error: function(error) {
-            console.error('Submission failed:', error);
-            alert('作業完了に失敗しました。');
-        }
-    });
-    */
-}
 
 // Attach the function to the button click event
 $(document).ready(function() {
@@ -428,51 +408,6 @@ function updateAMRDataStorage(maguchiId, kanbanNo, newTakeCount) {
     }
 }
 
-   
-
-
-//パレットおろし
-// function depallet(frontage_id,part_id) {
-//     $.ajax({
-//         url: "/api/to_flow_rack",
-//         type: "POST",
-//         contentType: "application/json",
-//         data: JSON.stringify({ "frontage_id": frontage_id,"part_id" :part_id }),
-//         success: function (data) {
-//             if (data["status"] === "success") {
-//                 console.log('depallet >> to_flow_rack API', "OK");
-//             } else {
-//                 alert("depalletizing error");
-//             }
-//         },
-//         error: function (error) {
-//             console.log('depallet >> to_flow_rack API >> Error', error.status + ": " + error.responseText);
-//             alert(error.status + ": " + error.responseText)
-//         }
-//     });
-// }
-
-//パレット戻し, + plus
-// function pallet(frontage_id, part_id) {
-//     $.ajax({
-//         url: "/api/to_kotatsu",
-//         type: "POST",
-//         contentType: "application/json",
-//         data: JSON.stringify({ "frontage_id": frontage_id, "part_id": part_id }),
-//         success: function (data) {
-//             if (data["status"] === "success") {
-//                 console.log('pallet >> to_kotatsu API', "OK");
-//             } else {
-//                 alert("palletizing error");
-//             }
-//         },
-//         error: function (error) {
-//             console.log('pallet >> to_kotatsu API >> Error', error.status + ">> " + error.responseText);
-//             alert(error.status + ": " + error.responseText)
-//         }
-//     });
-// }
-
 // コタツ返却. - minus
 function returnKotatsu(id) {
     // const frontage_id = element.getAttribute("data-id"); TODO: comment out
@@ -499,4 +434,6 @@ function returnKotatsu(id) {
             }
         });
     }     
+}
+
 }
