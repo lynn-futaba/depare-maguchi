@@ -4,152 +4,152 @@ $(document).ready(function () {
  
     function refreshPage() {
 
-    const params = new URLSearchParams(window.location.search);
-    const idValue = parseInt(params.get("id"));
-    console.log('idValue >>>', idValue);
-    const nameValue = params.get("name");
+        const params = new URLSearchParams(window.location.search);
+        const idValue = parseInt(params.get("id"));
+        console.log('idValue >>>', idValue);
+        const nameValue = params.get("name");
 
-    
-    if (nameValue.includes("L")) {
-        document.getElementById("layout-L").style.display = "block";
-    } else {
-        document.getElementById("layout-normal").style.display = "block";
-    }
-
-
-    $.ajax({
-        url: "/api/get_depallet_area_by_plat",
-        type: "GET",
-        data: { id: idValue },
-        success: function (data) {
-            // console.log('get_depallet_area_by_plat >>', data); // TODO: testing
-            // updateTable(data);
-            getDepalletAreaByPlat(data, idValue, nameValue);
-            console.log('1st getAMR DataStorage', getAMRDataStorage);
-
-            // Save data in localStorage
-            localStorage.setItem("getAMRDataStorage", JSON.stringify(data));
-
-            // For debugging
-            console.log('Data saved to localStorage:', data);            
-        },
-        error: function (error) {
-            console.error("Error fetching data:", error);
-        }
-    });
-
-    
-function getDepalletAreaByPlat(data, idValue, nameValue) {
-
-    if (typeof $ === 'undefined') {
-        console.error("jQuery is required for this function.");
-        return;
-    }
-
-    const result = JSON.parse(data);
-
-    // Button → Plat mapping
-    const buttonIdMap = { 
-        1: [24, 23, 22, 21, 20], // R1, Bライン
-        2: [24, 23, 22, 21, 20], // R2, Bライン
-        3: [24, 23, 22],         // R3, Aライン
-        4: [29, 28, 27, 26, 25], // L1, Bライン
-        5: [29, 28, 27, 26, 25], // L2, Bライン
-        6: [27, 26, 25],         // L3, Bライン
-        7: [24, 23, 22, 21, 20], // R1, Aライン
-        8: [24, 23, 22, 21, 20], // R2, Aライン
-        9: [24, 23, 22],         // R3, Aライン
-        10: [29, 28, 27, 26, 25],// L1, Aライン
-        11: [29, 28, 27, 26, 25],// L2, Aライン
-        12: [27, 26, 25]         // L3, Aライン
-    };
-
-    const targetPlats = buttonIdMap[idValue] || [];
-    document.getElementById("frontageName").textContent = 'デパレ間口 (' + nameValue + ')';
-
-
-    // ✅ Loop through shelves in reverse order (5 → 1)
-    for (let i = 5; i >= 1; i--) {
-        const shelfId = `#shelf-${i}`; // shelf-5, shelf-4, shelf-3, shelf-2, shelf-1
-        // const cardBody = $(shelfId).closest('.card-body');
-        const tbody = $(`${shelfId} tbody`);
-        const thead = $(`${shelfId} thead`);
-
-        let cardId = `#card${i}`;
-        let cardNo = $(`${cardId} tbody`);
-
-        // cardBody.find('.dynamic-labels').remove();
-        thead.empty();
-        tbody.empty();
-        cardNo.empty();
         
-
-        const platId = targetPlats[5 - i]; // Map correctly to buttonIdMap array
-        const items = result[platId] || [];
-
-        if (items.length > 0) {
-            // ✅ Add table header
-            thead.append(`
-                <tr>
-                    <th>対象 : 間口${i}</th>
-                    <th colspan="2">コタツ No : ${items[0]?.shelf_code ?? 'N/A'}</th>
-                    <th colspan="2">かんばん No : ${items[0]?.step_kanban_no ?? 'N/A'}</th>
-                </tr>
-                <tr>
-                    <th></th>
-                    <th>背番号</th>
-                    <th>在庫数</th>
-                    <th>取出数量</th>
-                    <th></th>
-                </tr>
-            `);
-
-            // ✅ Populate rows
-            items.forEach((item, idx) => {
-                const stepKanbanNo = item.step_kanban_no ?? '-';
-                const loadNum = item.load_num ?? 0;
-                const takeCount = item.take_count ?? 0;
-                const rowId = `row-${platId}-${stepKanbanNo}`;
-
-                // Update flow rack info
-                const flowRackNo = item.flow_rack_no ?? '-';
-                $("#flow-rack-no").text(`対象フローラック　No：${flowRackNo}`);
-
-                // Add row to shelf table
-                tbody.append(`
-                    <tr id="${rowId}">
-                        <td><button class="btn btn-success btn-sm" onclick="submitPallet(${platId}, '${stepKanbanNo}')">＋</button></td>
-                        <td>${stepKanbanNo}</td>
-                        <td>${loadNum}</td>
-                        <td id="take-count-${rowId}">${takeCount}</td>
-                        <td><button class="btn btn-danger btn-sm" onclick="submitDepallet(${platId}, '${stepKanbanNo}')">ー</button></td>
-                    </tr>
-                `);
-                
-                cardNo.append(`
-                    <tr id="${rowId}">
-                        <td>${stepKanbanNo}</td>
-                        <td id="take-count-${rowId}">${takeCount}</td>
-                    </tr>
-                `);  
-            });
-        } 
-    }
-}
-
-    
-    $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-        const targetId = $(e.target).attr('id'); // e.g., "tab3-tab"
-        const maguchiId = parseInt(targetId.replace('tab', '').replace('-tab', '')); // Extract 1–5
-
-        if (maguchiHasData[maguchiId]) {
-            $('#display-title').show();
+        if (nameValue.includes("L")) {
+            document.getElementById("layout-L").style.display = "block";
         } else {
-            $('#display-title').hide();
+            document.getElementById("layout-normal").style.display = "block";
         }
-    });
 
-    
+
+        $.ajax({
+            url: "/api/get_depallet_area_by_plat",
+            type: "GET",
+            data: { id: idValue },
+            success: function (data) {
+                // console.log('get_depallet_area_by_plat >>', data); // TODO: testing
+                // updateTable(data);
+                getDepalletAreaByPlat(data, idValue, nameValue);
+                console.log('1st getAMR DataStorage', getAMRDataStorage);
+
+                // Save data in localStorage
+                localStorage.setItem("getAMRDataStorage", JSON.stringify(data));
+
+                // For debugging
+                console.log('Data saved to localStorage:', data);            
+            },
+            error: function (error) {
+                console.error("Error fetching data:", error);
+            }
+        });
+
+        
+        function getDepalletAreaByPlat(data, idValue, nameValue) {
+
+            if (typeof $ === 'undefined') {
+                console.error("jQuery is required for this function.");
+                return;
+            }
+
+            const result = JSON.parse(data);
+
+            // Button → Plat mapping
+            const buttonIdMap = { 
+                1: [24, 23, 22, 21, 20], // R1, Bライン
+                2: [24, 23, 22, 21, 20], // R2, Bライン
+                3: [24, 23, 22],         // R3, Aライン
+                4: [29, 28, 27, 26, 25], // L1, Bライン
+                5: [29, 28, 27, 26, 25], // L2, Bライン
+                6: [27, 26, 25],         // L3, Bライン
+                7: [24, 23, 22, 21, 20], // R1, Aライン
+                8: [24, 23, 22, 21, 20], // R2, Aライン
+                9: [24, 23, 22],         // R3, Aライン
+                10: [29, 28, 27, 26, 25],// L1, Aライン
+                11: [29, 28, 27, 26, 25],// L2, Aライン
+                12: [27, 26, 25]         // L3, Aライン
+            };
+
+            const targetPlats = buttonIdMap[idValue] || [];
+            document.getElementById("frontageName").textContent = 'デパレ間口 (' + nameValue + ')';
+
+
+            // ✅ Loop through shelves in reverse order (5 → 1)
+            for (let i = 5; i >= 1; i--) {
+                const shelfId = `#shelf-${i}`; // shelf-5, shelf-4, shelf-3, shelf-2, shelf-1
+                // const cardBody = $(shelfId).closest('.card-body');
+                const tbody = $(`${shelfId} tbody`);
+                const thead = $(`${shelfId} thead`);
+
+                let cardId = `#card${i}`;
+                let cardNo = $(`${cardId} tbody`);
+
+                // cardBody.find('.dynamic-labels').remove();
+                thead.empty();
+                tbody.empty();
+                cardNo.empty();
+                
+
+                const platId = targetPlats[5 - i]; // Map correctly to buttonIdMap array
+                const items = result[platId] || [];
+
+                if (items.length > 0) {
+                    // ✅ Add table header
+                    thead.append(`
+                        <tr>
+                            <th>対象 : 間口${i}</th>
+                            <th colspan="2">コタツ No : ${items[0]?.shelf_code ?? 'N/A'}</th>
+                            <th colspan="2">かんばん No : ${items[0]?.step_kanban_no ?? 'N/A'}</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>背番号</th>
+                            <th>在庫数</th>
+                            <th>取出数量</th>
+                            <th></th>
+                        </tr>
+                    `);
+
+                    // ✅ Populate rows
+                    items.forEach((item, idx) => {
+                        const stepKanbanNo = item.step_kanban_no ?? '-';
+                        const loadNum = item.load_num ?? 0;
+                        const takeCount = item.take_count ?? 0;
+                        const rowId = `row-${platId}-${stepKanbanNo}`;
+
+                        // Update flow rack info
+                        const flowRackNo = item.flow_rack_no ?? '-';
+                        $("#flow-rack-no").text(`対象フローラック　No：${flowRackNo}`);
+
+                        // Add row to shelf table
+                        tbody.append(`
+                            <tr id="${rowId}">
+                                <td><button class="btn btn-success btn-sm" onclick="submitPallet(${platId}, '${stepKanbanNo}')">＋</button></td>
+                                <td>${stepKanbanNo}</td>
+                                <td>${loadNum}</td>
+                                <td id="take-count-${rowId}">${takeCount}</td>
+                                <td><button class="btn btn-danger btn-sm" onclick="submitDepallet(${platId}, '${stepKanbanNo}')">ー</button></td>
+                            </tr>
+                        `);
+                        
+                        cardNo.append(`
+                            <tr id="${rowId}">
+                                <td>${stepKanbanNo}</td>
+                                <td id="take-count-${rowId}">${takeCount}</td>
+                            </tr>
+                        `);  
+                    });
+                } 
+            }
+        }
+
+
+        $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            const targetId = $(e.target).attr('id'); // e.g., "tab3-tab"
+            const maguchiId = parseInt(targetId.replace('tab', '').replace('-tab', '')); // Extract 1–5
+
+            if (maguchiHasData[maguchiId]) {
+                $('#display-title').show();
+            } else {
+                $('#display-title').hide();
+            }
+        });
+
+
     }
         
     
@@ -166,42 +166,14 @@ function getDepalletAreaByPlat(data, idValue, nameValue) {
     // in a scope it can access.
     window.callAMRReturn = function() { // You can define it like this to ensure it's global
 
+    
+    const params = new URLSearchParams(window.location.search);
+    const buttonId = parseInt(params.get("id"));
         
     // Get data from localStorage
     const getAMRDataStorage = JSON.parse(localStorage.getItem("getAMRDataStorage"));
 
     console.log('2nd getAMRDataStorage', getAMRDataStorage); // ACCESSING THE DATA HERE!
-
-    // Define the maguchiIdMap as requested
-    const maguchiIdMap = { 
-        25: 1, 
-        26: 2, 
-        27: 3, 
-        28: 4, 
-        29: 5 
-    };
-
-    // 1. Get all keys from getAMRDataStorage (e.g., ["28", "24", "23", "21"])
-    const maguchiKeys = Object.keys(getAMRDataStorage);
-
-    // 2. Map the extracted keys using the maguchiIdMap
-    //    The .map() will return an array of the mapped values.
-    //    Since the keys are strings, we use parseInt() before looking them up.
-    const mappedIds = maguchiKeys
-        .map(key => maguchiIdMap[parseInt(key, 10)])
-        // 3. Filter out any keys that didn't have a corresponding mapping (undefined values)
-        .filter(id => id !== undefined);
-
-    // DEBUGGING: Log the final array
-    console.log('Keys extracted:', maguchiKeys); // e.g., ["28", "24", "23", "21"]
-    console.log('Mapped line_frontage_ids:', mappedIds); // e.g., [4] (since only 28 maps to 4)
-
-
-    // Check if we have any valid IDs to send
-    if (mappedIds.length === 0) {
-        showInfo("No valid IDs to send for AMR return.");
-        return;
-    }
     
     $.ajax({
         url: "/api/call_AMR_return",
@@ -209,15 +181,16 @@ function getDepalletAreaByPlat(data, idValue, nameValue) {
         contentType: 'application/json',
         data: JSON.stringify({
             // Send the array of mapped IDs under the line_frontage_id key
-            line_frontage_id: mappedIds, 
+            // line_frontage_id: mappedIds, 
+            line_frontage_id: buttonId
         }),
         success: function(response) {
             if (response.status === "success") {
-                showInfo("✅ AMR return updated successfully!");
-                console.log("AMR return updated successfully! Sent IDs:", mappedIds);
+                alert("✅ Aライン >> AMR return updated successfully!");
+                console.log("Aライン >> AMR return updated successfully! Sent IDs:", buttonId);
             } else {
                 alert(response.message || "更新に失敗しました (Update failed).");
-                console.warn("Update failed:", response.message);
+                console.warn("Aライン >> AMR return Update failed:", response.message);
             }
         },
         error: function(xhr, status, error) {

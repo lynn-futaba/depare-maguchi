@@ -166,42 +166,47 @@ function getDepalletAreaByPlat(data, idValue, nameValue) {
     // in a scope it can access.
     window.callAMRReturn = function() { // You can define it like this to ensure it's global
 
+    const params = new URLSearchParams(window.location.search);
+    const buttonId = parseInt(params.get("id"));
+
         
     // Get data from localStorage
     const getAMRDataStorage = JSON.parse(localStorage.getItem("getAMRDataStorage"));
 
     console.log('2nd getAMRDataStorage', getAMRDataStorage); // ACCESSING THE DATA HERE!
 
-    // Define the maguchiIdMap as requested
-    const maguchiIdMap = { 
-        25: 1, 
-        26: 2, 
-        27: 3, 
-        28: 4, 
-        29: 5 
-    };
+    // // Define the maguchiIdMap as requested
+    // const maguchiIdMap = { 
+    //     25: 1, 
+    //     26: 2, 
+    //     27: 3, 
+    //     28: 4, 
+    //     29: 5 
+    // };
 
-    // 1. Get all keys from getAMRDataStorage (e.g., ["28", "24", "23", "21"])
-    const maguchiKeys = Object.keys(getAMRDataStorage);
+    
 
-    // 2. Map the extracted keys using the maguchiIdMap
-    //    The .map() will return an array of the mapped values.
-    //    Since the keys are strings, we use parseInt() before looking them up.
-    const mappedIds = maguchiKeys
-        .map(key => maguchiIdMap[parseInt(key, 10)])
-        // 3. Filter out any keys that didn't have a corresponding mapping (undefined values)
-        .filter(id => id !== undefined);
+    // // 1. Get all keys from getAMRDataStorage (e.g., ["28", "24", "23", "21"])
+    // const maguchiKeys = Object.keys(getAMRDataStorage);
 
-    // DEBUGGING: Log the final array
-    console.log('Keys extracted:', maguchiKeys); // e.g., ["28", "24", "23", "21"]
-    console.log('Mapped line_frontage_ids:', mappedIds); // e.g., [4] (since only 28 maps to 4)
+    // // 2. Map the extracted keys using the maguchiIdMap
+    // //    The .map() will return an array of the mapped values.
+    // //    Since the keys are strings, we use parseInt() before looking them up.
+    // const mappedIds = maguchiKeys
+    //     .map(key => maguchiIdMap[parseInt(key, 10)])
+    //     // 3. Filter out any keys that didn't have a corresponding mapping (undefined values)
+    //     .filter(id => id !== undefined);
+
+    // // DEBUGGING: Log the final array
+    // console.log('Keys extracted:', maguchiKeys); // e.g., ["28", "24", "23", "21"]
+    // console.log('Mapped line_frontage_ids:', mappedIds); // e.g., [4] (since only 28 maps to 4)
 
 
-    // Check if we have any valid IDs to send
-    if (mappedIds.length === 0) {
-        showInfo("No valid IDs to send for AMR return.");
-        return;
-    }
+    // // Check if we have any valid IDs to send
+    // if (mappedIds.length === 0) {
+    //     showInfo("No valid IDs to send for AMR return.");
+    //     return;
+    // }
     
     $.ajax({
         url: "/api/call_AMR_return",
@@ -209,15 +214,16 @@ function getDepalletAreaByPlat(data, idValue, nameValue) {
         contentType: 'application/json',
         data: JSON.stringify({
             // Send the array of mapped IDs under the line_frontage_id key
-            line_frontage_id: mappedIds, 
+            // line_frontage_id: mappedIds, 
+            line_frontage_id: buttonId 
         }),
         success: function(response) {
             if (response.status === "success") {
-                showInfo("✅ AMR return updated successfully!");
-                console.log("AMR return updated successfully! Sent IDs:", mappedIds);
+                alert("✅ Bライン >> AMR return updated successfully!");
+                console.log("Bライン >> AMR return updated successfully! Sent IDs:", buttonId);
             } else {
                 alert(response.message || "更新に失敗しました (Update failed).");
-                console.warn("Update failed:", response.message);
+                console.warn("Bライン >> AMR return Update failed:", response.message);
             }
         },
         error: function(xhr, status, error) {
