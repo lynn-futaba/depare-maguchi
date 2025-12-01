@@ -7,7 +7,7 @@ from domain.models.shelf import Kotatsu, FlowRack, Shelf
 class IDepalletAreaRepository(ABC):
     # デパレタイズエリア情報取得
     @abstractmethod # TODO
-    def get_depallet_area(self,line_id_list:list)->DepalletArea:
+    def get_depallet_area(self, line_id_list:list)->DepalletArea:
        pass
     
     # デパレ間口の状態取得
@@ -42,8 +42,18 @@ class IDepalletAreaRepository(ABC):
        pass
 
     @abstractmethod # TODO: added
-    def update_BLine_AMR_return(self, line_frontage_id:int):
+    def call_AMR_return(self, line_frontage_id:int):
        pass
+
+    @abstractmethod # TODO: added
+    def insert_kanban_nuki(self):
+       pass
+
+    @abstractmethod # TODO: added
+    def insert_kanban_sashi(self):
+       pass
+
+    
 
     
       

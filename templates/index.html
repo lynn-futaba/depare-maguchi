@@ -11,47 +11,44 @@
 <body>
   <div class="container-fluid">
     <div class="row">
-      <!-- Left Side: Line B -->
+      
       <div class="container operation">
         <h2 class="bg-success text-center border border-dark fw-bold my-2">
           310D デパレ作業画面
         </h2>
-        <div class="row col-1 mb-3"><button id="refreshButton" class="btn btn-primary">更新</button></div>
+        <!-- <div class="row col-1 mb-3"><button id="refreshButton" class="btn btn-primary">更新</button></div> -->
         <div class="row">
+          <!-- Left Side: Line B -->
           <div class="col-12 col-lg-6 border-end">
-            <h2 class="bg-light text-center border border-dark fw-bold my-2">
+            <h2 class="bg-secondary text-center text-white border border-dark fw-bold my-2">
               * Bライン
             </h2>
-            <!-- Production Status Table -->
+            <!-- BR Table -->
             <div class="line-status mb-3">
                 <table class="table table-bordered production-table text-center align-middle border-dark">
-                    <thead class="table-light border-dark">
+                    <thead class="table-secondary border-dark">
                         <tr>
-                            <th colspan="3" class="bg-info">RH</th>
-                            <th colspan="3" class="bg-warning">LH</th>
+                            <th colspan="6" class="bg-info">B-RH</th>
                         </tr>
                         <tr>
-                            <th>生産品番</th>
-                            <th>計画生産台数</th>
-                            <th>実績生産台数</th>
                             <th>生産品番</th>
                             <th>計画生産台数</th>
                             <th>実績生産台数</th>
                         </tr>
                     </thead>
-                    <tbody id="a-product">
+                    <tbody id="b-r-product">
                         <!-- Dynamic content -->
                     </tbody>
                 </table>
             </div>
-            <!-- Frontage Status Tables in Bootstrap Grid -->
+            <!-- BR Table button -->
             <div class="frontage-status row g-3">
-                <div class="col-12 col-md-4 col-lg-2">
+                <div class="col-12 col-md-4 col-lg-4">
                   <table class="table table-bordered frontage-table text-center align-middle border-dark">
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-info w-100" onclick="callToBLINEAMR(1)">供給間口R1</button>
+                          <button type="button" class="btn btn-info w-100" onclick="callToBLineDepalletMaguchi(1)">供給間口<br>R1</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -64,12 +61,12 @@
                     <!-- </tbody> -->
                   </table>
                 </div>
-                <div class="col-12 col-md-4 col-lg-2">
+                <div class="col-12 col-md-4 col-lg-4">
                   <table class="table table-bordered frontage-table text-center align-middle border-dark">
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-info w-100" onclick="callToBLINEAMR(2)">供給間口R2</button>
+                          <button type="button" class="btn btn-info w-100" onclick="callToBLineDepalletMaguchi(2)">供給間口<br>R2</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -82,12 +79,12 @@
                     <!-- </tbody> -->
                   </table>
                 </div>
-                <div class="col-12 col-md-4 col-lg-2">
+                <div class="col-12 col-md-4 col-lg-4">
                   <table class="table table-bordered frontage-table text-center align-middle border-dark">
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-info w-100" onclick="callToBLINEAMR(3)">供給間口R3</button>
+                          <button type="button" class="btn btn-info w-100" onclick="callToBLineDepalletMaguchi(3)">供給間口<br>R3</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -100,12 +97,34 @@
                     <!-- </tbody> -->
                   </table>
                 </div>
-                <div class="col-12 col-md-4 col-lg-2">
+            </div>
+
+            <!-- BL Table -->
+            <div class="line-status mb-3">
+              <table class="table table-bordered production-table text-center align-middle border-dark">
+                  <thead class="table-secondary border-dark">
+                      <tr>
+                          <th colspan="6" class="bg-warning">B-LH</th>
+                      </tr>
+                      <tr>
+                          <th>生産品番</th>
+                          <th>計画生産台数</th>
+                          <th>実績生産台数</th>
+                      </tr>
+                  </thead>
+                  <tbody id="b-l-product">
+                      <!-- Dynamic content -->
+                  </tbody>
+              </table>
+            </div>
+            <!-- BL Table button -->
+            <div class="frontage-status row g-3">
+                <div class="col-12 col-md-4 col-lg-4">
                   <table class="table table-bordered frontage-table text-center align-middle border-dark">
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning w-100" onclick="callToBLINEAMR(4)">供給間口L1</button>
+                          <button type="button" class="btn btn-warning w-100" onclick="callToBLineDepalletMaguchi(4)">供給間口<br>L1</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -113,17 +132,17 @@
                         <th>在庫数</th>
                       </tr> -->
                     </thead>
-                    <!-- <tbody id="4"> -->
+                    <!-- <tbody id="1"> -->
                       <!-- Dynamic content -->
                     <!-- </tbody> -->
                   </table>
                 </div>
-                <div class="col-12 col-md-4 col-lg-2">
+                <div class="col-12 col-md-4 col-lg-4">
                   <table class="table table-bordered frontage-table text-center align-middle border-dark">
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning w-100" onclick="callToBLINEAMR(5)">供給間口L2</button>
+                          <button type="button" class="btn btn-warning w-100" onclick="callToBLineDepalletMaguchi(5)">供給間口<br>L2</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -131,17 +150,17 @@
                         <th>在庫数</th>
                       </tr> -->
                     </thead>
-                    <!-- <tbody id="5"> -->
+                    <!-- <tbody id="2"> -->
                       <!-- Dynamic content -->
                     <!-- </tbody> -->
                   </table>
                 </div>
-                <div class="col-12 col-md-4 col-lg-2">
+                <div class="col-12 col-md-4 col-lg-4">
                   <table class="table table-bordered frontage-table text-center align-middle border-dark">
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning w-100" onclick="callToBLINEAMR(6)">供給間口L3</button>
+                          <button type="button" class="btn btn-warning w-100" onclick="callToBLineDepalletMaguchi(6)">供給間口<br>L3</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -149,12 +168,13 @@
                         <th>在庫数</th>
                       </tr> -->
                     </thead>
-                    <!-- <tbody id="6"> -->
+                    <!-- <tbody id="3"> -->
                       <!-- Dynamic content -->
                     <!-- </tbody> -->
                   </table>
                 </div>
             </div>
+
           </div>
           
           <!-- Right Side: Line A -->
@@ -162,36 +182,34 @@
             <h2 class="bg-light text-center border border-dark fw-bold my-2">
               * Aライン
             </h2>
-            <!-- Production Status Table -->
+
+            <!-- AR Table -->
             <div class="line-status mb-3">
-                <table class="table table-bordered production-table text-center align-middle border-dark">
-                    <thead class="table-light border-dark">
-                        <tr>
-                            <th colspan="3" class="bg-info">RH</th>
-                            <th colspan="3" class="bg-warning">LH</th>
-                        </tr>
-                        <tr>
-                            <th>生産品番</th>
-                            <th>計画生産台数</th>
-                            <th>実績生産台数</th>
-                            <th>生産品番</th>
-                            <th>計画生産台数</th>
-                            <th>実績生産台数</th>
-                        </tr>
-                    </thead>
-                    <tbody id="b-product">
-                        <!-- Dynamic content -->
-                    </tbody>
-                </table>
+              <table class="table table-bordered production-table text-center align-middle border-dark">
+                  <thead class="table-light border-dark">
+                      <tr>
+                          <th colspan="6" class="bg-info">A-RH</th>
+                      </tr>
+                      <tr>
+                          <th>生産品番</th>
+                          <th>計画生産台数</th>
+                          <th>実績生産台数</th>
+                      </tr>
+                  </thead>
+                  <tbody id="a-r-product">
+                      <!-- Dynamic content -->
+                  </tbody>
+              </table>
             </div>
-            <!-- Frontage Status Tables in Bootstrap Grid -->
+
+            <!-- AR Table button -->
             <div class="frontage-status row g-3">
-                <div class="col-12 col-md-4 col-lg-2">
+                <div class="col-12 col-md-4 col-lg-4">
                   <table class="table table-bordered frontage-table text-center align-middle border-dark">
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-info w-100" onclick="callToALINEAMR(7)">供給間口R1</button>
+                          <button type="button" class="btn btn-info w-100" onclick="callToALineDepalletMaguchi(7)">供給間口<br>R1</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -199,17 +217,17 @@
                         <th>在庫数</th>
                       </tr> -->
                     </thead>
-                    <!-- <tbody id="7"> -->
+                    <!-- <tbody id="1"> -->
                       <!-- Dynamic content -->
                     <!-- </tbody> -->
                   </table>
                 </div>
-                <div class="col-12 col-md-4 col-lg-2">
+                <div class="col-12 col-md-4 col-lg-4">
                   <table class="table table-bordered frontage-table text-center align-middle border-dark">
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-info w-100" onclick="callToALINEAMR(8)">供給間口R2</button>
+                          <button type="button" class="btn btn-info w-100" onclick="callToALineDepalletMaguchi(8)">供給間口<br>R2</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -217,17 +235,17 @@
                         <th>在庫数</th>
                       </tr> -->
                     </thead>
-                    <!-- <tbody id="8"> -->
+                    <!-- <tbody id="2"> -->
                       <!-- Dynamic content -->
                     <!-- </tbody> -->
                   </table>
                 </div>
-                <div class="col-12 col-md-4 col-lg-2">
+                <div class="col-12 col-md-4 col-lg-4">
                   <table class="table table-bordered frontage-table text-center align-middle border-dark">
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-info w-100" onclick="callToALINEAMR(9)">供給間口R3</button>
+                          <button type="button" class="btn btn-info w-100" onclick="callToALineDepalletMaguchi(9)">供給間口<br>R3</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -235,17 +253,39 @@
                         <th>在庫数</th>
                       </tr> -->
                     </thead>
-                    <!-- <tbody id="9"> -->
+                    <!-- <tbody id="3"> -->
                       <!-- Dynamic content -->
                     <!-- </tbody> -->
                   </table>
                 </div>
-                <div class="col-12 col-md-4 col-lg-2">
+            </div>
+          
+            <!-- AL Table -->
+            <div class="line-status mb-3">
+              <table class="table table-bordered production-table text-center align-middle border-dark">
+                  <thead class="table-light border-dark">
+                      <tr>
+                          <th colspan="6" class="bg-warning">A-LH</th>
+                      </tr>
+                      <tr>
+                          <th>生産品番</th>
+                          <th>計画生産台数</th>
+                          <th>実績生産台数</th>
+                      </tr>
+                  </thead>
+                  <tbody id="a-l-product">
+                      <!-- Dynamic content -->
+                  </tbody>
+              </table>
+            </div>
+            <!-- BL Table button -->
+            <div class="frontage-status row g-3">
+                <div class="col-12 col-md-4 col-lg-4">
                   <table class="table table-bordered frontage-table text-center align-middle border-dark">
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning w-100" onclick="callToALINEAMR(10)">供給間口L1</button>
+                          <button type="button" class="btn btn-warning w-100" onclick="callToALineDepalletMaguchi(10)">供給間口<br>L1</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -253,17 +293,17 @@
                         <th>在庫数</th>
                       </tr> -->
                     </thead>
-                    <!-- <tbody id="9"> -->
+                    <!-- <tbody id="1"> -->
                       <!-- Dynamic content -->
                     <!-- </tbody> -->
                   </table>
                 </div>
-                <div class="col-12 col-md-4 col-lg-2">
+                <div class="col-12 col-md-4 col-lg-4">
                   <table class="table table-bordered frontage-table text-center align-middle border-dark">
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning w-100" onclick="callToALINEAMR(11)">供給間口L2</button>
+                          <button type="button" class="btn btn-warning w-100" onclick="callToALineDepalletMaguchi(11)">供給間口<br>L2</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -271,17 +311,17 @@
                         <th>在庫数</th>
                       </tr> -->
                     </thead>
-                    <!-- <tbody id="10"> -->
+                    <!-- <tbody id="2"> -->
                       <!-- Dynamic content -->
                     <!-- </tbody> -->
                   </table>
                 </div>
-                <div class="col-12 col-md-4 col-lg-2">
+                <div class="col-12 col-md-4 col-lg-4">
                   <table class="table table-bordered frontage-table text-center align-middle border-dark">
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning w-100" onclick="callToALINEAMR(12)">供給間口L3</button>
+                          <button type="button" class="btn btn-warning w-100" onclick="callToALineDepalletMaguchi(12)">供給間口<br>L3</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -289,7 +329,7 @@
                         <th>在庫数</th>
                       </tr> -->
                     </thead>
-                    <!-- <tbody id="11"> -->
+                    <!-- <tbody id="3"> -->
                       <!-- Dynamic content -->
                     <!-- </tbody> -->
                   </table>
@@ -297,6 +337,16 @@
             </div>
           </div>
         </div>
+
+        <div class="row">
+          <div class="col-3">
+            <button type="button" class="btn btn-danger text-white w-100" onclick="submitKanbanNuki()">かんばん抜き<br>発信</button>
+          </div>
+          <div class="col-3">
+            <button type="button" class="btn btn-success text-white w-100" onclick="submitKanbanSashi()">かんばん差し<br>発信</button>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>

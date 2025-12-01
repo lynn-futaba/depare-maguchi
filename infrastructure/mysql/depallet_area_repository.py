@@ -263,20 +263,28 @@ class DepalletAreaRepository(IDepalletAreaRepository):
         conn = None
         cur = None
         try:
-            print(f"[insert_target_ids] Starting flowrack update for line_frontage_id={line_frontage_id}")
+            print(f"[DepalletAreaRepository >> insert_target_ids] Starting flowrack update for line_frontage_id={line_frontage_id}")
 
             # Mapping for creates
             creates_map = {
-                1: [(107, 8404), (103, 8403), (105, 8402), (106, 8401), (18, 8400)],  # Bライン, R1 => button_id 1
-                2: [(102, 8404), (108, 8403), (101, 8402), (104, 8401), (21, 8400)],  # Bライン, R2 => button_id 2
-                3: [(23, 8404), (100, 8403), (301, 8402)],                             # Bライン, R3 => button_id 3
-                4: [(26, 8504), (206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # Bライン, L1 => button_id 4
-                5: [(29, 8504), (204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # Bライン, L2 => button_id 5
-                6: [(300, 8502), (200, 8501), (31, 8500)]                             # Bライン, L3 => button_id 6
+                # Bライン, 間口 5,4,3,2,1
+                1: [(107, 8404), (103, 8403), (105, 8402), (106, 8401), (18, 8400)],  # R1 => button_id 1
+                2: [(102, 8404), (108, 8403), (101, 8402), (104, 8401), (21, 8400)],  # R2 => button_id 2
+                3: [(23, 8404), (100, 8403), (301, 8402)],                            # R3 => button_id 3
+                4: [(26, 8504), (206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 4
+                5: [(29, 8504), (204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 5
+                6: [(300, 8502), (200, 8501), (31, 8500)],                            # L3 => button_id 6
+                # Aライン, 間口 5,4,3,2,1
+                7: [(107, 8404), (103, 8403), (105, 8402), (106, 8401), (2, 8400)],  # R1 => button_id 7
+                8: [(102, 8404), (108, 8403), (101, 8402), (104, 8401), (5, 8400)],  # R2 => button_id 8
+                9: [(7, 8404), (100, 8403), (301, 8402)],                            # R3 => button_id 9
+                10: [(10, 8504), (206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 10
+                11: [(13, 8504), (204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 11
+                12: [(300, 8502), (200, 8501), (15, 8500)],                            # L3 => button_id 12
             }
 
-            plat_map = {1: 20, 2: 20, 3: 22, 4: 29, 5: 29, 6: 25} # Bライン
-            kanban_map = {1: 2001, 2: 2002, 3: 2003, 4: 2004, 5: 2005, 6: 2006} # Bライン
+            plat_map = {1: 20, 2: 20, 3: 22, 4: 29, 5: 29, 6: 25, 7: 20, 8: 20, 9: 22, 10: 29, 11: 29, 12: 25} # Bライン (button_id 1～6 R1,R2,R3,L1,L2,L3), # Aライン (button_id 7～12 R1,R2,R3,L1,L2,L3)
+            kanban_map = {1: 2001, 2: 2002, 3: 2003, 4: 2004, 5: 2005, 6: 2006, 7: 1001, 8: 1002, 9: 1003, 10: 1004, 11: 1005, 12: 1006} # Bライン (button_id 1～6 R1,R2,R3,L1,L2,L3), # Aライン (button_id 7～12 R1,R2,R3,L1,L2,L3)
 
             creates = creates_map.get(line_frontage_id)
             plat = plat_map.get(line_frontage_id, 0)
@@ -307,10 +315,10 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             empty_rows = [row for row in result if row["kotatsu_status"] == "EMPTY" and row["step_kanban_no"]]
             empty_rows.sort(key=lambda r: r["update_datetime"])
 
-            print(f"[insert_target_ids] Found {len(empty_rows)} EMPTY shelves.")
+            print(f"[DepalletAreaRepository >> insert_target_ids] Found {len(empty_rows)} EMPTY shelves.")
 
             if not empty_rows:
-                print(f"[insert_target_ids] No EMPTY shelves found for plat={plat}.")
+                print(f"[DepalletAreaRepository >> insert_target_ids] No EMPTY shelves found for plat={plat}.")
                 conn.rollback()
                 return
 
@@ -321,7 +329,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 WHERE step_kanban_no = %s
             """
             cur.execute(update_sql, (step_kanban_no, empty_rows[0]["step_kanban_no"]))
-            print(f"[insert_target_ids] Updated t_shelf_status: {empty_rows[0]['step_kanban_no']} -> {step_kanban_no}")
+            print(f"[DepalletAreaRepository >> insert_target_ids] Updated t_shelf_status: {empty_rows[0]['step_kanban_no']} -> {step_kanban_no}")
 
             # ✅ Update signals once
             cur.executemany(
@@ -329,12 +337,12 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 creates
             )
             conn.commit()
-            print(f"[insert_target_ids] Signal updates completed for line_frontage_id={line_frontage_id}")
+            print(f"[DepalletAreaRepository >> insert_target_ids] Signal updates completed for line_frontage_id={line_frontage_id}")
 
         except Exception as e:
             if conn:
                 conn.rollback()
-            raise Exception(f"[insert_target_ids] Error: {e}")
+            raise Exception(f"[DepalletAreaRepository >> insert_target_ids] Error: {e}")
         finally:
             if cur:
                 cur.close()
@@ -373,13 +381,13 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             sql = f"UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id IN ({placeholders})"
             cur.execute(sql, signal_ids)
 
-            print(f"[call_target_ids >> Updated IDs]: {signal_ids}")
+            print(f"[DepalletAreaRepository >> call_target_ids >> Updated IDs]: {signal_ids}")
 
             conn.commit()
         except Exception as e:
             if conn:
                 conn.rollback()
-            raise Exception(f"[call_target_ids] Error: {e}")
+            raise Exception(f"[DepalletAreaRepository >> call_target_ids] Error: {e}")
         finally:
             if cur:
                 cur.close()
@@ -388,7 +396,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
     
     # TODO: 間口に搬送対象idを入力
-    def update_BLine_AMR_return(self, line_frontage_id):
+    def call_AMR_return(self, line_frontage_id):
         # Mapping for signal IDs
         signal_map = {
             "hashiru_ichi": {  # 呼び出し信号をリセット
@@ -440,7 +448,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 ("kaeru_ni", 0),
             ]
 
-            print(f"\n[update_BLine_AMR_return] Starting transaction for line_frontage_id={line_frontage_id}\n")
+            print(f"\n[call_AMR_return] Starting transaction for line_frontage_id={line_frontage_id}\n")
 
             for key, value in updates:
                 ids = signal_map[key].get(line_frontage_id, ())
@@ -451,176 +459,34 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                     sql_select = f"SELECT signal_id, value FROM `eip_signal`.word_input WHERE signal_id IN ({placeholders})"
                     cur.execute(sql_select, ids)
                     before_values = cur.fetchall()
-                    print(f"[Before update {key}] IDs: {ids} | Values: {before_values}")
+                    print(f"[DepalletAreaRepository >> Before update {key}] IDs: {ids} | Values: {before_values}")
 
                     # Perform update
                     sql_update = f"UPDATE `eip_signal`.word_input SET value = %s WHERE signal_id IN ({placeholders})"
                     cur.execute(sql_update, (value, *ids))
-                    print(f"[update_BLine_AMR_return >> Updated {key} IDs]: {ids} | New Value: {value}")
+                    print(f"[DepalletAreaRepository >> call_AMR_return >> Updated {key} IDs]: {ids} | New Value: {value}")
 
                     # Fetch AFTER update
                     cur.execute(sql_select, ids)
                     after_values = cur.fetchall()
-                    print(f"[After update {key}] IDs: {ids} | Values: {after_values}\n")
+                    print(f"[DepalletAreaRepository >> After update {key}] IDs: {ids} | Values: {after_values}\n")
 
                 else:
-                    print(f"[update_BLine_AMR_return >> No IDs for {key}]")
+                    print(f"[DepalletAreaRepository >> call_AMR_return >> No IDs for {key}]")
 
                 conn.commit()
-                print(f"[update_BLine_AMR_return] ✅ Transaction committed for line_frontage_id={line_frontage_id}\n")
+                print(f"[DepalletAreaRepository >> call_AMR_return] ✅ Transaction committed for line_frontage_id={line_frontage_id}\n")
 
         except Exception as e:
             if conn:
                 conn.rollback()
-            print(f"[update_BLine_AMR_return] ❌ Error: {e}")
+            print(f"[DepalletAreaRepository >> call_AMR_return] ❌ Error: {e}")
             raise
         finally:
             if cur:
                 cur.close()
             if conn:
                 conn.close()
-
-
-    # TODO: 間口に搬送対象idを入力
-    # def update_BLine_AMR_return(self, line_frontage_id):
-    # Mapping for signal IDs
-        # signal_map = {
-        #     "hashiru_ichi": { # TODO: 呼び出し信号をリセット
-        #         # Bライン, R1,R2,R3,L1,L2,L3
-        #         1: (8061, 8046, 8031, 8016, 8000), # R1
-        #         2: (8061, 8046, 8032, 8016, 8000),
-        #         3: (8060, 8046, 8032),
-        #         4: (8260, 8246, 8231, 8216, 8201), # L1
-        #         5: (8260, 8246, 8231, 8216, 8201), # L2
-        #         6: (8231, 8216, 8200),
-        #     },
-        #     "hashiru_ni": { # TODO: 搬送指示　間口からストアに搬送
-        #         # Bライン, R1,R2,R3,L1,L2,L3
-        #         1: (8062, 8047, 8032, 8017, 8002),
-        #         2: (8062, 8047, 8032, 8017, 8002),
-        #         3: (8062, 8047, 8032),
-        #         4: (8262, 8247, 8232, 8217, 8202),
-        #         5: (8262, 8247, 8232, 8217, 8202), # L2
-        #         6: (8232, 8217, 8202),
-        #     },
-        #     "kaeru_ichi": { # TODO: 搬送対象idをリセット
-        #         # Bライン, R1,R2,R3,L1,L2,L3
-        #         1: (8404, 8403, 8402, 8401, 8400),
-        #         2: (8404, 8403, 8402, 8401, 8400),
-        #         3: (8404, 8403, 8402),
-        #         4: (8504, 8503, 8502, 8501, 8500),
-        #         5: (8504, 8503, 8502, 8501, 8500), # L2
-        #         6: (8502, 8501, 8500),
-        #     },
-        #     "kaeru_ni": { # TODO: 搬送指示リセット
-        #         # Bライン, R1,R2,R3,L1,L2,L3
-        #         1: (8062, 8047, 8032, 8017, 8002),  # No IDs for R1
-        #         2: (8062, 8047, 8032, 8017, 8002),  # No IDs for R2
-        #         3: (8062, 8047, 8032),  # No IDs for R3
-        #         4: (8262, 8247, 8232, 8217, 8202),
-        #         5: (8262, 8247, 8232, 8217, 8202),
-        #         6: (8232, 8217, 8202),
-        #     }
-        # }
-
-        # if line_frontage_id not in range(1, 7):
-        #     raise ValueError(f"Invalid line_frontage_id: {line_frontage_id}")
-
-        # try:
-        #     conn = self.db.wcs_pool.get_connection()
-        #     conn.start_transaction()
-        #     cur = conn.cursor()
-
-        #     updates = [
-        #         ("hashiru_ichi", 0),
-        #         ("hashiru_ni", 1),
-        #         ("kaeru_ichi", 0),
-        #         ("kaeru_ni", 0),
-        #     ]
-
-        #     for key, value in updates:
-        #         ids = signal_map[key].get(line_frontage_id, ())
-        #         if ids:
-        #             placeholders = ','.join(['%s'] * len(ids))
-        #             sql = f"UPDATE `eip_signal`.word_input SET value = %s WHERE signal_id IN ({placeholders})"
-        #             cur.execute(sql, (value, *ids))
-        #             print(f"[update_BLine_AMR_return >> Updated {key} IDs]: {ids}")
-        #         else:
-        #             print(f"[update_BLine_AMR_return >> No IDs for {key}]")
-
-        #     conn.commit()
-        #     print(f"[update_BLine_AMR_return] Transaction committed for line_frontage_id={line_frontage_id}")
-
-        # except Exception as e:
-        #     if conn:
-        #         conn.rollback()
-        #     print(f"[update_BLine_AMR_return] Error: {e}")
-        #     raise
-        # finally:
-        #     if cur:
-        #         cur.close()
-        #     if conn:
-        #         conn.close()
-
-    
-    # def get_depallet_area_by_plat(self, plat_id_list: list = None, button_id: int = 0):
-    #     """
-    #     Build update_frontages for plats 20–29 (or custom plat_id_list).
-    #     Each plat key contains a list of shelf details.
-    #     """
-    #     conn = None
-    #     cur = None
-    #     try:
-    #         conn = self.db.depal_pool.get_connection()
-    #         cur = conn.cursor(dictionary=True)
-
-    #         if not plat_id_list:
-    #             plat_id_list = [str(i) for i in range(20, 30)]  # Default: 20–29
-           
-    #         placeholders = ','.join(['%s'] * len(plat_id_list))
-
-    #         sql = f"""
-    #         SELECT 
-    #             mb.plat,
-    #             ts.step_kanban_no,
-    #             ts.load_num,
-    #             ts.shelf_code
-    #         FROM `futaba-chiryu-3building`.t_shelf_status AS ts
-    #         INNER JOIN `futaba-chiryu-3building`.t_location_status AS tl
-    #             ON ts.shelf_code = tl.shelf_code
-    #         INNER JOIN `futaba-chiryu-3building`.m_basis_location AS mb
-    #             ON tl.cell_code = mb.cell_code
-    #         WHERE mb.plat IN ({placeholders});
-    #         """
-
-    #         cur.execute(sql, plat_id_list)
-    #         rows = cur.fetchall()
-
-    #         update_frontages = {}
-    #         for row in rows:
-    #             plat_value = row["plat"]
-    #             if plat_value not in update_frontages:
-    #                 update_frontages[plat_value] = []
-    #                 update_frontages[plat_value].append({
-    #                 "step_kanban_no": row["step_kanban_no"],
-    #                 "load_num": row["load_num"],
-    #                 "shelf_code": row["shelf_code"],
-    #                 "take_count": self.take_count_map.get(row["step_kanban_no"], "0"),
-    #                 "flow_rack_no": self.flowrack_no_map.get(row["step_kanban_no"], "0")
-    #             })
-
-    #         return update_frontages
-
-    #     except Exception as e:
-    #         print(f"[DepalletAreaRepository >> Error] : {e}")
-    #         return {}
-
-    #     finally:
-    #         if cur:
-    #             cur.close()
-    #         if conn:
-    #             conn.close()
-    
     
     def get_depallet_area_by_plat(self, plat_id_list: list = None, button_id: int = 0):
         """
@@ -696,28 +562,51 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 if conn:
                     conn.close()
 
+    # TODO: かんばん抜きの発信を呼び出し
+    def insert_kanban_nuki(self):
+        try:
+            conn = self.db.wcs_pool.get_connection()
+            conn.start_transaction()
+            cur = conn.cursor()
 
-    
-    # # TODO: retrieve plat 
-    # def _get_first_plat(self, cur, shelf_code):
-    #     """Helper to get first plat for a shelf_code."""
-    #     cell_code_sql = """
-    #     SELECT cell_code FROM `futaba-chiryu-3building`.t_location_status
-    #     WHERE shelf_code = %s;
-    #     """
-    #     cur.execute(cell_code_sql, (shelf_code,))
-    #     cell_code_result = cur.fetchall()
-    #     if not cell_code_result:
-    #         return None
+            sql = f"UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id IN (9030)"
+            cur.execute(sql)
 
-    #     first_cell_code = cell_code_result[0]["cell_code"]
-    #     plat_sql = """
-    #     SELECT plat FROM `futaba-chiryu-3building`.m_basis_location
-    #     WHERE cell_code = %s;
-    #     """
-    #     cur.execute(plat_sql, (first_cell_code,))
-    #     plat_result = cur.fetchall()
-    #     return plat_result[0]["plat"] if plat_result else None
+            print(f"[DepalletAreaRepository >> insert_kanban_nuki >> Updated IDs signal_id: 9030]")
+
+            conn.commit()
+        except Exception as e:
+            if conn:
+                conn.rollback()
+            raise Exception(f"[DepalletAreaRepository >> insert_kanban_nuki Error]: {e}")
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+
+    # TODO: かんばん差しの発信を呼び出し
+    def insert_kanban_sashi(self):
+        try:
+            conn = self.db.wcs_pool.get_connection()
+            conn.start_transaction()
+            cur = conn.cursor()
+
+            sql = f"UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id IN (9031)"
+            cur.execute(sql)
+
+            print(f"[DepalletAreaRepository >> insert_kanban_sashi >> Updated IDs signal_id: 9031]")
+
+            conn.commit()
+        except Exception as e:
+            if conn:
+                conn.rollback()
+            raise Exception(f"[DepalletAreaRepository >> insert_kanban_sashi Error]: {e}")
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
 
 
 if __name__ == "__main__":

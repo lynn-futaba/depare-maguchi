@@ -7,50 +7,71 @@ $(document).ready(function () {
           
              success: function (data) {
                 // console.log('update_product_info >>', data); // TODO:
-                 updateTable(data);
+                 updateProductInfo(data);
             },
             error: function (error) {
                 console.error("Error fetching data:", error);
             }
         });
 
-        function updateTable(data) {
+        function updateProductInfo(data) {
 
-            let aProductRData = JSON.parse(data[0]); // TODO: add
-            let aProductLData = JSON.parse(data[1]); // TODO: add
-            let bProductRData = JSON.parse(data[2]); // TODO: add
-            let bProductLData = JSON.parse(data[3]); // TODO: add
+            let arProductData = JSON.parse(data[0]); // TODO: add
+            let alProductLData = JSON.parse(data[1]); // TODO: add
+            let brProductRData = JSON.parse(data[2]); // TODO: add
+            let blProductLData = JSON.parse(data[3]); // TODO: add
             let lineData = JSON.parse(data[4]);
 
-            let tbodyAProduct = $('#a-product');
-            let tbodyBProduct = $('#b-product');
+            let tbodyARProduct = $('#a-r-product');
+            let tbodyALProduct = $('#a-l-product');
 
-            tbodyAProduct.empty();
-            tbodyBProduct.empty();
+            let tbodyBRProduct = $('#b-r-product');
+            let tbodyBLProduct = $('#b-l-product');
 
-            let displayAProduct = `
+            
+
+            tbodyARProduct.empty();
+            tbodyALProduct.empty();
+            tbodyBRProduct.empty();
+            tbodyBLProduct.empty();
+
+            let displayARProduct = `
                 <tr>
-                    <td>${aProductRData.product.kanban_id}</td>
-                    <td>${aProductRData.planned_num}</td>
-                    <td>${aProductRData.output_num}</td>
-                    <td>${aProductLData.product.kanban_id}</td>
-                    <td>${aProductLData.planned_num}</td>
-                    <td>${aProductLData.output_num}</td>
+                    <td>${arProductData.product.kanban_id}</td>
+                    <td>${arProductData.planned_num}</td>
+                    <td>${arProductData.output_num}</td>
                 </tr>
             `;
-            tbodyAProduct.append(displayAProduct);
+            tbodyARProduct.append(displayARProduct);
 
-            let displayBProduct = `
+            let displayALProduct = `
                 <tr>
-                    <td>${bProductRData.product.kanban_id}</td>
-                    <td>${bProductRData.planned_num}</td>
-                    <td>${bProductRData.output_num}</td>
-                    <td>${bProductLData.product.kanban_id}</td>
-                    <td>${bProductLData.planned_num}</td>
-                    <td>${bProductLData.output_num}</td>
+                    <td>${alProductLData.product.kanban_id}</td>
+                    <td>${alProductLData.planned_num}</td>
+                    <td>${alProductLData.output_num}</td>
                 </tr>
             `;
-            tbodyBProduct.append(displayBProduct);
+            tbodyALProduct.append(displayALProduct);
+
+            let displayBRProduct = `
+                <tr>
+                    <td>${brProductRData.product.kanban_id}</td>
+                    <td>${brProductRData.planned_num}</td>
+                    <td>${brProductRData.output_num}</td>
+                </tr>
+            `;
+            tbodyBRProduct.append(displayBRProduct);
+
+            let displayBLProduct = `
+                <tr>
+                    <td>${blProductLData.product.kanban_id}</td>
+                    <td>${blProductLData.planned_num}</td>
+                    <td>${blProductLData.output_num}</td>
+                </tr>
+            `;
+            tbodyBLProduct.append(displayBLProduct);
+
+
           
             Object.keys(lineData).forEach((key) => {
 
@@ -79,13 +100,14 @@ $(document).ready(function () {
     };
 
     // 定期実行 
-    // setInterval(refreshPage, 1000); // TODO
+    setInterval(refreshPage, 5000); // TODO
     $('#refreshButton').on('click', function () {
         refreshPage();
     });
 });
 
-function callToBLINEAMR(id) {
+// TODO: call to B LINE Depallet Maguchi
+function callToBLineDepalletMaguchi(id) {
     // TODO: to display 供給間口 
     const maguchiMap = {
         1: "Bライン(R1)", 2: "Bライン(R2)", 3: "Bライン(R3)", 4: "Bライン(L1)", 5: "Bライン(L2)", 6: "Bライン(L3)"
@@ -158,7 +180,9 @@ function callToBLINEAMR(id) {
     } 
 }
 
-function callToALINEAMR(id) {
+
+// TODO: call to A LINE Depallet Maguchi
+function callToALineDepalletMaguchi(id) {
     // TODO: to display 供給間口 
     const maguchiMap = {
         7: "Aライン R1", 8: "Aライン R2", 9: "Aライン R3", 10: "Aライン L1", 11: "Aライン L2", 12: "Aライン L3"
@@ -214,4 +238,36 @@ function callToALINEAMR(id) {
             }
         });
     } 
+}
+
+// TODO: かんばん抜きの発信を呼び出し
+function submitKanbanNuki() {
+    $.ajax({
+        url: "/api/insert_kanban_nuki",
+        type: "GET",
+        contentType: "application/json",
+        success: function (data) {
+            console.log("insert_kanban_nuki >> data >>", data);
+            alert("✅ かんばん抜きの発信を呼び出ました!");
+        },
+        error: function (error) {
+            alert("❌ かんばん抜きの発信を呼び出せません", error);
+        }
+    });
+}
+
+// TODO: かんばん差しの発信を呼び出し
+function submitKanbanSashi() {
+    $.ajax({
+        url: "/api/insert_kanban_sashi",
+        type: "GET",
+        contentType: "application/json",
+        success: function (data) {
+            console.log("insert_kanban_sashi >> data >>", data);
+            alert("✅ かんばん差しの発信を呼び出ました!");
+        },
+        error: function (error) {
+            alert("❌ かんばん差しの発信を呼び出せません", error);
+        }
+    });
 }

@@ -140,14 +140,27 @@ class DepalletApplication():
         except Exception as e:
             raise Exception(f"DepalletApplication >> call_target_ids >> Error: {e}")
         
-    def update_BLine_AMR_return(self, line_frontage_id):
-        print("[DepalletApplication >> update_BLine_AMR_return >> line_frontage_id ] :")
+    def call_AMR_return(self, line_frontage_id):
+        print("[DepalletApplication >> call_AMR_return >> line_frontage_id ] :")
         try:
-            self.depallet_service.update_BLine_AMR_return(line_frontage_id)
+            self.depallet_service.call_AMR_return(line_frontage_id)
         except Exception as e:
-            raise Exception(f"DepalletApplication >> update_BLine_AMR_return >> Error: {e}")
+            raise Exception(f"DepalletApplication >> call_AMR_return >> Error: {e}")
         
     
+    def insert_kanban_nuki(self):
+        print("[DepalletApplication >> insert_kanban_nuki >> ] :")
+        try:
+            self.depallet_service.insert_kanban_nuki()
+        except Exception as e:
+            raise Exception(f"DepalletApplication >> insert_kanban_nuki >> Error: {e}")
+        
+    def insert_kanban_sashi(self):
+        print("[DepalletApplication >> insert_kanban_sashi >> ] :")
+        try:
+            self.depallet_service.insert_kanban_sashi()
+        except Exception as e:
+            raise Exception(f"DepalletApplication >> insert_kanban_sashi >> Error: {e}")
 
      # コタツに部品を戻す
     def return_part(self, frontage_id:int, part_id:int):
@@ -179,7 +192,7 @@ class DepalletApplication():
             # print(f"[return_part >> Error depalletizing] : {e}")
             raise Exception(f"Error depalletizing: {e}")
         
-    def return_kotatsu(self,frontage_id:int):
+    def return_kotatsu(self, frontage_id:int):
         try:
             frontage = self.depallet_area.get_by_id(frontage_id)
             if frontage is None:

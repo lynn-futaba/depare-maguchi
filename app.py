@@ -197,27 +197,27 @@ class DepalletWebServer:
                 print(f"[call_target_ids >> error] : {e}")
                 return abort(400, str(e))
         
-        @app.route("/api/update_BLine_AMR_return", methods=["POST"])
-        def update_BLine_AMR_return():
+        @app.route("/api/call_AMR_return", methods=["POST"])
+        def call_AMR_return():
             try:
                 # line_frontage_id will be an array/list (e.g., [4])
                 line_frontage_id = request.json.get('line_frontage_id') 
                 
                 # Check if it's a list and process each ID
                 if isinstance(line_frontage_id, list):
-                    print(f"[update_BLine_AMR_return >> line_frontage_ids] : {line_frontage_id}")
+                    print(f"[call_AMR_return >> line_frontage_ids] : {line_frontage_id}")
                     # You will likely need to loop through the IDs in your model/application logic
                     for id in line_frontage_id:
-                        # Assuming your update_BLine_AMR_return handles a single ID per call or is updated to handle the list
-                        self._depallet_app.update_BLine_AMR_return(id) 
+                        # Assuming your call_AMR_return handles a single ID per call or is updated to handle the list
+                        self._depallet_app.call_AMR_return(id) 
                 else:
                     # Handle the case where it might be a single item or unexpected format
-                    print(f"[update_BLine_AMR_return >> single line_frontage_id] : {line_frontage_id}")
-                    self._depallet_app.update_BLine_AMR_return(line_frontage_id)
+                    print(f"[call_AMR_return >> single line_frontage_id] : {line_frontage_id}")
+                    self._depallet_app.call_AMR_return(line_frontage_id)
                     
                 return jsonify({"status": "success"})
             except Exception as e:
-                print(f"[update_BLine_AMR_return >> error] : {e}")
+                print(f"[call_AMR_return >> error] : {e}")
                 return abort(400, str(e))
     
         file_lock = threading.Lock()
@@ -251,6 +251,26 @@ class DepalletWebServer:
                 return jsonify({"status": "success", "updated": {kanban_no: new_take_count}})
             except Exception as e:
                 return jsonify({"status": "error", "message": str(e)}), 500
+            
+        @app.route("/api/insert_kanban_nuki", methods=["GET"])
+        def insert_kanban_nuki():
+            try:
+                print("[insert_kanban_nuki >>]")
+                self._depallet_app.insert_kanban_nuki()
+                return jsonify({"status": "success"})
+            except Exception as e:
+                print(f"[insert_kanban_nuki >> error] : {e}")
+                return abort(400, str(e))
+        
+        @app.route("/api/insert_kanban_sashi", methods=["GET"])
+        def insert_kanban_sashi():
+            try:
+                print("[insert_kanban_sashi >>]")
+                self._depallet_app.insert_kanban_sashi()
+                return jsonify({"status": "success"})
+            except Exception as e:
+                print(f"[insert_kanban_sashi >> error] : {e}")
+                return abort(400, str(e))
 
 if __name__ == "__main__":
     depallet_app = None # TODO

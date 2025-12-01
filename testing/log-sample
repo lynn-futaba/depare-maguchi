@@ -1,12 +1,12 @@
-[update_BLine_AMR_return] Starting transaction for line_frontage_id=1
+[call_AMR_return] Starting transaction for line_frontage_id=1
 
 [Before update hashiru_ichi] IDs: (8061, 8046, 8031, 8016, 8000) | Values: [(8061, 1), (8046, 1), ...]
-[update_BLine_AMR_return >> Updated hashiru_ichi IDs]: (8061, 8046, 8031, 8016, 8000) | New Value: 0
+[call_AMR_return >> Updated hashiru_ichi IDs]: (8061, 8046, 8031, 8016, 8000) | New Value: 0
 [After update hashiru_ichi] IDs: (8061, 8046, 8031, 8016, 8000) | Values: [(8061, 0), (8046, 0), ...]
 
 [Before update hashiru_ni] IDs: (8062, 8047, 8032, 8017, 8002) | Values: [(8062, 0), ...]
-[update_BLine_AMR_return >> Updated hashiru_ni IDs]: (8062, 8047, 8032, 8017, 8002) | New Value: 1
+[call_AMR_return >> Updated hashiru_ni IDs]: (8062, 8047, 8032, 8017, 8002) | New Value: 1
 [After update hashiru_ni] IDs: (8062, 8047, 8032, 8017, 8002) | Values: [(8062, 1), ...]
 
 ...
-[update_BLine_AMR_return] ✅ Transaction committed for line_frontage_id=1
+[call_AMR_return] ✅ Transaction committed for line_frontage_id=1

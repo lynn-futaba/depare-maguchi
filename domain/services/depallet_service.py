@@ -130,8 +130,8 @@ class DepalletService:
             print("[DepalletService >> insert_target_ids >> line_frontage_id ]")
             self.depallet_area_repo.insert_target_ids(line_frontage_id)
         except Exception as e:
-            print(f"Error update maguchi by signal input: {e}")
-            raise Exception(f"Error update maguchi by signal input: {e}")
+            print(f"DepalletService >> Error update maguchi by signal input: {e}")
+            raise Exception(f"DepalletService >> Error update maguchi by signal input: {e}")
         
     # update maguchi signal 2
     def call_target_ids(self, line_frontage_id):
@@ -139,17 +139,17 @@ class DepalletService:
             print("[DepalletService >> call_target_ids >> line_frontage_id ]")
             self.depallet_area_repo.call_target_ids(line_frontage_id)
         except Exception as e:
-            print(f"Error set values to maguchi: {e}")
-            raise Exception(f"Error set values to maguchi: {e}")
+            print(f"DepalletService >> Error set values to maguchi: {e}")
+            raise Exception(f"DepalletService >> Error set values to maguchi: {e}")
         
 
-    def update_BLine_AMR_return(self, line_frontage_id):
+    def call_AMR_return(self, line_frontage_id):
         try:
-            print("[DepalletService >> update_BLine_AMR_return >> line_frontage_id ]")
-            self.depallet_area_repo.update_BLine_AMR_return(line_frontage_id)
+            print("[DepalletService >> call_AMR_return >> line_frontage_id ]")
+            self.depallet_area_repo.call_AMR_return(line_frontage_id)
         except Exception as e:
-            print(f"Error set values to update_BLine_AMR_return: {e}")
-            raise Exception(f"Error set values to update_BLine_AMR_return: {e}")
+            print(f"DepalletService >> Error set values to call_AMR_return: {e}")
+            raise Exception(f"DepalletService >> Error set values to call_AMR_return: {e}")
                 
     # update new depallet area
     def get_depallet_area_by_plat(self, plat_id_list:list, button_id: int):
@@ -160,7 +160,25 @@ class DepalletService:
             print(f"[DepalletService >> get_depallet_area_by_plat >> new_area Result] : {new_area}") # TODO: testing
             return new_area
         except Exception as e:
-            raise Exception(f"Error loading depallet area: {e}")
+            raise Exception(f"DepalletService >> Error loading depallet area: {e}")
+        
+    # insert kanban nuki
+    def insert_kanban_nuki(self):
+        try:
+            print("[DepalletService >> insert_kanban_nuki >> ]")
+            self.depallet_area_repo.insert_kanban_nuki()
+        except Exception as e:
+            print(f"DepalletService >> Error set values to insert_kanban_nuki: {e}")
+            raise Exception(f"DepalletService >> Error set values to insert_kanban_nuki: {e}")
+        
+    # insert kanban sashi
+    def insert_kanban_sashi(self):
+        try:
+            print("[DepalletService >> insert_kanban_sashi >> ]")
+            self.depallet_area_repo.insert_kanban_sashi()
+        except Exception as e:
+            print(f"DepalletService >> Error set values to insert_kanban_sashi: {e}")
+            raise Exception(f"DepalletService >> Error set values to insert_kanban_sashi: {e}")
 
 if __name__ == "__main__":
   

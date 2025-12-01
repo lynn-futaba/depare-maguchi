@@ -18,7 +18,7 @@ class ProductInfoRepository(IProductInfoRepository):
             cur.execute(sql)
             result= cur.fetchall()
 
-            print(f"[ProductInfoRepository >> Get_product >> Query Result] : {result}")
+            # print(f"[ProductInfoRepository >> Get_product >> Query Result] : {result}")
         
             for row in result:
                 product = Product(row["product_id"], row["kanban_no"], line_id, row["name"])
@@ -46,7 +46,7 @@ class ProductInfoRepository(IProductInfoRepository):
             cur.execute(sql)
             result = cur.fetchall()
 
-            print(f"[ProductInfoRepository >> Get_product_info >> Query Result] : {result}")
+            # print(f"[ProductInfoRepository >> Get_product_info >> Query Result] : {result}")
 
             #resultが０
             if len(result) == 0:

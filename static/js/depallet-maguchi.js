@@ -154,7 +154,7 @@ function getDepalletAreaByPlat(data, idValue, nameValue) {
         
     
     // 定期実行 
-    // setInterval(refreshPage, 3000); // TODD
+    setInterval(refreshPage, 5000); // TODD
 
         
     $('#refreshButton').on('click', function () {
@@ -204,7 +204,7 @@ function getDepalletAreaByPlat(data, idValue, nameValue) {
     }
     
     $.ajax({
-        url: "/api/update_BLine_AMR_return",
+        url: "/api/call_AMR_return",
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
