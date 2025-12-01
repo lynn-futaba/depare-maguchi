@@ -65,6 +65,15 @@ class DepalletWebServer:
                 return render_template('depallet-maguchi.html', id = id_value, name = name_value)
             except Exception as e:
                 return abort(400, 'Invalid request')
+            
+        @app.route("/a_line_depallet_maguchi", methods=["GET"])
+        def a_line_depallet_maguchi():
+            try:
+                id_value = request.args.get("id")
+                name_value = request.args.get("name")
+                return render_template('a-line-depallet-maguchi.html', id = id_value, name = name_value)
+            except Exception as e:
+                return abort(400, 'Invalid request')
 
         @app.route("/api/update_product_info",methods=["GET"])
         def update_product_info():

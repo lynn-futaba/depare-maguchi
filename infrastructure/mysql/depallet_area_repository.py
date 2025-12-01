@@ -260,23 +260,27 @@ class DepalletAreaRepository(IDepalletAreaRepository):
     
     # TODO: 間口に搬送対象idを入力
     def insert_target_ids(self, line_frontage_id):
+        conn = None
+        cur = None
         try:
             print(f"[insert_target_ids] Starting flowrack update for line_frontage_id={line_frontage_id}")
 
-            # Prepare creates mapping
-            creates = []
-            if line_frontage_id == 1:
-                creates = [(107, 8404), (103, 8403), (105, 8402), (106, 8401), (18, 8400)] # Bライン, R1 => button_id 1, 間口5 associated with plat = 29
-            elif line_frontage_id == 2:
-                creates = [(102, 8404), (108, 8403), (101, 8402), (104, 8401), (21, 8400)] # Bライン, R2 => button_id 2, 間口5 associated with plat = 29
-            elif line_frontage_id == 3:
-                creates = [(23, 8404), (100, 8403), (301, 8402)] # Bライン, R3 => button_id 3, 間口5 associated with plat = 29
-            elif line_frontage_id == 4:
-                creates = [(26, 8504), (206, 8503), (205, 8502), (203, 8501), (208, 8500)] # Bライン, L1 => button_id 4, 間口5 associated with plat = 29
-            elif line_frontage_id == 5:
-                creates = [(29, 8504), (204, 8503), (201, 8502), (207, 8501), (202, 8500)] # Bライン, L2 => button_id 5, 間口5 associated with plat = 29
-            elif line_frontage_id == 6:
-                creates = [(300, 8502), (200, 8501), (31, 8500)] # Bライン, L3 => button_id 6, 間口5 associated with plat = 29
+            # Mapping for creates
+            creates_map = {
+                1: [(107, 8404), (103, 8403), (105, 8402), (106, 8401), (18, 8400)],  # Bライン, R1 => button_id 1
+                2: [(102, 8404), (108, 8403), (101, 8402), (104, 8401), (21, 8400)],  # Bライン, R2 => button_id 2
+                3: [(23, 8404), (100, 8403), (301, 8402)],                             # Bライン, R3 => button_id 3
+                4: [(26, 8504), (206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # Bライン, L1 => button_id 4
+                5: [(29, 8504), (204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # Bライン, L2 => button_id 5
+                6: [(300, 8502), (200, 8501), (31, 8500)]                             # Bライン, L3 => button_id 6
+            }
+
+            plat_map = {1: 20, 2: 20, 3: 22, 4: 29, 5: 29, 6: 25} # Bライン
+            kanban_map = {1: 2001, 2: 2002, 3: 2003, 4: 2004, 5: 2005, 6: 2006} # Bライン
+
+            creates = creates_map.get(line_frontage_id)
+            plat = plat_map.get(line_frontage_id, 0)
+            step_kanban_no = kanban_map.get(line_frontage_id)
 
             if not creates:
                 print("No mappings found for given line_frontage_id.")
@@ -287,44 +291,37 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             conn.start_transaction()
             cur = conn.cursor(dictionary=True)
 
-            # Fetch shelf status for plat = 29
+            # Fetch shelf status for plat
             sql = """
                 SELECT ts.shelf_code, ts.kotatsu_status, ts.update_datetime, ts.step_kanban_no
                 FROM `futaba-chiryu-3building`.t_shelf_status AS ts
                 INNER JOIN `futaba-chiryu-3building`.t_location_status AS tl USING(shelf_code)
                 INNER JOIN `futaba-chiryu-3building`.m_basis_location AS mb
                     ON tl.cell_code = mb.cell_code
-                WHERE mb.plat = '29'
+                WHERE mb.plat = %s
             """
-            cur.execute(sql)
+            cur.execute(sql, (plat,))
             result = cur.fetchall()
 
-    # Filter EMPTY rows and sort by earliest update_datetime
+            # Filter EMPTY rows and sort by earliest update_datetime
             empty_rows = [row for row in result if row["kotatsu_status"] == "EMPTY" and row["step_kanban_no"]]
             empty_rows.sort(key=lambda r: r["update_datetime"])
 
             print(f"[insert_target_ids] Found {len(empty_rows)} EMPTY shelves.")
 
             if not empty_rows:
-                print("[insert_target_ids] No EMPTY shelves found for plat=29.")
+                print(f"[insert_target_ids] No EMPTY shelves found for plat={plat}.")
                 conn.rollback()
                 return
 
-            # Replace car_model_id only in first mapping
-            step_kanban_no = empty_rows[0]["step_kanban_no"]
-            cur.execute("""
-                SELECT car_model_id FROM `futaba-chiryu-3building`.m_product
-                WHERE kanban_no = %s
-            """, (step_kanban_no,))
-            product = cur.fetchone()
-            car_model_id = product["car_model_id"] if product else None
-
-            if car_model_id is None:
-                print("[insert_target_ids] No car_model_id found for kanban_no.")
-                conn.rollback()
-                return
-
-            creates[0] = (car_model_id, creates[0][1])
+            # ✅ Update t_shelf_status with new step_kanban_no
+            update_sql = """
+                UPDATE `futaba-chiryu-3building`.t_shelf_status
+                SET step_kanban_no = %s
+                WHERE step_kanban_no = %s
+            """
+            cur.execute(update_sql, (step_kanban_no, empty_rows[0]["step_kanban_no"]))
+            print(f"[insert_target_ids] Updated t_shelf_status: {empty_rows[0]['step_kanban_no']} -> {step_kanban_no}")
 
             # ✅ Update signals once
             cur.executemany(
@@ -334,13 +331,15 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             conn.commit()
             print(f"[insert_target_ids] Signal updates completed for line_frontage_id={line_frontage_id}")
 
-
         except Exception as e:
-            conn.rollback()
+            if conn:
+                conn.rollback()
             raise Exception(f"[insert_target_ids] Error: {e}")
         finally:
-            cur.close()
-            conn.close()
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
 
     # TODO: 間口に搬送対象を呼び出す
     def call_target_ids(self, line_frontage_id):

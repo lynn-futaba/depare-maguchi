@@ -193,7 +193,7 @@ function callToALINEAMR(id) {
                                     success: function (data) {
                                         console.log("call_target_ids >> data >>", data);
                                         alert("✅ 間口に搬送対象を呼び出ました!");
-                                        const nextPageUrl = `/depallet?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
+                                        const nextPageUrl = `/a_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
                                         window.open(nextPageUrl, "_blank"); // Opens new tab
                                     },
                                     error: function (error) {
