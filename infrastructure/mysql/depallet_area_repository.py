@@ -9,8 +9,6 @@ from domain.infrastructure.depallet_area_repository import IDepalletAreaReposito
 
 import json
 import os
-
-from datetime import datetime
 import time
 
 #mysql実装
@@ -18,7 +16,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
     def __init__(self,db):
 
-        self.db =db
+        self.db = db
         
         # TODO : Load take_count config dynamically
         TAKE_COUNT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../../config/take_count_config.json")
@@ -34,6 +32,13 @@ class DepalletAreaRepository(IDepalletAreaRepository):
         MAGUCHI_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../../config/maguchi_no_config.json")
         with open(MAGUCHI_CONFIG_PATH, "r", encoding="utf-8") as f:
             self.maguchi_no_map = json.load(f)
+
+        
+        # TODO : Load shelf_code config
+        SHELF_FLOWRACKS_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../../config/shelf_code_flowracks_config.json")
+        with open(SHELF_FLOWRACKS_CONFIG_PATH, "r", encoding="utf-8") as f:
+            self.config_shelf_codes_flowracks = json.load(f).get("shelf_codes", [])
+
 
     # TODO: Get take_count
     def get_take_count(self, kanban_no: str) -> str:
@@ -303,7 +308,9 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
             
             # ✅ Fetch shelf status for specific shelf_codes
-            shelf_codes = ('K30147', 'K30148', 'K30149', 'K30150')
+            # shelf_codes = ('K30143', 'K30148', 'K30149', 'K30150')
+            shelf_codes =  self.config_shelf_codes_flowracks
+            print(f"[DepalletAreaRepository >> self.config_shelf_codes_flowracks] {shelf_codes}.")
             sql = f"""
                 SELECT shelf_code, kotatsu_status, update_datetime, step_kanban_no
                 FROM `futaba-chiryu-3building`.t_shelf_status
@@ -449,62 +456,90 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 11: (8504, 8503, 8502, 8501, 8500),# L2 => button_id 11
                 12: (8502, 8501, 8500),            # L3 => button_id 12
             },
-            "kaeru_ni": {  # 搬送指示リセット
-                # Bライン, 間口 5,4,3,2,1
-                1: (8062, 8047, 8032, 8017, 8002), # R1 => button_id 1
-                2: (8062, 8047, 8032, 8017, 8002), # R2 => button_id 2
-                3: (8062, 8047, 8032),             # R3 => button_id 3
-                4: (8262, 8247, 8232, 8217, 8202), # L1 => button_id 4
-                5: (8262, 8247, 8232, 8217, 8202), # L2 => button_id 5
-                6: (8232, 8217, 8202),             # L3 => button_id 6
-                # Aライン, 間口 5,4,3,2,1
-                7: (8062, 8047, 8032, 8017, 8002), # R1 => button_id 7
-                8: (8062, 8047, 8032, 8017, 8002), # R2 => button_id 8
-                9: (8062, 8047, 8032),             # R3 => button_id 9
-                10: (8262, 8247, 8232, 8217, 8202),# L1 => button_id 10
-                11: (8262, 8247, 8232, 8217, 8202),# L2 => button_id 11
-                12: (8232, 8217, 8202),            # L3 => button_id 12
-            }
+            # "kaeru_ni": {  # 搬送指示リセット
+            #     # Bライン, 間口 5,4,3,2,1
+            #     1: (8062, 8047, 8032, 8017, 8002), # R1 => button_id 1
+            #     2: (8062, 8047, 8032, 8017, 8002), # R2 => button_id 2
+            #     3: (8062, 8047, 8032),             # R3 => button_id 3
+            #     4: (8262, 8247, 8232, 8217, 8202), # L1 => button_id 4
+            #     5: (8262, 8247, 8232, 8217, 8202), # L2 => button_id 5
+            #     6: (8232, 8217, 8202),             # L3 => button_id 6
+            #     # Aライン, 間口 5,4,3,2,1
+            #     7: (8062, 8047, 8032, 8017, 8002), # R1 => button_id 7
+            #     8: (8062, 8047, 8032, 8017, 8002), # R2 => button_id 8
+            #     9: (8062, 8047, 8032),             # R3 => button_id 9
+            #     10: (8262, 8247, 8232, 8217, 8202),# L1 => button_id 10
+            #     11: (8262, 8247, 8232, 8217, 8202),# L2 => button_id 11
+            #     12: (8232, 8217, 8202),            # L3 => button_id 12
+            # }
         }
 
         if line_frontage_id not in range(1, 13):
             raise ValueError(f"Invalid line_frontage_id: {line_frontage_id}")
-
+       
+        
         
         try:
             conn = self.db.wcs_pool.get_connection()
             conn.start_transaction()
             cur = conn.cursor()
 
-            # Step 1: Reset 呼び出し信号 (hashiru_ichi)
-            ids = signal_map["hashiru_ichi"][line_frontage_id]
-            placeholders = ','.join(['%s'] * len(ids))
-            print(f"[{datetime.now()}] Step 1: Reset hashiru_ichi -> IDs={ids}")
-            cur.execute(f"UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id IN ({placeholders})", ids)
-            time.sleep(1)
+            # Collect IDs
+            ids_step1 = signal_map.get("hashiru_ichi", {}).get(line_frontage_id, [])
+            ids_step2 = signal_map.get("hashiru_ni", {}).get(line_frontage_id, [])
+            ids_step3 = signal_map.get("kaeru_ichi", {}).get(line_frontage_id, [])
 
-            # Step 2: 搬送指示 (hashiru_ni)
-            ids = signal_map["hashiru_ni"][line_frontage_id]
-            placeholders = ','.join(['%s'] * len(ids))
-            print(f"[{datetime.now()}] Step 2: Set hashiru_ni -> IDs={ids}")
-            cur.execute(f"UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id IN ({placeholders})", ids)
-            time.sleep(1)
+            all_ids = [*ids_step1, *ids_step2, *ids_step3]
 
-            # Step 3: 搬送対象idリセット (kaeru_ichi)
-            ids = signal_map["kaeru_ichi"][line_frontage_id]
-            placeholders = ','.join(['%s'] * len(ids))
-            print(f"[{datetime.now()}] Step 3: Reset kaeru_ichi -> IDs={ids}")
-            cur.execute(f"UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id IN ({placeholders})", ids)
-            time.sleep(1)
+            if not all_ids:
+                print("⚠ No signal IDs found for update.")
+                return
 
-            # Step 4: 搬送指示リセット (kaeru_ni)
-            ids = signal_map["kaeru_ni"][line_frontage_id]
-            placeholders = ','.join(['%s'] * len(ids))
-            print(f"[{datetime.now()}] Step 4: Reset kaeru_ni -> IDs={ids}")
-            cur.execute(f"UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id IN ({placeholders})", ids)
+            # Build CASE dynamically
+            conditions = []
+            params = []
+            if ids_step1:
+                conditions.append(f"WHEN signal_id IN ({','.join(['%s']*len(ids_step1))}) THEN 0")
+                params.extend(ids_step1)
+            if ids_step3:
+                conditions.append(f"WHEN signal_id IN ({','.join(['%s']*len(ids_step3))}) THEN 0")
+                params.extend(ids_step3)
+            if ids_step2:
+                conditions.append(f"WHEN signal_id IN ({','.join(['%s']*len(ids_step2))}) THEN 1")
+                params.extend(ids_step2)
+
+            placeholders_all = ','.join(['%s'] * len(all_ids))
+            params.extend(all_ids)
+
+            sql = f"""
+            UPDATE eip_signal.word_input
+            SET value = CASE {' '.join(conditions)} END
+            WHERE signal_id IN ({placeholders_all})
+            """
+
+            # Execute combined update
+            cur.execute(sql, params)
+            print(f"✅ Combined update executed (rows changed: {cur.rowcount})")
 
             conn.commit()
-            print(f"[{datetime.now()}] ✅ Transaction committed for line_frontage_id={line_frontage_id}")
+
+            # Wait before checking Step 2
+            time.sleep(10)
+
+            # Check Step 2 signals
+            if ids_step2:
+                placeholders2 = ','.join(['%s'] * len(ids_step2))
+                cur.execute(f"SELECT COUNT(*) FROM eip_signal.word_input WHERE signal_id IN ({placeholders2}) AND value = 1", ids_step2)
+                count = cur.fetchone()[0]
+                print(f"✅ Step 2 active signals: {count}")
+
+                # Reset Step 2 to 0
+                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders2})", ids_step2)
+                print("✅ Step 2 reset to 0")
+
+                conn.commit()
+
+            print(f"✅ Transaction committed for line_frontage_id={line_frontage_id}")
 
 
 
@@ -518,6 +553,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 cur.close()
             if conn:
                 conn.close()
+
     
     def get_depallet_area_by_plat(self, plat_id_list: list = None, button_id: int = 0):
         """
@@ -532,21 +568,23 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             cur = conn.cursor(dictionary=True)
 
             # plat_id_list (20, 21, 22, 23, 24, 25, 26, 27, 28, 29)
-            # ✅ Apply button logic on incoming plat_id_list
+            # ✅ Apply button logic
             selected_ids = []
+            if button_id in (1, 2, 3, 7, 8, 9):  # R1, R2, R3
+                selected_ids = plat_id_list[:5]  # First half
+            elif button_id in (4, 5, 6, 10, 11, 12):  # L1, L2, L3
+                selected_ids = plat_id_list[5:]  # Second half
 
-            # if button_id is R1, R2, R3 ( both B Line and A Line)
-            if button_id in [1, 2, 3, 7, 8, 9]:
-                selected_ids = plat_id_list[:5]  # [24,23,22,21,20]
-            # if button_id is L1, L2, L3 ( both B Line and A Line)
-            elif button_id in [4, 5, 6, 10, 11, 12]:
-                selected_ids = plat_id_list[5:]  # [25,26,27,28,29]
+            # ✅ Merge and remove duplicates
+            if selected_ids:
+                plat_id_list = list(set(plat_id_list + selected_ids))
 
-            # ✅ Merge
-            # if selected_ids:
-            #     plat_id_list = list(set(plat_id_list + selected_ids))  # Avoid duplicates
+            if not plat_id_list:
+                print("⚠ No plat IDs after button logic.")
+                return {}  # Avoid duplicates
 
             # ✅ Prepare SQL placeholders
+        
             placeholders = ','.join(['%s'] * len(plat_id_list))
 
             sql = f"""

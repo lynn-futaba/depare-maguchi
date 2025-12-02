@@ -104,3 +104,91 @@ SELECT * FROM eip_signal.word_input where signal_id in (8262, 8247, 8232, 8217, 
 SELECT * FROM eip_signal.word_input where signal_id in (8504, 8503, 8502, 8501, 8500);
 -- 搬送指示リセット
 SELECT * FROM eip_signal.word_input where signal_id in (8262, 8247, 8232, 8217, 8202);
+
+=================================================================================
+call AMR_return
+=================================================================================
+
+-- A/B ライン R1,R2 hashiru_ichi 0, hashiru_ni 1, kaeru_ichi 0
+-- SELECT * FROM eip_signal.word_input where signal_id IN (8061, 8046, 8031, 8016, 8000, 8062, 8047, 8032, 8017, 8002, 8404, 8403, 8402, 8401, 8400 );
+-- A/B ライン R1,R2 hashiru_ni 0
+-- SELECT * FROM eip_signal.word_input where signal_id IN (8062, 8047, 8032, 8017, 8002);
+
+-- A/B ライン R3 hashiru_ichi 0, hashiru_ni 1, kaeru_ichi 0
+-- SELECT * FROM eip_signal.word_input where signal_id IN (8060, 8046, 8032, 8062, 8047, 8032, 8404, 8403, 8402 );
+-- A/B ライン R3 hashiru_ni 0
+-- SELECT * FROM eip_signal.word_input where signal_id IN (8062, 8047, 8032);
+=================================================================================
+-- A/B ライン L1/L2 hashiru_ichi 0, hashiru_ni 1, kaeru_ichi 0
+-- SELECT * FROM eip_signal.word_input where signal_id IN (8260, 8246, 8231, 8216, 8201, 8262, 8247, 8232, 8217, 8202, 8504, 8503, 8502, 8501, 8500 );
+-- A/B ライン L1/L2 hashiru_ni 0
+-- SELECT * FROM eip_signal.word_input where signal_id IN (8262, 8247, 8232, 8217, 8202);
+
+
+-- A/B ライン L3 hashiru_ichi 0, hashiru_ni 1, kaeru_ichi 0
+-- SELECT * FROM eip_signal.word_input where signal_id IN (8231, 8216, 8200, 8232, 8217, 8202, 8502, 8501, 8500 );
+-- A/B ライン L3 hashiru_ni 0
+-- SELECT * FROM eip_signal.word_input where signal_id IN (8232, 8217, 8202);
+
+=================================================================================
+
+-- 間口に搬送対象idを入力 Bライン　L1
+-- SELECT * FROM eip_signal.word_input where signal_id in (8504,8503,8502,8501,8500);
+-- 間口に搬送対象を呼び出す　1
+-- SELECT * FROM eip_signal.word_input where signal_id in (8260,8246,8231,8216,8201);
+
+-- 間口に搬送対象idを入力
+-- 呼び出し信号をリセット 0
+-- SELECT * FROM eip_signal.word_input where signal_id in (8260, 8246, 8231, 8216, 8201);
+-- 搬送指示　間口からストアに搬送 1
+-- SELECT * FROM eip_signal.word_input where signal_id in (8262, 8247, 8232, 8217, 8202);
+-- 搬送対象idをリセット 0
+-- SELECT * FROM eip_signal.word_input where signal_id in (8504, 8503, 8502, 8501, 8500);
+-- 搬送指示リセット 0
+-- SELECT * FROM eip_signal.word_input where signal_id in (8262, 8247, 8232, 8217, 8202);
+
+
+-- A/B ライン R1,R2 
+SELECT * FROM eip_signal.word_input where signal_id IN (8061, 8046, 8031, 8016, 8000, 8062, 8047, 8032, 8017, 8002, 8404, 8403, 8402, 8401, 8400 )
+
+-- A/B ライン R3
+-- SELECT * FROM eip_signal.word_input where signal_id IN (8060, 8046, 8032, 8062, 8047, 8032, 8404, 8403, 8402 );
+
+-- A/B ライン L1,L2 
+-- SELECT * FROM eip_signal.word_input where signal_id IN (8260, 8246, 8231, 8216, 8201, 8262, 8247, 8232, 8217, 8202, 8504, 8503, 8502, 8501, 8500 );
+
+-- A/B ライン L3
+-- SELECT * FROM eip_signal.word_input where signal_id IN (8231, 8216, 8200, 8232, 8217, 8202, 8502, 8501, 8500 );
+
+-- http://localhost:5000/api/get_depallet_area_by_plat
+SELECT mb.plat, ts.step_kanban_no, ts.load_num, ts.shelf_code
+            FROM `futaba-chiryu-3building`.t_shelf_status AS ts
+            INNER JOIN `futaba-chiryu-3building`.t_location_status AS tl
+                ON ts.shelf_code = tl.shelf_code
+            INNER JOIN `futaba-chiryu-3building`.m_basis_location AS mb
+                ON tl.cell_code = mb.cell_code
+            WHERE mb.plat IN (20,21,22,23,24,25,26,27,28,29);
+
+-- t_location_status
+SELECT * FROM `futaba-chiryu-3building`.t_location_status where shelf_code IN ('K30147', 'K30148', 'K301497', 'K30150');
+
+SELECT * FROM `futaba-chiryu-3building`.t_location_status where cell_code in (
+30550024, 30550023, 30550021, 30550020, 30550018, 30550015, 30550014, 30550012, 30550011, 30550009);
+
+-- m_basis_location
+SELECT * FROM `futaba-chiryu-3building`.m_basis_location where plat IN (20,21,22,23,24,25,26,27,28,29);
+
+-- t_shelf_status
+SELECT * FROM `futaba-chiryu-3building`.t_shelf_status where shelf_code IN ( 30044,
+30066,
+30023,
+30048);
+
+SELECT * FROM `futaba-chiryu-3building`.t_shelf_status where step_kanban_no in (2004, 2005, 2006, 2001, 2002, 2003);
+
+-- m_plat_status
+SELECT * FROM `futaba-chiryu-3building`.m_plat_status where plat in (20,21,22,23,24,25,26,27,28,29);
+
+
+
+

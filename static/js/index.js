@@ -133,7 +133,7 @@ function callToBLineDepalletMaguchi(id) {
                             data: JSON.stringify({ "line_frontage_id": id }),
                             success: function (data) {
                                 console.log("insert_target_ids・間口に搬送対象idを入力 >> data >>", data);
-                                alert("✅ 間口に搬送対象idを入力 完了しました!");
+                                showInfo("✅ 間口に搬送対象idを入力 完了しました!");
                                 $.ajax({
                                     url: "/api/call_target_ids",
                                     type: "POST",
@@ -141,7 +141,7 @@ function callToBLineDepalletMaguchi(id) {
                                     data: JSON.stringify({ "line_frontage_id": id }),
                                     success: function (data) {
                                         console.log("call_target_ids >> data >>", data);
-                                        alert("✅ 間口に搬送対象を呼び出ました!");
+                                        showInfo("✅ 間口に搬送対象を呼び出ました!");
                                         const nextPageUrl = `/depallet?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
                                         window.open(nextPageUrl, "_blank"); // Opens new tab
                                     },
@@ -208,7 +208,7 @@ function callToALineDepalletMaguchi(id) {
                             data: JSON.stringify({ "line_frontage_id": id }),
                             success: function (data) {
                                 console.log("insert_target_ids・間口に搬送対象idを入力 >> data >>", data);
-                                alert("✅ 間口に搬送対象idを入力 完了しました!");
+                                showInfo("✅ 間口に搬送対象idを入力 完了しました!");
                                 $.ajax({
                                     url: "/api/call_target_ids",
                                     type: "POST",
@@ -216,7 +216,7 @@ function callToALineDepalletMaguchi(id) {
                                     data: JSON.stringify({ "line_frontage_id": id }),
                                     success: function (data) {
                                         console.log("call_target_ids >> data >>", data);
-                                        alert("✅ 間口に搬送対象を呼び出ました!");
+                                        showInfo("✅ 間口に搬送対象を呼び出ました!");
                                         const nextPageUrl = `/a_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
                                         window.open(nextPageUrl, "_blank"); // Opens new tab
                                     },

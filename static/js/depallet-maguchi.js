@@ -219,7 +219,7 @@ function getDepalletAreaByPlat(data, idValue, nameValue) {
         }),
         success: function(response) {
             if (response.status === "success") {
-                alert("✅ Bライン >> AMR return updated successfully!");
+                showInfo("✅ Bライン >> AMR return updated successfully!");
                 console.log("Bライン >> AMR return updated successfully! Sent IDs:", buttonId);
             } else {
                 alert(response.message || "更新に失敗しました (Update failed).");

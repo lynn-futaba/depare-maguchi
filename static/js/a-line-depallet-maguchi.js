@@ -186,7 +186,7 @@ $(document).ready(function () {
         }),
         success: function(response) {
             if (response.status === "success") {
-                alert("✅ Aライン >> AMR return updated successfully!");
+                showInfo("✅ Aライン >> AMR return updated successfully!");
                 console.log("Aライン >> AMR return updated successfully! Sent IDs:", buttonId);
             } else {
                 alert(response.message || "更新に失敗しました (Update failed).");
