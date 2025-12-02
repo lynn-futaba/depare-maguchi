@@ -19,7 +19,7 @@ $(document).ready(function () {
 
         $.ajax({
             url: "/api/get_depallet_area_by_plat",
-            type: "GET",
+            type: "POST",
             data: { id: idValue },
             success: function (data) {
                 // console.log('get_depallet_area_by_plat >>', data); // TODO: testing

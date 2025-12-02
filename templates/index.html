@@ -13,10 +13,18 @@
     <div class="row">
       
       <div class="container operation">
-        <h2 class="bg-success text-center text-white border border-dark fw-bold my-2">
+        <h2 class="bg-dark text-center text-white border border-dark fw-bold my-2">
           310D デパレ作業画面 〈安全 . 品質 . 生産〉
+          <button id="refreshButton" class="btn btn-light text-right my-2">更新</button>
         </h2>
-        <!-- <div class="row col-1 mb-3"><button id="refreshButton" class="btn btn-primary">更新</button></div> -->
+        <div class="row justify-content-center">
+          <div class="col-2">
+            <button type="button" class="btn btn-danger text-white w-100" onclick="submitKanbanNuki()">かんばん抜き<br>①発信</button>
+          </div>
+          <div class="col-2">
+            <button type="button" class="btn btn-success text-white w-100" onclick="submitKanbanSashi()">かんばん差し<br>②発信</button>
+          </div>
+        </div>
         <div class="row">
           <!-- Left Side: Line B -->
           <div class="col-12 col-lg-6 border-end">
@@ -337,16 +345,6 @@
             </div>
           </div>
         </div>
-
-        <div class="row">
-          <div class="col-3">
-            <button type="button" class="btn btn-danger text-white w-100" onclick="submitKanbanNuki()">かんばん抜き<br>発信</button>
-          </div>
-          <div class="col-3">
-            <button type="button" class="btn btn-success text-white w-100" onclick="submitKanbanSashi()">かんばん差し<br>発信</button>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>

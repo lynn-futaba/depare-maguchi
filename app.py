@@ -107,7 +107,7 @@ class DepalletWebServer:
             except Exception as e:
                 return abort(400, str(e))
             
-        @app.route("/api/get_depallet_area_by_plat") # TODO: added 
+        @app.route("/api/get_depallet_area_by_plat", methods=["POST"]) # TODO: added 
         def get_depallet_area_by_plat():
             try:
                 button_id = request.args.get("id")  # returns None if not provided
