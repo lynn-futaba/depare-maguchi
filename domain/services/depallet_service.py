@@ -152,10 +152,9 @@ class DepalletService:
             raise Exception(f"DepalletService >> Error set values to call_AMR_return: {e}")
                 
     # update new depallet area
-    def get_depallet_area_by_plat(self, plat_id_list:list, button_id: int):
+    def get_depallet_area_by_plat(self, plat_id_list: list, button_id: int):
         try:
-            if not plat_id_list and button_id:
-                raise Exception("plat_list is empty, button_id is 0")
+            print(f"[DepalletService >> get_depallet_area_by_plat >> plat_id_list] : {plat_id_list}") 
             new_area = self.depallet_area_repo.get_depallet_area_by_plat(plat_id_list, button_id)
             print(f"[DepalletService >> get_depallet_area_by_plat >> new_area Result] : {new_area}") # TODO: testing
             return new_area

@@ -11,8 +11,8 @@ from application.depallet_app import DepalletApplication
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "./config/take_count_config.json")
 
 class DepalletWebServer:
-    def __init__(self,depallet_app):
-        self._depallet_app =depallet_app
+    def __init__(self, depallet_app):
+        self._depallet_app = depallet_app
         self.app = Flask(__name__)
         self.setup_routes()
         self.server_thread = None
@@ -84,6 +84,26 @@ class DepalletWebServer:
                 return [a_product_r, a_product_l, b_product_r, b_product_l, line_area_json] # TODO: l,r to product_r, product_l
             except Exception as e:
                 return str(e), 500
+            
+        @app.route("/api/insert_kanban_nuki", methods=["GET"])
+        def insert_kanban_nuki():
+            try:
+                print("[insert_kanban_nuki >>]")
+                self._depallet_app.insert_kanban_nuki()
+                return jsonify({"status": "success"})
+            except Exception as e:
+                print(f"[insert_kanban_nuki >> error] : {e}")
+                return abort(400, str(e))
+        
+        @app.route("/api/insert_kanban_sashi", methods=["GET"])
+        def insert_kanban_sashi():
+            try:
+                print("[insert_kanban_sashi >>]")
+                self._depallet_app.insert_kanban_sashi()
+                return jsonify({"status": "success"})
+            except Exception as e:
+                print(f"[insert_kanban_sashi >> error] : {e}")
+                return abort(400, str(e))
 
         @app.route("/api/line_frontage_click", methods=["POST"])
         def line_frontage_click():
@@ -97,6 +117,29 @@ class DepalletWebServer:
 
             except Exception as e:
                 return abort(400, 'Invalid request')
+            
+        @app.route("/api/insert_target_ids", methods=["POST"])
+        def insert_target_ids():
+            try:
+                line_frontage_id = request.json.get('line_frontage_id')
+                print(f"[insert_target_ids >> line_frontage_id] : {line_frontage_id}")
+                self._depallet_app.insert_target_ids(line_frontage_id)
+                return jsonify({"status": "success"})
+            except Exception as e:
+                print(f"[insert_target_ids >> error] : {e}")
+                return abort(400, str(e))
+            
+        
+        @app.route("/api/call_target_ids", methods=["POST"])
+        def call_target_ids():
+            try:
+                line_frontage_id = request.json.get('line_frontage_id')
+                print(f"[call_target_ids >> line_frontage_id] : {line_frontage_id}")
+                self._depallet_app.call_target_ids(line_frontage_id)
+                return jsonify({"status": "success"})
+            except Exception as e:
+                print(f"[call_target_ids >> error] : {e}")
+                return abort(400, str(e))
 
         @app.route("/api/get_depallet_area") # TODO: changed 
         def get_depallet_area():
@@ -104,16 +147,6 @@ class DepalletWebServer:
                 depallet_area = self._depallet_app.get_depallet_area_json()
                 print(f"[app.py >> get_depallet_area_by_plat >> depallet_area] : {depallet_area}")
                 return jsonify(depallet_area)
-            except Exception as e:
-                return abort(400, str(e))
-            
-        @app.route("/api/get_depallet_area_by_plat", methods=["POST"]) # TODO: added 
-        def get_depallet_area_by_plat():
-            try:
-                button_id = request.args.get("id")  # returns None if not provided
-                new_depallet_area = self._depallet_app.get_depallet_area_by_plat_json(button_id)
-                print(f"[app.py >> get_depallet_area_by_plat >> new_depallet_area] : {new_depallet_area}")
-                return new_depallet_area
             except Exception as e:
                 return abort(400, str(e))
 
@@ -174,55 +207,18 @@ class DepalletWebServer:
             except Exception as e:
                 return abort(400, str(e))
                             
-        @app.route("/api/insert_target_ids", methods=["POST"])
-        def insert_target_ids():
+        @app.route("/api/get_depallet_area_by_plat", methods=["POST"]) # TODO: added 
+        def get_depallet_area_by_plat():
             try:
-                line_frontage_id = request.json.get('line_frontage_id')
-                print(f"[insert_target_ids >> line_frontage_id] : {line_frontage_id}")
-                self._depallet_app.insert_target_ids(line_frontage_id)
-                return jsonify({"status": "success"})
+                button_id = request.json.get("button_id")  # returns None if not provided
+                print(f"[app.py >> get_depallet_area_by_plat >> button_id] : {button_id}")
+
+                new_depallet_area = self._depallet_app.get_depallet_area_by_plat_json(button_id)
+                print(f"[app.py >> get_depallet_area_by_plat >> new_depallet_area] : {new_depallet_area}")
+                return new_depallet_area
             except Exception as e:
-                print(f"[insert_target_ids >> error] : {e}")
                 return abort(400, str(e))
             
-        
-        @app.route("/api/call_target_ids", methods=["POST"])
-        def call_target_ids():
-            try:
-                line_frontage_id = request.json.get('line_frontage_id')
-                print(f"[call_target_ids >> line_frontage_id] : {line_frontage_id}")
-                self._depallet_app.call_target_ids(line_frontage_id)
-                return jsonify({"status": "success"})
-            except Exception as e:
-                print(f"[call_target_ids >> error] : {e}")
-                return abort(400, str(e))
-        
-        @app.route("/api/call_AMR_return", methods=["POST"])
-        def call_AMR_return():
-            try:
-                # line_frontage_id will be an array/list (e.g., [4])
-                line_frontage_id = request.json.get('line_frontage_id') 
-                
-                # Check if it's a list and process each ID
-                if isinstance(line_frontage_id, list):
-                    print(f"[call_AMR_return >> line_frontage_ids] : {line_frontage_id}")
-                    # You will likely need to loop through the IDs in your model/application logic
-                    for id in line_frontage_id:
-                        # Assuming your call_AMR_return handles a single ID per call or is updated to handle the list
-                        self._depallet_app.call_AMR_return(id) 
-                else:
-                    # Handle the case where it might be a single item or unexpected format
-                    print(f"[call_AMR_return >> single line_frontage_id] : {line_frontage_id}")
-                    self._depallet_app.call_AMR_return(line_frontage_id)
-                    
-                return jsonify({"status": "success"})
-            except Exception as e:
-                print(f"[call_AMR_return >> error] : {e}")
-                return abort(400, str(e))
-    
-        file_lock = threading.Lock()
-
-        
         @app.route('/api/update_take_count', methods=['POST'])
         def update_take_count():
             kanban_no = request.json.get('kanban_no')
@@ -251,32 +247,25 @@ class DepalletWebServer:
                 return jsonify({"status": "success", "updated": {kanban_no: new_take_count}})
             except Exception as e:
                 return jsonify({"status": "error", "message": str(e)}), 500
-            
-        @app.route("/api/insert_kanban_nuki", methods=["GET"])
-        def insert_kanban_nuki():
-            try:
-                print("[insert_kanban_nuki >>]")
-                self._depallet_app.insert_kanban_nuki()
-                return jsonify({"status": "success"})
-            except Exception as e:
-                print(f"[insert_kanban_nuki >> error] : {e}")
-                return abort(400, str(e))
         
-        @app.route("/api/insert_kanban_sashi", methods=["GET"])
-        def insert_kanban_sashi():
+        @app.route("/api/call_AMR_return", methods=["POST"])
+        def call_AMR_return():
             try:
-                print("[insert_kanban_sashi >>]")
-                self._depallet_app.insert_kanban_sashi()
+                button_id = request.json.get('button_id') 
+                self._depallet_app.call_AMR_return(button_id) 
+                    
                 return jsonify({"status": "success"})
             except Exception as e:
-                print(f"[insert_kanban_sashi >> error] : {e}")
+                print(f"[call_AMR_return >> error] : {e}")
                 return abort(400, str(e))
+    
+        file_lock = threading.Lock()
 
 if __name__ == "__main__":
     depallet_app = None # TODO
     try:
         depallet_app = DepalletApplication()
-        print(depallet_app)
+        print(f"[DepalletApplication >> __main__] : {depallet_app}")
         depallet_app.start()
         web_server = DepalletWebServer(depallet_app)
         web_server.start(host='0.0.0.0', port=5000)

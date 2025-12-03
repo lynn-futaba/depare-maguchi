@@ -44,7 +44,9 @@ class DepalletApplication():
         self.lines = self.line_service.get_lines(self.LINE_ID)
         self.a_product_r, self.a_product_l, self.b_product_r, self.b_product_l = self.line_service.get_product_infos(self.lines)
         self.depallet_area = self.depallet_service.get_depallet_area(self.LINE_ID)
-        print(f"[DepalletApplication >> self.button_id ] : {self.button_id}")
+        print(f"[DepalletApplication >> depallet_app >> self.button_id ] : {self.button_id}")
+        print(f"[DepalletApplication >> depallet_app >> self.PLAT_ID_LIST ] : {self.PLAT_ID_LIST}")
+
         self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST, self.button_id) # TODO: added
 
     def start(self):
@@ -58,6 +60,7 @@ class DepalletApplication():
 
      # TODO: added 
     def new_start(self):
+        print(f"[DepalletApplication >> self.new_depallet_area.update_frontages.values() ] : {self.new_depallet_area.update_frontages.values()}")
         for new_frontage in self.new_depallet_area.update_frontages.values():
             watcher = NewDepalletFrontegeWatcher(new_frontage, self.depallet_service)
             self.new_manager.add_watcher(watcher)
@@ -239,8 +242,13 @@ class DepalletApplication():
         return util.to_json(flow_rack_frontage.shelf)
     
     # TODO: Added 
-    def get_depallet_area_by_plat_json(self, id):
-        self.button_id = id
+    def get_depallet_area_by_plat_json(self, button_id):
+        print(f"[depallet_app.py >> get_depallet_area_by_plat_json >> button_id] : {button_id}")
+        self.button_id = button_id
+        print(f"[depallet_app.py >> get_depallet_area_by_plat_json >> self.new_depallet_area] : {self.new_depallet_area}")
+
+        self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST, self.button_id) # TODO: added
+
         return util.to_json(self.new_depallet_area)
     
 if __name__ == "__main__":
