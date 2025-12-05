@@ -7,7 +7,7 @@ $(document).ready(function () {
           
              success: function (data) {
                 // console.log('update_product_info >>', data); // TODO:
-                 updateProductInfo(data);
+                updateProductInfo(data);
             },
             error: function (error) {
                 console.error("Error fetching data:", error);

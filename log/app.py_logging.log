@@ -1,0 +1,198 @@
+2025/12/05 11:00:53.086,INFO ,app,0041,Web server started at http://0.0.0.0:5000
+2025/12/05 11:00:53.086,INFO ,_internal,0224,[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.104.16.87:5000
+2025/12/05 11:00:53.097,INFO ,_internal,0224,[33mPress CTRL+C to quit[0m
+2025/12/05 11:00:53.125,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:00:53] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:01:34.303,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:01:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:02:34.645,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:02:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:03:34.306,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:03:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:04:34.626,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:04:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:05:34.317,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:05:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:06:34.618,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:06:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:07:34.337,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:07:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:08:34.613,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:08:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:09:34.315,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:09:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:10:34.640,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:10:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:11:34.304,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:11:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:12:34.632,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:12:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:13:34.311,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:13:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:14:34.643,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:14:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:15:34.310,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:15:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:16:34.606,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:16:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:17:34.317,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:17:34] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:18:20.660,INFO ,app,0269,[app.py >> DepalletApplication >> __main__] : <application.depallet_app.DepalletApplication object at 0x00000203356CE610>
+2025/12/05 11:18:20.710,INFO ,app,0041,Web server started at http://0.0.0.0:5000
+2025/12/05 11:18:20.727,INFO ,_internal,0224,[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.104.16.87:5000
+2025/12/05 11:18:20.727,INFO ,_internal,0224,[33mPress CTRL+C to quit[0m
+2025/12/05 11:18:21.282,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:18:21.283,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:18:21] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:18:21.682,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:18:21.683,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:18:21] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:18:24.997,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:18:24.998,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:18:24] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:18:27.690,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:18:27.691,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:18:27] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:18:30.991,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:18:31.019,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:18:31] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:18:33.684,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:18:33.685,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:18:33] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:18:36.982,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:18:36.986,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:18:36] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:18:39.691,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:18:39.691,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:18:39] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:18:43.004,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:18:43.005,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:18:43] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:18:45.709,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:18:45.710,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:18:45] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:18:48.993,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:18:48.994,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:18:48] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:18:51.688,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:18:51.689,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:18:51] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:18:54.990,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:18:54.992,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:18:54] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:18:57.683,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:18:57.684,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:18:57] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:00.981,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:00.983,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:00] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:03.685,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:03.685,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:03] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:06.983,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:06.983,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:06] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:09.688,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:09.689,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:09] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:13.002,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:13.003,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:13] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:15.681,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:15.681,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:15] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:18.985,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:18.992,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:18] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:21.687,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:21.688,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:21] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:24.987,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:24.987,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:24] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:27.692,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:27.692,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:27] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:31.050,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:31.054,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:31] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:33.688,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:33.689,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:33] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:36.981,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:36.982,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:36] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:39.697,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:39.698,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:39] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:43.002,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:43.003,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:43] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:45.671,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:45.678,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:45] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:49.003,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:49.021,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:49] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:51.699,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:51.699,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:51] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:55.008,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:55.008,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:55] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:19:57.685,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:19:57.686,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:19:57] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:00.990,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:00.990,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:00] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:03.675,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:03.685,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:03] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:07.007,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:07.008,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:07] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:09.675,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:09.690,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:09] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:12.989,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:12.990,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:12] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:15.680,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:15.682,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:15] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:19.026,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:19.026,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:19] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:21.691,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:21.692,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:21] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:24.996,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:24.996,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:24] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:27.674,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:27.685,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:27] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:30.996,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:30.996,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:30] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:33.686,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:33.689,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:33] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:36.990,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:36.991,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:36] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:39.694,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:39.695,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:39] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:42.994,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:42.997,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:42] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:45.688,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:45.688,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:45] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:48.986,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:48.995,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:48] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:51.690,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:51.691,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:51] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:54.978,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:54.980,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:54] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:20:57.690,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:20:57.691,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:20:57] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:00.989,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:00.995,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:00] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:03.700,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:03.700,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:03] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:07.007,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:07.007,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:07] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:09.691,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:09.692,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:09] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:12.978,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:12.978,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:12] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:15.684,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:15.688,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:15] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:19.017,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:19.018,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:19] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:21.687,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:21.688,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:21] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:25.006,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:25.008,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:25] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:27.690,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:27.691,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:27] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:31.020,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:31.030,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:31] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:33.688,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:33.689,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:33] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:36.990,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:36.991,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:36] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:39.685,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:39.686,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:39] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:42.988,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:42.988,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:42] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:45.682,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:45.683,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:45] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:49.001,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:49.001,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:49] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:51.682,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:51.683,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:51] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:54.981,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:54.982,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:54] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:21:57.687,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:21:57.687,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:21:57] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:22:01.019,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:22:01.020,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:22:01] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:22:03.679,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:22:03.680,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:22:03] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:22:06.989,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:22:06.989,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:22:06] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:22:09.705,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:22:09.709,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:22:09] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:22:12.984,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:22:12.986,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:22:12] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:22:15.676,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:22:15.677,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:22:15] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:22:18.989,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:22:18.990,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:22:18] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:22:21.690,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:22:21.691,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:22:21] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:22:24.992,INFO ,app,0216,[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {}
+2025/12/05 11:22:24.992,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 11:22:24] "POST /api/get_depallet_area_by_plat HTTP/1.1" 200 -
+2025/12/05 11:22:25.180,ERROR,app,0277,app.py >> Shutting down...:

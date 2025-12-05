@@ -671,9 +671,6 @@ class DepalletAreaRepository(IDepalletAreaRepository):
     #         if conn:
     #             conn.close()
 
-    
-    import time
-
     def insert_kanban_nuki(self):
         conn = None
         cur = None

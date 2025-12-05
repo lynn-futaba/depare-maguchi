@@ -1,10 +1,18 @@
 ﻿import os
 import json
 import time
+import logging
 import threading
 import asyncio
 
-from flask import Flask, render_template, request, jsonify, abort, flash
+from flask import Flask, render_template, request, jsonify, abort
+from common.setup_logger import setup_log  # ログ用
+from config.config import BACKUP_DAYS  # ログ用
+
+# ログ出力開始
+LOG_FOLDER = "../log"
+LOG_FILE = "app.py_logging.log"
+setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 from application.depallet_app import DepalletApplication
 
@@ -21,7 +29,7 @@ class DepalletWebServer:
     def start(self, host='0.0.0.0', port=5000):
           
             if self.server_thread is not None and self.server_thread.is_alive():
-                print("Web server is already running")
+                logging.info("Web server is already running")
                 return self
         
             def run_server():
@@ -30,7 +38,7 @@ class DepalletWebServer:
             self.server_thread = threading.Thread(target=run_server)
             self.server_thread.daemon = True
             self.server_thread.start()
-            print(f"Web server started at http://{host}:{port}")
+            logging.info(f"Web server started at http://{host}:{port}")
             return self
 
     def setup_routes(self):
@@ -44,10 +52,6 @@ class DepalletWebServer:
         @app.route("/return_index")
         def returns():
             return render_template('index.html')
-
-        # @app.route("/header")
-        # def header():
-        #     return render_template('depallet/header.html')
 
         # @app.route("/maguchi")
         # def maguchi_page():
@@ -88,21 +92,21 @@ class DepalletWebServer:
         @app.route("/api/insert_kanban_nuki", methods=["GET"])
         def insert_kanban_nuki():
             try:
-                print("[insert_kanban_nuki >>]")
+                logging.info("[app.py >> insert_kanban_nuki()]")
                 self._depallet_app.insert_kanban_nuki()
                 return jsonify({"status": "success"})
             except Exception as e:
-                print(f"[insert_kanban_nuki >> error] : {e}")
+                logging.info(f"[app.py >> insert_kanban_nuki() >> error] : {e}")
                 return abort(400, str(e))
         
         @app.route("/api/insert_kanban_sashi", methods=["GET"])
         def insert_kanban_sashi():
             try:
-                print("[insert_kanban_sashi >>]")
+                logging.info("[app.py >> insert_kanban_sashi()]")
                 self._depallet_app.insert_kanban_sashi()
                 return jsonify({"status": "success"})
             except Exception as e:
-                print(f"[insert_kanban_sashi >> error] : {e}")
+                logging.info(f"[app.py >> insert_kanban_sashi() >> error] : {e}")
                 return abort(400, str(e))
 
         @app.route("/api/line_frontage_click", methods=["POST"])
@@ -122,11 +126,11 @@ class DepalletWebServer:
         def insert_target_ids():
             try:
                 line_frontage_id = request.json.get('line_frontage_id')
-                print(f"[insert_target_ids >> line_frontage_id] : {line_frontage_id}")
+                logging.info(f"[app.py >> [insert_target_ids() >> line_frontage_id] : {line_frontage_id}")
                 self._depallet_app.insert_target_ids(line_frontage_id)
                 return jsonify({"status": "success"})
             except Exception as e:
-                print(f"[insert_target_ids >> error] : {e}")
+                logging.error(f"[app.py >> insert_target_ids() >> error] : {e}")
                 return abort(400, str(e))
             
         
@@ -134,20 +138,21 @@ class DepalletWebServer:
         def call_target_ids():
             try:
                 line_frontage_id = request.json.get('line_frontage_id')
-                print(f"[call_target_ids >> line_frontage_id] : {line_frontage_id}")
+                logging.info(f"[app.py >> call_target_ids() >> line_frontage_id] : {line_frontage_id}")
                 self._depallet_app.call_target_ids(line_frontage_id)
                 return jsonify({"status": "success"})
             except Exception as e:
-                print(f"[call_target_ids >> error] : {e}")
+                logging.error(f"[app.py >> call_target_ids() >> error] : {e}")
                 return abort(400, str(e))
 
         @app.route("/api/get_depallet_area") # TODO: changed 
         def get_depallet_area():
             try:
                 depallet_area = self._depallet_app.get_depallet_area_json()
-                print(f"[app.py >> get_depallet_area_by_plat >> depallet_area] : {depallet_area}")
+                logging.info(f"[app.py >> get_depallet_area_by_plat() >> depallet_area] : {depallet_area}")
                 return jsonify(depallet_area)
             except Exception as e:
+                logging.error(f"[app.py >> get_depallet_area() >> error] : {e}")
                 return abort(400, str(e))
 
         @app.route("/api/update_flow_rack")
@@ -163,8 +168,6 @@ class DepalletWebServer:
             try:
                 frontage_id = request.json.get('frontage_id')
                 part_id = request.json.get('part_id')
-                # print(f"[to_flow_rack >> frontage_id] : {frontage_id}")
-                # print(f"[to_flow_rack >> part_id] : {part_id}")
                 self._depallet_app.fetch_part(int(frontage_id), str(part_id))
                 # self._depallet_app.fetch_part(int(frontage_id), int(part_id)) # TODO: testing
                 return jsonify({"status": "success"})
@@ -176,8 +179,6 @@ class DepalletWebServer:
             try:
                 frontage_id = request.json.get('frontage_id')
                 part_id = request.json.get('part_id')
-                # print(f"[to_kotatsu >> frontage_id] : {frontage_id}")
-                # print(f"[to_kotatsu >> part_id] : {part_id}")
                 self._depallet_app.return_part(int(frontage_id), str(part_id))
                 # self._depallet_app.return_part(int(frontage_id), int(part_id)) # TODO: modified
                 return jsonify({"status": "success"})
@@ -210,13 +211,12 @@ class DepalletWebServer:
         @app.route("/api/get_depallet_area_by_plat", methods=["POST"]) # TODO: added 
         def get_depallet_area_by_plat():
             try:
-                button_id = request.json.get("button_id")  # returns None if not provided
-                print(f"[app.py >> get_depallet_area_by_plat >> button_id] : {button_id}")
-
+                button_id = request.json.get("button_id") 
                 new_depallet_area = self._depallet_app.get_depallet_area_by_plat_json(button_id)
-                print(f"[app.py >> get_depallet_area_by_plat >> new_depallet_area] : {new_depallet_area}")
+                logging.info(f"[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {new_depallet_area}")
                 return new_depallet_area
             except Exception as e:
+                logging.error(f"[app.py >> get_depallet_area_by_plat() >> error] : {e}")
                 return abort(400, str(e))
             
         @app.route('/api/update_take_count', methods=['POST'])
@@ -246,6 +246,7 @@ class DepalletWebServer:
 
                 return jsonify({"status": "success", "updated": {kanban_no: new_take_count}})
             except Exception as e:
+                logging.error(f"[app.py >> update_take_count() >> error] : {e}")
                 return jsonify({"status": "error", "message": str(e)}), 500
         
         @app.route("/api/call_AMR_return", methods=["POST"])
@@ -253,10 +254,10 @@ class DepalletWebServer:
             try:
                 button_id = request.json.get('button_id') 
                 self._depallet_app.call_AMR_return(button_id) 
-                    
-                return jsonify({"status": "success"})
+                logging.info(f"[app.py >> call_AMR_return() >> success]")
+                return jsonify({"status": "success", "message": "call AMR return successfully"})
             except Exception as e:
-                print(f"[call_AMR_return >> error] : {e}")
+                logging.error(f"[app.py >> call_AMR_return() >> error] : {e}")
                 return abort(400, str(e))
     
         file_lock = threading.Lock()
@@ -265,7 +266,7 @@ if __name__ == "__main__":
     depallet_app = None # TODO
     try:
         depallet_app = DepalletApplication()
-        print(f"[DepalletApplication >> __main__] : {depallet_app}")
+        logging.info(f"[app.py >> DepalletApplication >> __main__] : {depallet_app}")
         depallet_app.start()
         web_server = DepalletWebServer(depallet_app)
         web_server.start(host='0.0.0.0', port=5000)
@@ -273,7 +274,7 @@ if __name__ == "__main__":
             time.sleep(1)
             
     except KeyboardInterrupt as e:
-        print(f"Shutting down...:{e}")
+        logging.error(f"app.py >> Shutting down...:{e}")
     finally:
         if depallet_app:
             depallet_app.stop()
