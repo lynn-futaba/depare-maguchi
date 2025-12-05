@@ -9,7 +9,7 @@ class LineRepository(ILineRepository):
     def __init__(self,db):
          self.db =db
     
-    # TODO: Handle DB CONSTRAINTS in the application layer because there is no root or DB admin permission in the dabase
+    # TODO➞リン: Handle DB CONSTRAINTS in the application layer because there is no root or DB admin permission in the dabase
     def validate_line_ids(self, line_id_list: list) -> set[int]:
         """
         EN: Validate that the given line_id_list exists in depal.line table.
@@ -186,7 +186,7 @@ class LineRepository(ILineRepository):
         try:
             # EN: Step 1 - Validate frontage IDs
             # JP: ステップ1 - frontage.id を検証
-            valid_ids = self.validate_inventory_ids(flow_rack.rack) # TODO: need to confirm it includes inverntory or not 
+            valid_ids = self.validate_inventory_ids(flow_rack.rack) # TODO➞リン: need to confirm it includes inverntory or not 
 
             # EN: If no valid IDs, return empty list
             # JP: 有効な ID がない場合、空のリストを返す

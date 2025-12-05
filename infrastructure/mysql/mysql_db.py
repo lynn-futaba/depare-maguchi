@@ -15,10 +15,10 @@ class MysqlDb:
     def get_connection(self,db):
         if db == 'depal':
             return self.depal_pool.get_connection()
-        # elif db == 'wcs': # TODO
+        # elif db == 'wcs': # TODO➞リン
         elif db == 'futaba-chiryu-3building':
             return self.wcs_pool.get_connection()
-        elif db == 'eip_signal': # TODO: added
+        elif db == 'eip_signal': # TODO➞リン: added
             return self.eip_signal_pool.get_connection()
         else:
             raise ValueError("Invalid database name")

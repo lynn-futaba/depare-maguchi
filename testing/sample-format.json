@@ -1,7 +1,7 @@
 
 HTML field -> 生産品番	計画生産台数 実績生産台数
 
-update_product_info dump
+get_product_infos dump
 [
     "{\"product\": 
             {\"id\": \"1111-1111\",  \"kanban_id\": \"1111\", \"line_id\": \"1\", 

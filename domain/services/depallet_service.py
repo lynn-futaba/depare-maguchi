@@ -4,6 +4,15 @@ from domain.models.depallet import DepalletArea, DepalletFrontage
 from domain.models.part import Part
 from domain.infrastructure.depallet_area_repository import IDepalletAreaRepository
 from domain.infrastructure.wcs_controler import IWcsControler
+from common.setup_logger import setup_log  # ログ用
+from config.config import BACKUP_DAYS  # ログ用
+
+import logging
+
+# ログ出力開始
+LOG_FOLDER = "../log"
+LOG_FILE = "depallet_service.py_logging.log"
+setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 class DepalletService:
 
@@ -17,7 +26,7 @@ class DepalletService:
             if not line_id_list:
                 raise Exception("line_id_list is empty")
             area = self.depallet_area_repo.get_depallet_area(line_id_list)
-            # print(f"[DepalletService >> get_depallet_area >> area Result] : {area}") # TODO: testing
+            # print(f"[DepalletService >> get_depallet_area >> area Result] : {area}") # TODO➞リン: testing
             return area
         
         except Exception as e:
@@ -127,57 +136,57 @@ class DepalletService:
     # update maguchi signal 1
     def insert_target_ids(self, line_frontage_id):
         try:
-            print("[DepalletService >> insert_target_ids >> line_frontage_id ]")
+            logging.info("[DepalletService >> insert_target_ids() >> 成功]")
             self.depallet_area_repo.insert_target_ids(line_frontage_id)
         except Exception as e:
-            print(f"DepalletService >> Error update maguchi by signal input: {e}")
-            raise Exception(f"DepalletService >> Error update maguchi by signal input: {e}")
+            logging.error(f"[DepalletService >> insert_target_ids() >> エラー]: {e}")
+            raise Exception(f"[DepalletService >> insert_target_ids >> エラー]: {e}")
         
     # update maguchi signal 2
     def call_target_ids(self, line_frontage_id):
         try:
-            print("[DepalletService >> call_target_ids >> line_frontage_id ]")
+            logging.info("[DepalletService >> call_target_ids() >> 成功]")
             self.depallet_area_repo.call_target_ids(line_frontage_id)
         except Exception as e:
-            print(f"DepalletService >> Error set values to maguchi: {e}")
-            raise Exception(f"DepalletService >> Error set values to maguchi: {e}")
+            logging.error(f"[DepalletService >> call_target_ids() >> エラー]: {e}")
+            raise Exception(f"[DepalletService >> call_target_ids() >> エラー]: {e}")
         
 
     def call_AMR_return(self, line_frontage_id):
         try:
-            print("[DepalletService >> call_AMR_return >> line_frontage_id ]")
+            logging.info("[DepalletService >> call_AMR_return() >> 成功]")
             self.depallet_area_repo.call_AMR_return(line_frontage_id)
         except Exception as e:
-            print(f"DepalletService >> Error set values to call_AMR_return: {e}")
-            raise Exception(f"DepalletService >> Error set values to call_AMR_return: {e}")
+            logging.error(f"[DepalletService >> call_AMR_return() >> エラー]: {e}")
+            raise Exception(f"[DepalletService >> call_AMR_return() >> エラー]: {e}")
                 
     # update new depallet area
     def get_depallet_area_by_plat(self, plat_id_list: list, button_id: int):
         try:
-            print(f"[DepalletService >> get_depallet_area_by_plat >> plat_id_list] : {plat_id_list}") 
             new_area = self.depallet_area_repo.get_depallet_area_by_plat(plat_id_list, button_id)
-            print(f"[DepalletService >> get_depallet_area_by_plat >> new_area Result] : {new_area}") # TODO: testing
+            logging.info(f"[DepalletService >> get_depallet_area_by_plat() >> new_area Result] : {new_area}") # TODO➞リン: testing
             return new_area
         except Exception as e:
-            raise Exception(f"DepalletService >> Error loading depallet area: {e}")
+            logging.error(f"[DepalletService >> get_depallet_area_by_plat() >> エラー]: {e}")
+            raise Exception(f"[DepalletService >> get_depallet_area_by_plat() >> エラー]: {e}")
         
     # insert kanban nuki
     def insert_kanban_nuki(self):
         try:
-            print("[DepalletService >> insert_kanban_nuki >> ]")
+            logging.info("[DepalletService >> insert_kanban_nuki() >> 成功]")
             self.depallet_area_repo.insert_kanban_nuki()
         except Exception as e:
-            print(f"DepalletService >> Error set values to insert_kanban_nuki: {e}")
-            raise Exception(f"DepalletService >> Error set values to insert_kanban_nuki: {e}")
+            logging.error(f"[DepalletService >> insert_kanban_nuki() >> エラー]: {e}")
+            raise Exception(f"[DepalletService >> insert_kanban_nuki() >> エラー]: {e}")
         
     # insert kanban sashi
     def insert_kanban_sashi(self):
         try:
-            print("[DepalletService >> insert_kanban_sashi >> ]")
+            logging.info("[DepalletService >> insert_kanban_sashi() >> 成功]")
             self.depallet_area_repo.insert_kanban_sashi()
         except Exception as e:
-            print(f"DepalletService >> Error set values to insert_kanban_sashi: {e}")
-            raise Exception(f"DepalletService >> Error set values to insert_kanban_sashi: {e}")
+            logging.error(f"[DepalletService >> insert_kanban_sashi() >> エラー]: {e}")
+            raise Exception(f"[DepalletService >> insert_kanban_sashi() >> エラー]: {e}")
 
 if __name__ == "__main__":
   

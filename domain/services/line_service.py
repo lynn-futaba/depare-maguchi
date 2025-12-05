@@ -25,11 +25,11 @@ class LineService:
         
     def get_product_infos(self, lines: list[Line]) -> tuple[ProductInfo, ProductInfo]:
         try:
-            a_product_r = self.product_info_repo.get_product_info(lines[0].id) # TODO: a_product_r, Aライン R
-            a_product_l = self.product_info_repo.get_product_info(lines[1].id) # TODO: a_product_l, Aライン L
-            b_product_r = self.product_info_repo.get_product_info(lines[2].id) # TODO: b_product_r, Bライン R
-            b_product_l = self.product_info_repo.get_product_info(lines[3].id) # TODO: b_product_l, Bライン L
-            return a_product_r, a_product_l, b_product_r, b_product_l  # TODO: l,r to a_product_r, a_product_l, b_product_r, b_product_l
+            a_product_r = self.product_info_repo.get_product_info(lines[0].id) # TODO➞リン: a_product_r, Aライン R
+            a_product_l = self.product_info_repo.get_product_info(lines[1].id) # TODO➞リン: a_product_l, Aライン L
+            b_product_r = self.product_info_repo.get_product_info(lines[2].id) # TODO➞リン: b_product_r, Bライン R
+            b_product_l = self.product_info_repo.get_product_info(lines[3].id) # TODO➞リン: b_product_l, Bライン L
+            return a_product_r, a_product_l, b_product_r, b_product_l  # TODO➞リン: l,r to a_product_r, a_product_l, b_product_r, b_product_l
         except Exception as e:
             raise Exception(f"Error getting product infos: {e}")
 

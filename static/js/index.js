@@ -2,11 +2,11 @@ $(document).ready(function () {
  
     function refreshPage() {
         $.ajax({
-            url: "/api/update_product_info",
+            url: "/api/get_product_infos",
             type: "GET",
           
              success: function (data) {
-                // console.log('update_product_info >>', data); // TODO:
+                // console.log('get_product_infos >>', data); // TODO:
                 updateProductInfo(data);
             },
             error: function (error) {

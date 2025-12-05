@@ -46,7 +46,7 @@ class DepalletArea():
 
         self.name = name
         self.frontages= {}
-        self.update_frontages = {} # TODO: added
+        self.update_frontages = {} # TODO➞リン: added
        
     def register_frontage(self, frontage: DepalletFrontage):
         self.frontages[frontage.id] = frontage

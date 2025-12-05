@@ -3,6 +3,15 @@ from domain.models.part import Part, Inventory
 from domain.models.shelf import FlowRack
 
 from domain.infrastructure.line_repository import ILineRepository
+from common.setup_logger import setup_log  # ログ用
+from config.config import BACKUP_DAYS  # ログ用
+
+import logging
+
+# ログ出力開始
+LOG_FOLDER = "../log"
+LOG_FILE = "line_repository.py_logging.log"
+setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 #mysql実装
 class LineRepository(ILineRepository):
@@ -70,7 +79,7 @@ class LineRepository(ILineRepository):
 
     #     return lines
     
-    # TODO: Handle DB CONSTRAINTS in the application layer because there is no root or DB admin permission in the dababase
+    # TODO➞リン: Handle DB CONSTRAINTS in the application layer because there is no root or DB admin permission in the dababase
     def validate_line_ids(self, line_id_list: list) -> set[int]:
         """
         EN: Validate that the given line_id_list exists in depal.line table.
@@ -89,6 +98,7 @@ class LineRepository(ILineRepository):
             # EN: If no IDs provided, return empty set
             # JP: ID が指定されていない場合、空のセットを返す
             if not line_id_list:
+                logging.error(f"[LineRepository >> validate_line_ids() >> No valid IDs found] : {e}")
                 return valid_ids
 
             # EN: Check if line_id exists in depal.line
@@ -99,7 +109,7 @@ class LineRepository(ILineRepository):
             valid_ids = {row["line_id"] for row in rows}
 
         except Exception as e:
-            print(f"[Validation Error] : {e}")
+            logging.error(f"[LineRepository >> validate_line_ids() >> Validation エラー] : {e}")
 
         finally:
             if cur:
@@ -129,14 +139,14 @@ class LineRepository(ILineRepository):
             # EN: If no valid IDs, return empty list
             # JP: 有効な ID がない場合、空のリストを返す
             if not valid_ids:
-                print("[Info] No valid line_id found. / 有効な line_id が見つかりません。")
+                logging.error("LineRepository >> get_lines() >> No valid line_id found. / 有効な line_id が見つかりません。")
                 return []
 
             # EN: Warn about invalid IDs
             # JP: 無効な ID について警告を表示
             invalid_ids = [lid for lid in line_id_list if lid not in valid_ids]
             if invalid_ids:
-                print(f"[Warning] Invalid line_id(s) skipped: {invalid_ids} / 無効な line_id はスキップされました: {invalid_ids}")
+                logging.error(f"LineRepository >> get_lines() >> Invalid line_id(s) skipped: {invalid_ids} / 無効な line_id はスキップされました: {invalid_ids}")
 
             # EN: Step 2 - Fetch lines
             # JP: ステップ2 - ライン情報を取得
@@ -188,7 +198,7 @@ class LineRepository(ILineRepository):
                     frontage.set_inventories(inventories)
 
         except Exception as e:
-            print(f"[LineRepository >> Error] : {e} / エラー: {e}")
+            logging.error(f"LineRepository >> get_lines() >> エラー]: {e}")
 
         finally:
             # EN: Close cursor and connection
@@ -199,10 +209,49 @@ class LineRepository(ILineRepository):
                 conn.close()
 
         return lines
+    
+    def validate_inventory_ids(self, inventory_id_list: list) -> set[int]:
+        """
+        EN: Validate that the given inventory_id_list exists in depal.line_inventory table.
+        JP: 指定された inventory_id_list が depal.line_inventory テーブルに存在するか確認します。
+        Returns a set of valid inventory IDs.
+        JP: 有効な inventory_id のセットを返します。
+        """
+        conn = None
+        cur = None
+        valid_ids = set()
+
+        try:
+            conn = self.db.depal_pool.get_connection()
+            cur = conn.cursor(dictionary=True)
+
+            # EN: If no IDs provided, return empty set
+            # JP: ID が指定されていない場合、空のセットを返す
+            if not inventory_id_list:
+                logging.error(f"LineRepository >> validate_inventory_ids() >> No valid inventory_id_list found")
+                return valid_ids
+
+            # EN: Check if line_id exists in depal.line
+            # JP: depal.line テーブルで line_id が存在するか確認
+            sql = f"SELECT inventory_id FROM depal.line_inventory WHERE line_id IN ({','.join(['%s'] * len(inventory_id_list))})"
+            cur.execute(sql, inventory_id_list)
+            rows = cur.fetchall()
+            valid_ids = {row["inventory_id"] for row in rows}
+
+        except Exception as e:
+            logging.error(f"[LineRepository >> validate_inventory_ids() >> Validation エラー] : {e}")
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+
+        return valid_ids
 
     def supply_parts(self, flow_rack:FlowRack):
 
         if flow_rack.is_empty():
+            logging.error(f"[LineRepository >> supply_parts() >> FlowRack is empty]")
             raise Exception("FlowRack is empty")
         
         values = []
@@ -219,7 +268,7 @@ class LineRepository(ILineRepository):
             conn.commit()
 
         except Exception as e:
-            print(f"[LineRepository] Error: {e}")
+            logging.error(f"[LineRepository >> supply_parts() >> エラー]: {e}")
         
         finally:
             if cur:

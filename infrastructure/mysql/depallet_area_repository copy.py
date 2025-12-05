@@ -154,7 +154,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             if conn:
                 conn.close()
     
-    # TODO: Handle DB CONSTRAINTS in the application layer because there is no root or DB admin permission in the dababase
+    # TODO➞リン: Handle DB CONSTRAINTS in the application layer because there is no root or DB admin permission in the dababase
     def validate_frontage_ids(self, frontage_id_list: list) -> set[int]:
         """
         EN: Validate that the given frontage_id exists in depal.line table.
@@ -403,7 +403,7 @@ if __name__ == "__main__":
        r=repo.get_flow_rack(f)
        print(r)
        # #print(f.signals)
-       # TODO: comment open until last line
+       # TODO➞リン: comment open until last line
        status = repo.is_frontage_ready(f)
        print(f"[ DepalletAreaRepository >> __main__ >> status ]: {status}")
        k = repo.get_kotatsu(f)

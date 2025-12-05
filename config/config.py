@@ -7,7 +7,7 @@ MYSQL_DEPAL_DB = {
     'pool_reset_session': True,
     'host': '10.104.16.129', # 10.104.16.129
     'user': 'athena',
-    # 'password': 'Ftb181148$', # TODO
+    # 'password': 'Ftb181148$', # TODO➞リン
     'password': 'WGQKJPL8V/xQ',
     'database': 'depal'
 }
@@ -19,9 +19,9 @@ MYSQL_WCS_DB = {
     'pool_reset_session': True,
     'host': '10.104.16.129', # 10.104.16.129
     'user': 'athena',
-    # 'password': 'Ftb181148$', # TODO
+    # 'password': 'Ftb181148$', # TODO➞リン
     'password': 'WGQKJPL8V/xQ',
-    # 'database': 'wcs' # TODO
+    # 'database': 'wcs' # TODO➞リン
     'database': 'futaba-chiryu-3building'
 }
 
@@ -32,9 +32,9 @@ MYSQL_EIP_DB = {
     'pool_reset_session': True,
     'host': '10.104.16.129', # 10.104.16.129
     'user': 'athena',
-    # 'password': 'Ftb181148$', # TODO
+    # 'password': 'Ftb181148$', # TODO➞リン
     'password': 'WGQKJPL8V/xQ',
-    # 'database': 'wcs' # TODO
+    # 'database': 'wcs' # TODO➞リン
     'database': 'eip_signal'
 }
 

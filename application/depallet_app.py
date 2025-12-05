@@ -14,21 +14,29 @@ from infrastructure.mysql.product_info_repository import ProductInfoRepository
 from infrastructure.mysql.mysql_db import MysqlDb
 
 from .depallet_frontage_watcher import DepalletFrontegeWatcher, WatcherManager
-from .new_depallet_frontage_watcher import NewDepalletFrontegeWatcher, NewWatcherManager # TODO:
+from .new_depallet_frontage_watcher import NewDepalletFrontegeWatcher, NewWatcherManager # TODO➞リン:
+from common.setup_logger import setup_log  # ログ用
+from config.config import BACKUP_DAYS  # ログ用
 
+import logging
 import application.utility as util
+
+# ログ出力開始
+LOG_FOLDER = "../log"
+LOG_FILE = "depallet_app.py_logging.log"
+setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 # デパレ作業アプリケーション
 class DepalletApplication():
 
     def __init__(self):
         self.LINE_ID = (1, 2, 3, 4) #TODO: added 3,4
-        self.PLAT_ID_LIST = (20, 21, 22, 23, 24, 25, 26, 27, 28, 29) # TODO: plat of maguchi 5,4,3,2,1 for both LINE A and B
-        self.button_id = 0 # TODO: button id from R1, R2, R3, L1, L2, L3 for both A and B Line from frontend
+        self.PLAT_ID_LIST = (20, 21, 22, 23, 24, 25, 26, 27, 28, 29) # TODO➞リン: plat of maguchi 5,4,3,2,1 for both LINE A and B
+        self.button_id = 0 # TODO➞リン: button id from R1, R2, R3, L1, L2, L3 for both A and B Line from frontend
 
         self._running  = True
         self.depallet_area = None
-        self.new_depallet_area = None # TODO: added
+        self.new_depallet_area = None # TODO➞リン: added
         self.lines = None
         self.product_r = None
         self.product_l = None
@@ -39,15 +47,13 @@ class DepalletApplication():
         self.line_service = LineService(LineRepository(self.db), ProductInfoRepository(self.db))
         
         self.manager = WatcherManager()
-        self.new_manager = NewWatcherManager() # TODO:
+        self.new_manager = NewWatcherManager() # TODO➞リン:
 
         self.lines = self.line_service.get_lines(self.LINE_ID)
         self.a_product_r, self.a_product_l, self.b_product_r, self.b_product_l = self.line_service.get_product_infos(self.lines)
-        self.depallet_area = self.depallet_service.get_depallet_area(self.LINE_ID)
-        print(f"[DepalletApplication >> depallet_app >> self.button_id ] : {self.button_id}")
-        print(f"[DepalletApplication >> depallet_app >> self.PLAT_ID_LIST ] : {self.PLAT_ID_LIST}")
 
-        self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST, self.button_id) # TODO: added
+        self.depallet_area = self.depallet_service.get_depallet_area(self.LINE_ID)
+        self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST, self.button_id) # TODO➞リン: added
 
     def start(self):
         for frontage in self.depallet_area.frontages.values():
@@ -58,15 +64,15 @@ class DepalletApplication():
     def stop(self):
         self.manager.stop_all()
 
-     # TODO: added 
+     # TODO➞リン: added 
     def new_start(self):
-        print(f"[DepalletApplication >> self.new_depallet_area.update_frontages.values() ] : {self.new_depallet_area.update_frontages.values()}")
+        logging.info(f"[DepalletApplication >> self.new_depallet_area.update_frontages.values() ] : {self.new_depallet_area.update_frontages.values()}")
         for new_frontage in self.new_depallet_area.update_frontages.values():
             watcher = NewDepalletFrontegeWatcher(new_frontage, self.depallet_service)
             self.new_manager.add_watcher(watcher)
         self.new_manager.start_all()
 
-    # TODO:
+    # TODO➞リン:
     def new_stop(self):
         self.new_manager.stop_all()
 
@@ -118,7 +124,7 @@ class DepalletApplication():
                 raise Exception("No flow rack frontage found")
 
             # part = source.shelf.get_by_kanban(part_id)
-            part = source.shelf.get_by_kanban(part_id) # TODO: testing
+            part = source.shelf.get_by_kanban(part_id) # TODO➞リン: testing
             # print(f"[DepalletApplication >> fetch_part >> part ] : {part}")
             if part is None:
                 raise Exception("No part found")
@@ -130,40 +136,45 @@ class DepalletApplication():
         
         
     def insert_target_ids(self, line_frontage_id):
-        print("[DepalletApplication >> insert_target_ids >> line_frontage_id ]")
         try:
             self.depallet_service.insert_target_ids(line_frontage_id)
+            logging.info("[DepalletApplication >> insert_target_ids() >> 成功]")
         except Exception as e:
-            raise Exception(f"DepalletApplication >> insert_target_ids >> Error: {e}")
+            logging.error(f"[DepalletApplication >> insert_target_ids() >> エラー] : {e}")
+            raise Exception(f"DepalletApplication >> insert_target_ids >> エラー]: {e}")
 
     def call_target_ids(self, line_frontage_id):
-        print("[DepalletApplication >> call_target_ids >> line_frontage_id ] :")
         try:
+            logging.info("[DepalletApplication >> call_target_ids() >> 成功]")
             self.depallet_service.call_target_ids(line_frontage_id)
         except Exception as e:
-            raise Exception(f"DepalletApplication >> call_target_ids >> Error: {e}")
+            logging.error(f"[DepalletApplication >> call_target_ids() >> エラー] : {e}")
+            raise Exception(f"DepalletApplication >> call_target_ids() >> エラー]: {e}")
         
     def call_AMR_return(self, line_frontage_id):
-        print("[DepalletApplication >> call_AMR_return >> line_frontage_id ] :")
         try:
+            logging.info("[DepalletApplication >> call_AMR_return() >> 成功]")
             self.depallet_service.call_AMR_return(line_frontage_id)
         except Exception as e:
-            raise Exception(f"DepalletApplication >> call_AMR_return >> Error: {e}")
+            logging.error(f"[DepalletApplication >> call_AMR_return() >> エラー] : {e}")
+            raise Exception(f"DepalletApplication >> call_AMR_return() >> エラー]: {e}")
         
     
     def insert_kanban_nuki(self):
-        print("[DepalletApplication >> insert_kanban_nuki >> ] :")
         try:
+            logging.info("[DepalletApplication >> insert_kanban_nuki() >> 成功]")
             self.depallet_service.insert_kanban_nuki()
         except Exception as e:
-            raise Exception(f"DepalletApplication >> insert_kanban_nuki >> Error: {e}")
+            logging.error(f"[DepalletApplication >> insert_kanban_nuki() >> エラー] : {e}")
+            raise Exception(f"DepalletApplication >> insert_kanban_nuki() >> エラー]: {e}")
         
     def insert_kanban_sashi(self):
-        print("[DepalletApplication >> insert_kanban_sashi >> ] :")
         try:
+            logging.info("[DepalletApplication >> insert_kanban_sashi() >> 成功]")
             self.depallet_service.insert_kanban_sashi()
         except Exception as e:
-            raise Exception(f"DepalletApplication >> insert_kanban_sashi >> Error: {e}")
+            logging.error(f"[DepalletApplication >> insert_kanban_sashi() >> エラー] : {e}")
+            raise Exception(f"DepalletApplication >> insert_kanban_sashi >> エラー]: {e}")
 
      # コタツに部品を戻す
     def return_part(self, frontage_id:int, part_id:int):
@@ -192,7 +203,7 @@ class DepalletApplication():
             self.depallet_service.depalletizing(source.shelf, dest.shelf, part)
            
         except Exception as e:
-            # print(f"[return_part >> Error depalletizing] : {e}")
+            # print(f"[return_part >> エラー] depalletizing] : {e}")
             raise Exception(f"Error depalletizing: {e}")
         
     def return_kotatsu(self, frontage_id:int):
@@ -229,7 +240,7 @@ class DepalletApplication():
     def get_lines_json(self):
         return util.to_json(self.lines)
 
-    def get_product_infos_json(self): # TODO: changed to a_product_r, self.a_product_l, self.b_product_r, self.b_product_l
+    def get_product_infos_json(self): # TODO➞リン: changed to a_product_r, self.a_product_l, self.b_product_r, self.b_product_l
         return util.to_json(self.a_product_r), util.to_json(self.a_product_l), util.to_json(self.b_product_r), util.to_json(self.b_product_l) 
 
     def get_depallet_area_json(self):
@@ -241,14 +252,11 @@ class DepalletApplication():
             return "{}"
         return util.to_json(flow_rack_frontage.shelf)
     
-    # TODO: Added 
+    # TODO➞リン: Added 
     def get_depallet_area_by_plat_json(self, button_id):
-        print(f"[depallet_app.py >> get_depallet_area_by_plat_json >> button_id] : {button_id}")
         self.button_id = button_id
-        print(f"[depallet_app.py >> get_depallet_area_by_plat_json >> self.new_depallet_area] : {self.new_depallet_area}")
-
-        self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST, self.button_id) # TODO: added
-
+        logging.info(f"[DepalletApplication >> get_depallet_area_by_plat_json >> self.new_depallet_area] : {self.new_depallet_area}")
+        self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST, button_id) # TODO➞リン: added
         return util.to_json(self.new_depallet_area)
     
 if __name__ == "__main__":
@@ -259,13 +267,13 @@ if __name__ == "__main__":
    try:
         while True:
             sleep(1)
-            print(app.get_lines_json())
-            print("----------------------")
-            print(app.get_depallet_area_json())
-            print("----------------------")
-            print(app.get_depallet_area_by_plat_json())
-            print("----------------------")
-            print(app.get_product_infos_json())
+            logging.info(f"[DepalletApplication >> get_lines_json()] : {app.get_lines_json()}")
+            logging.info("----------------------")
+            logging.info(f"[DepalletApplication >> get_depallet_area_json()] : {app.get_depallet_area_json()}")
+            logging.info("----------------------")
+            logging.info(f"[DepalletApplication >> get_depallet_area_by_plat_json()] : {app.get_depallet_area_by_plat_json()}")
+            logging.info("----------------------")
+            logging.info(f"[DepalletApplication >> get_product_infos_json()] : {app.get_product_infos_json()}")
    except KeyboardInterrupt:
     #  app.manager.stop_all()
        app.new_manager.stop_all()
