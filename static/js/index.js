@@ -154,21 +154,6 @@ function callToBLineDepalletMaguchi(id) {
                                 alert("❌ 間口に搬送対象idを入力出来ません", error);
                             }
                         });
-                    // setTimeout(() => { // TODO: comment out
-                        // $.ajax({
-                        //     url: "/depallet",
-                        //     type: "GET",
-                        //     success: function (data) {
-                        //         // document.documentElement.innerHTML = data; // TODO: display depallet.html 
-                        //         const nextPageUrl = `/depallet.html?id=${encodeURIComponent(id)}`;
-                        //         // Open in a new tab
-                        //         window.open(nextPageUrl, "_blank");
-                        //     },
-                        //     error: function (error) {
-                        //         alert("❌ Error loading depallet");
-                        //     }
-                        // });
-                    // }, 500);
                 } else {
                     alert("⚠️ No flow racks available");
                 }

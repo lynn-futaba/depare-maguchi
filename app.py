@@ -60,15 +60,15 @@ class DepalletWebServer:
         # def flow_rack_page():
         #     return render_template('depallet/flowrack.html') 
 
-        @app.route("/depallet", methods=["GET"])
-        def depallet():
+        @app.route("/b_line_depallet_maguchi", methods=["GET"])
+        def b_line_depallet_maguchi():
             try:
                 id_value = request.args.get("id")
                 name_value = request.args.get("name")
-                logging.info("[app.py >> depallet() >> 成功]")
-                return render_template('depallet-maguchi.html', id = id_value, name = name_value)
+                logging.info("[app.py >> b_line_depallet_maguchi() >> 成功]")
+                return render_template('b-line-depallet-maguchi.html', id = id_value, name = name_value)
             except Exception as e:
-                logging.info(f"[app.py >> depallet() >> エラー] : {e}")
+                logging.info(f"[app.py >> b_line_depallet_maguchi() >> エラー] : {e}")
                 return abort(400, 'Invalid request')
             
         @app.route("/a_line_depallet_maguchi", methods=["GET"])

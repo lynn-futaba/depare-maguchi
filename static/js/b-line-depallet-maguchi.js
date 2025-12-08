@@ -44,11 +44,6 @@ $(document).ready(function () {
     
         function getDepalletAreaByPlat(data, idValue, nameValue) {
 
-            if (typeof $ === 'undefined') {
-                console.error("jQuery is required for this function.");
-                return;
-            }
-
             const result = JSON.parse(data);
 
             // Button → Plat mapping

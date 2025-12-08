@@ -49,7 +49,6 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             self.shelf_codes_R1_R2_L1_L2 = config.get("shelf_codes_R1_R2_L1_L2", [])
 
 
-
     # TODO➞リン: Get take_count
     def get_take_count(self, kanban_no: str) -> str:
             """Return take_count for given kanban_no from config."""
