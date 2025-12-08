@@ -8,20 +8,19 @@ import asyncio
 from flask import Flask, render_template, request, jsonify, abort
 from common.setup_logger import setup_log  # ログ用
 from config.config import BACKUP_DAYS  # ログ用
+from application.depallet_app import DepalletApplication
 
 # ログ出力開始
 LOG_FOLDER = "../log"
 LOG_FILE = "app.py_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
-from application.depallet_app import DepalletApplication
-
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "./config/take_count_config.json")
 
 class DepalletWebServer:
     def __init__(self, depallet_app):
         self._depallet_app = depallet_app
-        self.app = Flask(__name__)
+        self.app = Flask(__name__, static_folder='static')
         self.setup_routes()
         self.server_thread = None
         self.app.secret_key = 'secret_key'

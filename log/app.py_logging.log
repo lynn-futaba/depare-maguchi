@@ -217,3 +217,126 @@
  * Running on http://127.0.0.1:5000
  * Running on http://10.104.16.87:5000
 2025/12/05 13:12:12.573,INFO ,_internal,0224,[33mPress CTRL+C to quit[0m
+2025/12/05 16:12:06.788,INFO ,depallet_area_repository,0616,[DepalletAreaRepository >> get_depallet_area_by_plat() >> update_frontages] : {}
+2025/12/05 16:12:06.804,INFO ,depallet_service,0167,[DepalletService >> get_depallet_area_by_plat() >> new_area Result] : {}
+2025/12/05 16:12:06.804,INFO ,app,0274,[app.py >> DepalletApplication >> __main__] : <application.depallet_app.DepalletApplication object at 0x00000220BBC48ED0>
+2025/12/05 16:12:06.871,INFO ,app,0042,Web server started at http://0.0.0.0:5000
+2025/12/05 16:12:06.887,INFO ,_internal,0224,[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.104.16.87:5000
+2025/12/05 16:12:06.891,INFO ,_internal,0224,[33mPress CTRL+C to quit[0m
+2025/12/05 16:12:06.922,INFO ,app,0070,[app.py >> depallet() >> 成功]
+2025/12/05 16:12:06.925,INFO ,app,0073,[app.py >> depallet() >> エラー] : expected token ',', got 'static'
+2025/12/05 16:12:06.925,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:06] "[31m[1mGET /depallet HTTP/1.1[0m" 400 -
+2025/12/05 16:12:06.947,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:06] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025/12/05 16:12:11.360,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:11] "GET / HTTP/1.1" 200 -
+2025/12/05 16:12:11.381,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:11] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025/12/05 16:12:11.652,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:11] "[36mGET /static/css/depallet/depallet.css HTTP/1.1[0m" 304 -
+2025/12/05 16:12:11.706,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:11] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:11.707,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:11] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025/12/05 16:12:11.707,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:11] "[36mGET /static/js/index.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:11.707,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:11] "[36mGET /static/js/bootstrap.bundle.min.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:11.708,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:11] "[36mGET /static/js/jquery-3.7.0.min.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:12.078,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:12] "[33mGET /static/css/bootstrap.min.css.map HTTP/1.1[0m" 404 -
+2025/12/05 16:12:12.078,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:12] "[33mGET /static/js/bootstrap.bundle.min.js.map HTTP/1.1[0m" 404 -
+2025/12/05 16:12:12.904,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:12] "GET / HTTP/1.1" 200 -
+2025/12/05 16:12:13.221,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:13] "[36mGET /static/css/depallet/depallet.css HTTP/1.1[0m" 304 -
+2025/12/05 16:12:13.221,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:13] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025/12/05 16:12:13.248,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:13] "[36mGET /static/js/index.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:13.248,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:13] "[36mGET /static/js/jquery-3.7.0.min.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:13.248,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:13] "[36mGET /static/js/bootstrap.bundle.min.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:13.249,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:13] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:13.529,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:13] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025/12/05 16:12:13.577,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:13] "[33mGET /static/css/bootstrap.min.css.map HTTP/1.1[0m" 404 -
+2025/12/05 16:12:13.577,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:13] "[33mGET /static/js/bootstrap.bundle.min.js.map HTTP/1.1[0m" 404 -
+2025/12/05 16:12:13.906,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:13] "GET / HTTP/1.1" 200 -
+2025/12/05 16:12:14.206,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:14] "[36mGET /static/css/depallet/depallet.css HTTP/1.1[0m" 304 -
+2025/12/05 16:12:14.238,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:14] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025/12/05 16:12:14.238,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:14] "[36mGET /static/js/bootstrap.bundle.min.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:14.238,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:14] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:14.239,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:14] "[36mGET /static/js/jquery-3.7.0.min.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:14.239,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:14] "[36mGET /static/js/index.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:14.526,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:14] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025/12/05 16:12:14.574,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:14] "[33mGET /static/css/bootstrap.min.css.map HTTP/1.1[0m" 404 -
+2025/12/05 16:12:14.574,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:14] "[33mGET /static/js/bootstrap.bundle.min.js.map HTTP/1.1[0m" 404 -
+2025/12/05 16:12:19.147,DEBUG,proactor_events,0633,Using proactor: IocpProactor
+2025/12/05 16:12:19.157,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:19] "POST /api/line_frontage_click HTTP/1.1" 200 -
+2025/12/05 16:12:19.397,INFO ,app,0134,[app.py >> [insert_target_ids() >> 成功]
+2025/12/05 16:12:19.397,INFO ,depallet_service,0139,[DepalletService >> insert_target_ids() >> 成功]
+2025/12/05 16:12:19.457,INFO ,depallet_area_repository,0322,[DepalletAreaRepository >> insert_target_ids() self.shelf_codes_R1_R2_L1_L2] ['K30143', 'K30148', 'K30149', 'K30150'].
+2025/12/05 16:12:19.473,INFO ,depallet_area_repository,0338,[DepalletAreaRepository >> insert_target_ids() >> Found 4 EMPTY shelves.]
+2025/12/05 16:12:19.567,INFO ,depallet_area_repository,0352,[DepalletAreaRepository >> insert_target_ids() >> Updated t_shelf_status]: shelf_code=K30148 -> step_kanban_no=2001
+2025/12/05 16:12:20.118,INFO ,depallet_area_repository,0360,[DepalletAreaRepository >> insert_target_ids() >> Signal updates completed for line_frontage_id] : 1
+2025/12/05 16:12:20.263,INFO ,depallet_app,0141,[DepalletApplication >> insert_target_ids() >> 成功]
+2025/12/05 16:12:20.263,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:20] "POST /api/insert_target_ids HTTP/1.1" 200 -
+2025/12/05 16:12:20.280,INFO ,app,0146,[app.py >> call_target_ids() >> 成功]
+2025/12/05 16:12:20.280,INFO ,depallet_app,0148,[DepalletApplication >> call_target_ids() >> 成功]
+2025/12/05 16:12:20.281,INFO ,depallet_service,0148,[DepalletService >> call_target_ids() >> 成功]
+2025/12/05 16:12:20.344,INFO ,depallet_area_repository,0408,[DepalletAreaRepository >> call_target_ids() >> Updated IDs]: (8061, 8046, 8031, 8016, 8000)
+2025/12/05 16:12:20.478,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:20] "POST /api/call_target_ids HTTP/1.1" 200 -
+2025/12/05 16:12:20.814,INFO ,app,0070,[app.py >> depallet() >> 成功]
+2025/12/05 16:12:20.819,INFO ,app,0073,[app.py >> depallet() >> エラー] : expected token ',', got 'static'
+2025/12/05 16:12:20.821,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:20] "[31m[1mGET /depallet?id=1&name=Bライン(R1) HTTP/1.1[0m" 400 -
+2025/12/05 16:12:22.005,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:22] "GET /api/get_product_infos HTTP/1.1" 200 -
+2025/12/05 16:12:26.388,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:26] "GET / HTTP/1.1" 200 -
+2025/12/05 16:12:26.914,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:26] "[36mGET /static/css/depallet/depallet.css HTTP/1.1[0m" 304 -
+2025/12/05 16:12:26.914,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:26] "[36mGET /static/js/jquery-3.7.0.min.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:26.914,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:26] "[36mGET /static/css/bootstrap.min.css HTTP/1.1[0m" 304 -
+2025/12/05 16:12:26.915,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:26] "[36mGET /static/js/index.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:26.916,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:26] "[36mGET /static/js/common.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:26.916,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:26] "[36mGET /static/js/bootstrap.bundle.min.js HTTP/1.1[0m" 304 -
+2025/12/05 16:12:26.940,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:26] "GET /api/get_product_infos HTTP/1.1" 200 -
+2025/12/05 16:12:27.223,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:27] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025/12/05 16:12:27.241,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:27] "[33mGET /static/css/bootstrap.min.css.map HTTP/1.1[0m" 404 -
+2025/12/05 16:12:27.272,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:27] "[33mGET /static/js/bootstrap.bundle.min.js.map HTTP/1.1[0m" 404 -
+2025/12/05 16:12:34.754,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:34] "GET /api/get_product_infos HTTP/1.1" 200 -
+2025/12/05 16:12:38.970,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:38] "GET /api/get_product_infos HTTP/1.1" 200 -
+2025/12/05 16:12:44.467,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:44] "GET /api/get_product_infos HTTP/1.1" 200 -
+2025/12/05 16:12:49.545,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:49] "GET /api/get_product_infos HTTP/1.1" 200 -
+2025/12/05 16:12:54.790,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:12:54] "GET /api/get_product_infos HTTP/1.1" 200 -
+2025/12/05 16:13:00.132,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:13:00] "GET /api/get_product_infos HTTP/1.1" 200 -
+2025/12/05 16:13:03.979,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:13:03] "GET /api/get_product_infos HTTP/1.1" 200 -
+2025/12/05 16:13:07.700,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:13:07] "GET /api/get_product_infos HTTP/1.1" 200 -
+2025/12/05 16:13:14.948,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:13:14] "GET /api/get_product_infos HTTP/1.1" 200 -
+2025/12/05 16:13:19.990,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:13:19] "GET /api/get_product_infos HTTP/1.1" 200 -
+2025/12/05 16:13:23.592,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:13:23] "GET /api/get_product_infos HTTP/1.1" 200 -
+2025/12/05 16:13:28.098,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:13:28] "GET /api/get_product_infos HTTP/1.1" 200 -
+2025/12/05 16:13:43.796,INFO ,depallet_area_repository,0616,[DepalletAreaRepository >> get_depallet_area_by_plat() >> update_frontages] : {}
+2025/12/05 16:13:43.871,INFO ,depallet_service,0167,[DepalletService >> get_depallet_area_by_plat() >> new_area Result] : {}
+2025/12/05 16:13:43.874,INFO ,app,0272,[app.py >> DepalletApplication >> __main__] : <application.depallet_app.DepalletApplication object at 0x0000019296D0C0D0>
+2025/12/05 16:13:43.983,INFO ,app,0040,Web server started at http://0.0.0.0:5000
+2025/12/05 16:13:43.989,INFO ,_internal,0224,[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.104.16.87:5000
+2025/12/05 16:13:43.989,INFO ,_internal,0224,[33mPress CTRL+C to quit[0m
+2025/12/05 16:13:46.757,INFO ,app,0068,[app.py >> depallet() >> 成功]
+2025/12/05 16:13:46.855,INFO ,app,0071,[app.py >> depallet() >> エラー] : expected token ',', got 'static'
+2025/12/05 16:13:46.856,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:13:46] "[31m[1mGET /depallet HTTP/1.1[0m" 400 -
+2025/12/05 16:13:46.914,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:13:46] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025/12/05 16:13:49.170,INFO ,app,0068,[app.py >> depallet() >> 成功]
+2025/12/05 16:13:49.172,INFO ,app,0071,[app.py >> depallet() >> エラー] : expected token ',', got 'static'
+2025/12/05 16:13:49.173,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:13:49] "[31m[1mGET /depallet HTTP/1.1[0m" 400 -
+2025/12/05 16:13:49.469,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:13:49] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025/12/05 16:13:55.748,INFO ,app,0068,[app.py >> depallet() >> 成功]
+2025/12/05 16:13:55.748,INFO ,app,0071,[app.py >> depallet() >> エラー] : expected token ',', got 'static'
+2025/12/05 16:13:55.748,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:13:55] "[31m[1mGET /depallet?id=6&name=Bライン(L3) HTTP/1.1[0m" 400 -
+2025/12/05 16:13:55.775,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:13:55] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025/12/05 16:16:13.263,INFO ,app,0068,[app.py >> depallet() >> 成功]
+2025/12/05 16:16:13.307,INFO ,app,0071,[app.py >> depallet() >> エラー] : expected token ',', got 'static'
+2025/12/05 16:16:13.308,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:16:13] "[31m[1mGET /depallet?id=6&name=Bライン(L3) HTTP/1.1[0m" 400 -
+2025/12/05 16:16:13.336,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:16:13] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025/12/05 16:16:26.648,INFO ,depallet_area_repository,0616,[DepalletAreaRepository >> get_depallet_area_by_plat() >> update_frontages] : {'24': [{'step_kanban_no': 'ア618', 'load_num': 100, 'shelf_code': '30061', 'take_count': '-8', 'flow_rack_no': '0', 'maguchi_no': '間口5_R1_R2_R3'}], '23': [{'step_kanban_no': '3237', 'load_num': 40, 'shelf_code': '30040', 'take_count': '-2', 'flow_rack_no': '0', 'maguchi_no': '間口4_R1_R2_R3'}], '22': [{'step_kanban_no': 'タ032', 'load_num': 50, 'shelf_code': '30043', 'take_count': '-1', 'flow_rack_no': '0', 'maguchi_no': '間口3_R1_R2_R3'}], '21': [{'step_kanban_no': 'オ068', 'load_num': 0, 'shelf_code': '30028', 'take_count': '-1', 'flow_rack_no': '0', 'maguchi_no': '間口2_R1_R2'}], '20': [{'step_kanban_no': '2001', 'load_num': 0, 'shelf_code': 'K30148', 'take_count': '0', 'flow_rack_no': '0', 'maguchi_no': '間口1_R1_R2'}]}
+2025/12/05 16:16:26.790,INFO ,depallet_service,0167,[DepalletService >> get_depallet_area_by_plat() >> new_area Result] : {'24': [{'step_kanban_no': 'ア618', 'load_num': 100, 'shelf_code': '30061', 'take_count': '-8', 'flow_rack_no': '0', 'maguchi_no': '間口5_R1_R2_R3'}], '23': [{'step_kanban_no': '3237', 'load_num': 40, 'shelf_code': '30040', 'take_count': '-2', 'flow_rack_no': '0', 'maguchi_no': '間口4_R1_R2_R3'}], '22': [{'step_kanban_no': 'タ032', 'load_num': 50, 'shelf_code': '30043', 'take_count': '-1', 'flow_rack_no': '0', 'maguchi_no': '間口3_R1_R2_R3'}], '21': [{'step_kanban_no': 'オ068', 'load_num': 0, 'shelf_code': '30028', 'take_count': '-1', 'flow_rack_no': '0', 'maguchi_no': '間口2_R1_R2'}], '20': [{'step_kanban_no': '2001', 'load_num': 0, 'shelf_code': 'K30148', 'take_count': '0', 'flow_rack_no': '0', 'maguchi_no': '間口1_R1_R2'}]}
+2025/12/05 16:16:26.790,INFO ,app,0272,[app.py >> DepalletApplication >> __main__] : <application.depallet_app.DepalletApplication object at 0x0000024A4D0CC0D0>
+2025/12/05 16:16:27.169,INFO ,app,0040,Web server started at http://0.0.0.0:5000
+2025/12/05 16:16:27.240,INFO ,_internal,0224,[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.104.16.87:5000
+2025/12/05 16:16:27.242,INFO ,_internal,0224,[33mPress CTRL+C to quit[0m
+2025/12/05 16:16:30.522,INFO ,app,0068,[app.py >> depallet() >> 成功]
+2025/12/05 16:16:30.522,INFO ,app,0071,[app.py >> depallet() >> エラー] : expected token ',', got 'static'
+2025/12/05 16:16:30.522,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:16:30] "[31m[1mGET /depallet?id=6&name=Bライン(L3) HTTP/1.1[0m" 400 -
+2025/12/05 16:16:30.556,INFO ,_internal,0224,127.0.0.1 - - [05/Dec/2025 16:16:30] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
