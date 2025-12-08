@@ -28,10 +28,15 @@ class AppConfig:
         # Example validations; expand as needed
         if not isinstance(self.take_count_map, dict):
             raise ValueError("Config error: 'take_count' must be an object.")
+        if not isinstance(self.flowrack_no_map, dict):
+            raise ValueError("Config error: 'flowrack_no_map' must be an object.")
+        if not isinstance(self.maguchi_no_map, dict):
+            raise ValueError("Config error: 'maguchi_no_map' must be an object.")
         if not isinstance(self.shelf_codes.get("R1_R2_L1_L2", []), list):
             raise ValueError("Config error: 'shelf_codes.R1_R2_L1_L2' must be a list.")
-        # Add more structural checks here…
-
+        if not isinstance(self.shelf_code_list_map, dict):
+            raise ValueError("Config error: 'shelf_code_list_map' must be an object.")
+        
     # ---- Helper getters
     def get_take_count(self, kanban_no: str) -> str:
         return self.take_count_map.get(kanban_no, "-0")
