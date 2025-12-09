@@ -15,7 +15,7 @@ LOG_FOLDER = "../log"
 LOG_FILE = "app.py_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
-CONFIG_PATH = os.path.join(os.path.dirname(__file__), "./config/take_count_config.json")
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), "./config/app_config.json")
 
 class DepalletWebServer:
     def __init__(self, depallet_app):
@@ -222,36 +222,82 @@ class DepalletWebServer:
                 logging.error(f"[app.py >> get_depallet_area_by_plat() >> エラー] : {e}")
                 return abort(400, str(e))
             
+        # @app.route('/api/update_take_count', methods=['POST'])
+        # def update_take_count():
+        #     kanban_no = request.json.get('kanban_no')
+        #     new_take_count = str(request.json.get('new_take_count'))
+
+        #     try:
+        #         with file_lock:
+        #             # Load config
+        #             with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
+        #                 config = json.load(f)
+
+        #             # Check if key exists
+        #             if kanban_no not in config:
+        #                 return jsonify({
+        #                     "status": "error",
+        #                     "message": f"Kanban No '{kanban_no}' not found in config"
+        #                 }), 404
+
+        #             # Update value
+        #             config[kanban_no] = new_take_count
+
+        #             # Save back
+        #             with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
+        #                 json.dump(config, f, ensure_ascii=False, indent=4)
+
+        #         return jsonify({"status": "success", "updated": {kanban_no: new_take_count}})
+        #     except Exception as e:
+        #         logging.error(f"[app.py >> update_take_count() >> エラー] : {e}")
+        #         return jsonify({"status": "error", "message": str(e)}), 500
+        
+        
         @app.route('/api/update_take_count', methods=['POST'])
         def update_take_count():
             kanban_no = request.json.get('kanban_no')
-            new_take_count = str(request.json.get('new_take_count'))
+            new_take_count = request.json.get('new_take_count')
 
             try:
+                # Basic validation
+                if not kanban_no or new_take_count is None:
+                    return jsonify({"status": "error", "message": "kanban_no and new_take_count are required"}), 400
+
+                # Normalize to string (your JSON stores strings)
+                new_take_count = str(new_take_count)
+
                 with file_lock:
-                    # Load config
+                    # Load current config
                     with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
                         config = json.load(f)
 
-                    # Check if key exists
-                    if kanban_no not in config:
+                    # Ensure the "take_count" section exists
+                    take_count = config.get("take_count")
+                    if not isinstance(take_count, dict):
+                        return jsonify({"status": "error", "message": "'take_count' section missing in config"}), 500
+
+                    # Check if the kanban exists; if you want to allow new keys, remove this check
+                    if kanban_no not in take_count:
                         return jsonify({
                             "status": "error",
-                            "message": f"Kanban No '{kanban_no}' not found in config"
+                            "message": f"Kanban No '{kanban_no}' not found in take_count"
                         }), 404
 
-                    # Update value
-                    config[kanban_no] = new_take_count
+                    # Update nested value
+                    take_count[kanban_no] = new_take_count
+                    config["take_count"] = take_count  # (not strictly necessary but explicit)
 
-                    # Save back
-                    with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
-                        json.dump(config, f, ensure_ascii=False, indent=4)
+                    # Atomic save: write to temp then replace
+                    tmp_path = CONFIG_PATH + ".tmp"
+                    with open(tmp_path, 'w', encoding='utf-8') as f:
+                        json.dump(config, f, ensure_ascii=False, indent=2)
+                    os.replace(tmp_path, CONFIG_PATH)
 
                 return jsonify({"status": "success", "updated": {kanban_no: new_take_count}})
             except Exception as e:
-                logging.error(f"[app.py >> update_take_count() >> エラー] : {e}")
+                logging.error(f"[app.py >> update_take_count() >> ERROR] : {e}", exc_info=True)
                 return jsonify({"status": "error", "message": str(e)}), 500
-        
+
         @app.route("/api/call_AMR_return", methods=["POST"])
         def call_AMR_return():
             try:

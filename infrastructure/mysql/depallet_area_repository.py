@@ -15,6 +15,7 @@ import json
 import os
 import time
 import logging
+import threading
 
 # ログ出力開始
 LOG_FOLDER = "../log"
@@ -27,6 +28,8 @@ class DepalletAreaRepository(IDepalletAreaRepository):
     def __init__(self, db, app_config: Optional[AppConfig] = None):
 
         self.db = db
+        self._listener_thread = None
+        self._listener_lock = threading.Lock()
         
         # Load app_config.json once (allow DI for tests)
         self.cfg = app_config or AppConfig()
@@ -315,16 +318,16 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             # Mapping for creates
             creates_map = {
                 # Bライン, 間口 5,4,3,2,1
-                1: [(107, 8404), (103, 8403), (105, 8402), (106, 8401), (18, 8400)],  # R1 => button_id 1
-                2: [(102, 8404), (108, 8403), (101, 8402), (104, 8401), (21, 8400)],  # R2 => button_id 2
-                3: [(23, 8404), (100, 8403), (301, 8402)],                            # R3 => button_id 3
-                4: [(26, 8504), (206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 4
-                5: [(29, 8504), (204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 5
-                6: [(300, 8502), (200, 8501), (31, 8500)],                            # L3 => button_id 6
+                1: [(107, 8404), (103, 8403), (105, 8402), (106, 8401), (2, 8400)],  # R1 => button_id 1
+                2: [(102, 8404), (108, 8403), (101, 8402), (104, 8401), (5, 8400)],  # R2 => button_id 2
+                3: [(7, 8404), (100, 8403), (301, 8402)],                            # R3 => button_id 3
+                4: [(10, 8504), (206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 4
+                5: [(13, 8504), (204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 5
+                6: [(300, 8502), (200, 8501), (15, 8500)],                            # L3 => button_id 6
                 # Aライン, 間口 5,4,3,2,1
                 7: [(107, 8404), (103, 8403), (105, 8402), (106, 8401), (2, 8400)],  # R1 => button_id 7
                 8: [(102, 8404), (108, 8403), (101, 8402), (104, 8401), (5, 8400)],  # R2 => button_id 8
-                9: [(7, 8404), (100, 8403), (301, 8402)],                            # R3 => button_id 9
+                9: [(7, 8404), (100, 8403), (300, 8402)],                            # R3 => button_id 9
                 10: [(10, 8504), (206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 10
                 11: [(13, 8504), (204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 11
                 12: [(300, 8502), (200, 8501), (15, 8500)],                            # L3 => button_id 12
@@ -636,17 +639,13 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                     update_frontages[plat_value] = []
 
                     # ---- Use the unified config loader (self.cfg) ----
-                    take_count   = self.cfg.get_take_count(row["step_kanban_no"])   # default "-0"
-                    flow_rack_no = self.cfg.get_flowrack_no(row["step_kanban_no"]) # default ""
-                    maguchi_no   = self.cfg.get_maguchi_no(plat_value)              # default ""
-
                     update_frontages[plat_value].append({
                     "step_kanban_no": row["step_kanban_no"],
                     "load_num": row["load_num"],
                     "shelf_code": row["shelf_code"],
-                    "take_count": take_count,
-                    "flow_rack_no": flow_rack_no,
-                    "maguchi_no": maguchi_no
+                    "take_count": self.cfg.get_take_count(row["step_kanban_no"]),
+                    "flow_rack_no": self.cfg.get_flowrack_no(row["step_kanban_no"]),
+                    "maguchi_no": self.cfg.get_maguchi_no(plat_value) 
                 })
                     
             logging.info(f"[DepalletAreaRepository >> get_depallet_area_by_plat() >> update_frontages] : {update_frontages}")
@@ -662,19 +661,89 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 if conn:
                     conn.close()
 
-    # TODO➞リン: かんばん抜きの発信を呼び出し
-    # def insert_kanban_nuki(self):
+    def insert_kanban_nuki(self):
+        conn = None
+        cur = None
+        try:
+            conn = self.db.wcs_pool.get_connection()
+            cur = conn.cursor()
+            logging.info("Setting signal_id 9031 value to 1...")
+            cur.execute("UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = 9030")
+            conn.commit()
+        except Exception as e:
+            logging.error(f"Error in insert_kanban_sashi: {e}")
+            # 必要に応じて例外再送出も検討
+        finally:
+            if cur: cur.close()
+            if conn: conn.close()
+        # 監視スレッドの多重起動防止
+        with self._listener_lock:
+            if self._listener_thread is None or not self._listener_thread.is_alive():
+                logging.info("Starting background listener for signal reset condition...")
+                self._listener_thread = threading.Thread(
+                    target=self.kanban_sashi_wait_and_reset_signal, 
+                    daemon=True
+                )
+                self._listener_thread.start()
+            else:
+                logging.info("Background listener already running. Not starting another.")
+                
+    def wait_and_reset_signal(self, max_wait_sec=None, check_interval_sec=0.1):
+        """
+        max_wait_sec=Noneなら無制限に待機。
+        """
+        conn = None
+        cur = None
+        start_time = time.time()
+        logging.info(f"Background listener started. Max wait: {max_wait_sec} seconds, Interval: {check_interval_sec} seconds.")
+        try:
+            conn = self.db.wcs_pool.get_connection()
+            cur = conn.cursor()
+            while True:
+                if max_wait_sec is not None and (time.time() - start_time) > max_wait_sec:
+                    logging.warning(f"Background listener: condition not met within {max_wait_sec} seconds. Exiting listener.")
+                    break
+                sql_check = """
+                    SELECT *
+                    FROM `futaba-chiryu-3building`.t_location_status AS t1
+                    WHERE 
+                        t1.cell_code = 30550017 AND 
+                        t1.using_flag = 0 AND 
+                        (t1.shelf_code IS NULL OR t1.shelf_code = '')
+                """
+                cur.execute(sql_check)
+                rows = cur.fetchall()
+                if rows:
+                    logging.info("Background listener: Query matched rows → resetting signal_id 9030 to 0.")
+                    cur.execute("UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = 9030")
+                    conn.commit()
+                    logging.info("Background listener: Reset signal_id 9031 to 0 completed. Exiting listener.")
+                    break
+                time.sleep(check_interval_sec)
+        except Exception as e:
+            logging.error(f"Background listener Error: {e}")
+            try:
+                if conn and getattr(conn, "in_transaction", False):
+                    conn.rollback()
+            except Exception:
+                pass
+        finally:
+            if cur: cur.close()
+            if conn: conn.close()
+   
+    
+    
+    # TODO➞リン: かんばん差しの発信を呼び出し
+    # def insert_kanban_sashi(self):
     #     try:
     #         conn = self.db.wcs_pool.get_connection()
     #         conn.start_transaction()
     #         cur = conn.cursor()
 
     #         # Step 1: Update value to 1
-    #         sql_first = "UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = 9030"
+    #         sql_first = "UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = 9031"
     #         cur.execute(sql_first)
-    #         print("[DepalletAreaRepository >> insert_kanban_nuki >> Updated signal_id: 9030 to 1]")
-
-    #         conn.commit()
+    #         logging.info("[DepalletAreaRepository >> insert_kanban_sashi() >> Updated signal_id: 9031 to 1]")
 
     #         # Step 2: Check using_flag
     #         sql_check = """
@@ -688,148 +757,91 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
     #         # Step 3: If using_flag = 0, update value back to 0
     #         if result and result[0] == 0:
-    #             sql_update = "UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = 9030"
+    #             sql_update = "UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = 9031"
     #             cur.execute(sql_update)
-    #             print("[DepalletAreaRepository >> insert_kanban_nuki >> Updated signal_id: 9030 to 0]")
+    #             logging.info("[DepalletAreaRepository >> insert_kanban_sashi() >> Updated signal_id: 9031 to 0]")
 
     #             conn.commit()
-
     #     except Exception as e:
     #         if conn:
     #             conn.rollback()
-    #         raise Exception(f"[DepalletAreaRepository >> insert_kanban_nuki Error]: {e}")
+    #             logging.info("[DepalletAreaRepository >> insert_kanban_sashi() >> Updated signal_id: 9031 to 0]")
+    #         raise Exception(f"[DepalletAreaRepository >> insert_kanban_sashi() >> エラー]: {e}")
     #     finally:
     #         if cur:
     #             cur.close()
     #         if conn:
     #             conn.close()
 
-    def insert_kanban_nuki(self):
+    def insert_kanban_sashi(self):
         conn = None
         cur = None
         try:
-            # Get connection once and keep it open
             conn = self.db.wcs_pool.get_connection()
-
-            # --- PHASE 1: Set Signal to 1 and Commit ---
             cur = conn.cursor()
-            conn.start_transaction() 
-
-            # Step 1a: Update to 1 (START TRANSACTION 1)
-            sql_up_1 = "UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = 9030"
-            cur.execute(sql_up_1)
-            if cur.rowcount == 0:
-                raise Exception("signal_id 9030 not found in eip_signal.word_input")
-            
-            # Commit the '1' state 
-            conn.commit() 
-            logging.info("[DepalletAreaRepository >> insert_kanban_nuki() >> update to 1 and committed.]")
-
-            # Wait for the external system to react to the '1' signal
-            time.sleep(3)
-
-            # --- PHASE 2: Check Status and Potentially Reset to 0 ---
-            # Reuse existing connection/cursor. Start new transaction for Phase 2
-            conn.start_transaction() 
-            
-            # Step 2a: Get the current signal value (Value in word_input)
-            sql_check_signal = "SELECT value FROM `eip_signal`.word_input WHERE signal_id = 9030"
-            cur.execute(sql_check_signal)
-            signal_row = cur.fetchone()
-            
-            if not signal_row:
-                logging.error("[DepalletAreaRepository >> insert_kanban_nuki() >> signal_id 9030 disappeared during operation.]")
-                raise Exception("[DepalletAreaRepository >> insert_kanban_nuki() >> signal_id 9030 disappeared during operation.]")
-            
-            
-            signal_value = signal_row[0]
-            
-            # Step 2b: Get the required status from the other tables (using_flag)
-            sql_check_flag = """
-                SELECT s.using_flag
-                FROM `futaba-chiryu-3building`.t_shelf_status s
-                JOIN `futaba-chiryu-3building`.t_location_status l ON s.shelf_code = l.shelf_code
-                WHERE l.cell_code = 30550017
-            """
-            cur.execute(sql_check_flag)
-            flag_row = cur.fetchone()
-
-            if not flag_row:
-                raise Exception("No required status found for reset check (cell_code 30550017).")
-
-            using_flag = flag_row[0]
-            
-            logging.info(f"[DepalletAreaRepository >> insert_kanban_nuki()]: signal_value: {signal_value}, using_flag: {using_flag}.")
-            
-            # Critical Check: Only reset to 0 if the signal is STILL 1 AND processing hasn't started.
-            # This handles the case where the external system (PLC) didn't consume the signal.
-            if signal_value == 1 and using_flag == 0:
-                sql_up_0 = "UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = 9030"
-                cur.execute(sql_up_0)
-                logging.info("[DepalletAreaRepository >> insert_kanban_nuki()] Value still 1 and using_flag=0 → set back to 0.")
-            else:
-                logging.info("[DepalletAreaRepository >> insert_kanban_nuki()] Signal No reset needed.")
-                
-            # Commit the final state 
+            logging.info("Setting signal_id 9031 value to 1...")
+            cur.execute("UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = 9031")
             conn.commit()
-            logging.info("[DepalletAreaRepository >> insert_kanban_nuki()] Final committed.")
-            
         except Exception as e:
-            if conn and conn.in_transaction: 
-                conn.rollback()
-            # Log and re-raise the exception
-            logging.error(f"[DepalletAreaRepository >> insert_kanban_nuki() >> エラー]: {e}")
-            raise Exception(f"[DepalletAreaRepository >> insert_kanban_nuki() >> エラー]: {e}")
+            logging.error(f"Error in insert_kanban_sashi: {e}")
+            # 必要に応じて例外再送出も検討
         finally:
-            # Standard connection cleanup (only executed once)
-            if cur:
-                try: cur.close()
-                except Exception: pass
-            if conn:
-                try: conn.close()
-                except Exception: pass
-
-
-    # TODO➞リン: かんばん差しの発信を呼び出し
-    def insert_kanban_sashi(self):
+            if cur: cur.close()
+            if conn: conn.close()
+        # 監視スレッドの多重起動防止
+        with self._listener_lock:
+            if self._listener_thread is None or not self._listener_thread.is_alive():
+                logging.info("Starting background listener for signal reset condition...")
+                self._listener_thread = threading.Thread(
+                    target=self.kanban_sashi_wait_and_reset_signal, 
+                    daemon=True
+                )
+                self._listener_thread.start()
+            else:
+                logging.info("Background listener already running. Not starting another.")
+                
+    def kanban_sashi_wait_and_reset_signal(self, max_wait_sec=None, check_interval_sec=0.1):
+        """
+        max_wait_sec=Noneなら無制限に待機。
+        """
+        conn = None
+        cur = None
+        start_time = time.time()
+        logging.info(f"Background listener started. Max wait: {max_wait_sec} seconds, Interval: {check_interval_sec} seconds.")
         try:
             conn = self.db.wcs_pool.get_connection()
-            conn.start_transaction()
             cur = conn.cursor()
-
-            # Step 1: Update value to 1
-            sql_first = "UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = 9031"
-            cur.execute(sql_first)
-            logging.info("[DepalletAreaRepository >> insert_kanban_sashi() >> Updated signal_id: 9031 to 1]")
-
-            # Step 2: Check using_flag
-            sql_check = """
-                SELECT s.using_flag
-                FROM `futaba-chiryu-3building`.t_shelf_status s
-                JOIN `futaba-chiryu-3building`.t_location_status l ON s.shelf_code = l.shelf_code
-                WHERE l.cell_code = 30550017
-            """
-            cur.execute(sql_check)
-            result = cur.fetchone()
-
-            # Step 3: If using_flag = 0, update value back to 0
-            if result and result[0] == 0:
-                sql_update = "UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = 9031"
-                cur.execute(sql_update)
-                logging.info("[DepalletAreaRepository >> insert_kanban_sashi() >> Updated signal_id: 9031 to 0]")
-
-                conn.commit()
+            while True:
+                if max_wait_sec is not None and (time.time() - start_time) > max_wait_sec:
+                    logging.warning(f"Background listener: condition not met within {max_wait_sec} seconds. Exiting listener.")
+                    break
+                sql_check = """
+                    SELECT *
+                    FROM `futaba-chiryu-3building`.t_location_status AS t1
+                    WHERE 
+                        t1.cell_code = 30550017 AND 
+                        t1.using_flag = 0 AND 
+                        (t1.shelf_code IS NULL OR t1.shelf_code = '')
+                """
+                cur.execute(sql_check)
+                rows = cur.fetchall()
+                if rows:
+                    logging.info("Background listener: Query matched rows → resetting signal_id 9031 to 0.")
+                    cur.execute("UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = 9031")
+                    conn.commit()
+                    logging.info("Background listener: Reset signal_id 9031 to 0 completed. Exiting listener.")
+                    break
+                time.sleep(check_interval_sec)
         except Exception as e:
-            if conn:
-                conn.rollback()
-                logging.info("[DepalletAreaRepository >> insert_kanban_sashi() >> Updated signal_id: 9031 to 0]")
-            raise Exception(f"[DepalletAreaRepository >> insert_kanban_sashi() >> エラー]: {e}")
+            logging.error(f"Background listener Error: {e}")
+            try:
+                if conn and getattr(conn, "in_transaction", False):
+                    conn.rollback()
+            except Exception:
+                pass
         finally:
-            if cur:
-                cur.close()
-            if conn:
-                conn.close()
-
+            if cur: cur.close()
+            if conn: conn.close()
 
 if __name__ == "__main__":
     from mysql_db import MysqlDb
