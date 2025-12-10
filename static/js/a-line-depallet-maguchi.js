@@ -173,34 +173,6 @@ $(document).ready(function () {
         refreshPage();
     });
 
-    function callAMRReturn() { // You can define it like this to ensure it's global
-
-        const params = new URLSearchParams(window.location.search);
-        const buttonId = parseInt(params.get("id"));
-            
-        $.ajax({
-            url: "/api/call_AMR_return",
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                button_id: buttonId
-            }),
-            success: function(response) {
-                if (response.status === "success") {
-                    alert("✅ Aライン >> AMR return updated successfully!");
-                    console.log("Aライン >> AMR return updated successfully! Sent IDs:", buttonId);
-                } else {
-                    alert(response.message || "更新に失敗しました (Update failed).");
-                    console.warn("Aライン >> AMR return Update failed:", response.message);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Aライン >> AMRError updating AMR return:", error);
-                alert("Aライン >> AMRサーバーエラーが発生しました (Server error occurred).");
-            }
-        });
-    }
-
     /**
      * Updates the quantity input in the right-side card and the global data object.
      * @param {number} maguchiId - The Maguchi ID (1-4).
@@ -345,7 +317,8 @@ $(document).ready(function () {
                     showInfo("✅ Take count updated successfully!");
                     console.log("Take count updated successfully:", newTakeCount);
                 } 
-                
+                // UPDATE value for 行き先
+                refreshPage();
                 // ⏱️ RESTART THE AUTOMATIC REFRESH TIMER
                 pageRefreshIntervalId = setInterval(refreshPage, 5000);
                 console.log("Update success. Automatic refresh restarted.");
@@ -499,3 +472,31 @@ $(document).ready(function () {
         }     
     }
 });
+
+function callAMRReturn() { // You can define it like this to ensure it's global
+
+    const params = new URLSearchParams(window.location.search);
+    const buttonId = parseInt(params.get("id"));
+        
+    $.ajax({
+        url: "/api/call_AMR_return",
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            button_id: buttonId
+        }),
+        success: function(response) {
+            if (response.status === "success") {
+                alert("✅ Aライン >> AMR return updated successfully!");
+                console.log("Aライン >> AMR return updated successfully! Sent IDs:", buttonId);
+            } else {
+                alert(response.message || "更新に失敗しました (Update failed).");
+                console.warn("Aライン >> AMR return Update failed:", response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Aライン >> AMRError updating AMR return:", error);
+            alert("Aライン >> AMRサーバーエラーが発生しました (Server error occurred).");
+        }
+    });
+}

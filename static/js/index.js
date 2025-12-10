@@ -100,7 +100,7 @@ $(document).ready(function () {
     };
 
     // 定期実行 
-    // setInterval(refreshPage, 5000); // TODO
+    setInterval(refreshPage, 5000); // TODO
     $('#refreshButton').on('click', function () {
         refreshPage();
     });
