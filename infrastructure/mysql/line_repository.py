@@ -10,7 +10,7 @@ import logging
 
 # ログ出力開始
 LOG_FOLDER = "../log"
-LOG_FILE = "line_repository.py_logging.log"
+LOG_FILE = "debug_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 #mysql実装

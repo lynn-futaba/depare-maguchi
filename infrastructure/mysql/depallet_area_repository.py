@@ -19,7 +19,7 @@ import threading
 
 # ログ出力開始
 LOG_FOLDER = "../log"
-LOG_FILE = "depallet_area_repository.py_logging.log"
+LOG_FILE = "debug_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 #mysql実装
@@ -30,7 +30,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
         self.db = db
         self._listener_thread = None
         self._listener_lock = threading.Lock()
-        
+
         # Load app_config.json once (allow DI for tests)
         self.cfg = app_config or AppConfig()
 
@@ -78,10 +78,12 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 # --- Replaced functions using the unified loader
     def get_take_count(self, kanban_no: str) -> str:
         """Return take_count for given kanban_no from unified config."""
+        self.cfg.reload()
         return self.cfg.get_take_count(kanban_no)
 
     def get_flowrack_no(self, kanban_no: str) -> str:
         """Return flowrack_no for given kanban_no from unified config."""
+        self.cfg.reload()
         return self.cfg.get_flowrack_no(kanban_no)
 
     def get_maguchi_no(self, plat: int) -> str:
@@ -609,6 +611,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
         cur = None
         
         try:
+            self.cfg.reload()
             conn = self.db.depal_pool.get_connection()
             cur = conn.cursor(dictionary=True)
 

@@ -1,21 +1,21 @@
 let getAMRDataStorage = {}
+// ⭐ Define a global variable to hold the timer ID
+let pageRefreshIntervalId;
 
 $(document).ready(function () {
  
     function refreshPage() {
+        console.log("Page refreshed automatically.");
 
         const params = new URLSearchParams(window.location.search);
         const idValue = parseInt(params.get("id"));
-        console.log('refreshPage >> idValue >>>', idValue);
         const nameValue = params.get("name");
 
-        
         if (nameValue.includes("L")) {
             document.getElementById("layout-L").style.display = "block";
         } else {
             document.getElementById("layout-normal").style.display = "block";
         }
-
 
         $.ajax({
             url: "/api/get_depallet_area_by_plat",
@@ -44,11 +44,6 @@ $(document).ready(function () {
         
         function getDepalletAreaByPlat(data, idValue, nameValue) {
 
-            if (typeof $ === 'undefined') {
-                console.error("jQuery is required for this function.");
-                return;
-            }
-
             const result = JSON.parse(data);
 
             // Button → Plat mapping
@@ -69,7 +64,6 @@ $(document).ready(function () {
 
             const targetPlats = buttonIdMap[idValue] || [];
             document.getElementById("frontageName").textContent = 'デパレ間口 (' + nameValue + ')';
-
 
             // ✅ Loop through shelves in reverse order (5 → 1)
             for (let i = 5; i >= 1; i--) {
@@ -121,11 +115,11 @@ $(document).ready(function () {
                         // Add row to shelf table
                         tbody.append(`
                             <tr id="${rowId}">
-                                <td><button class="btn btn-success btn-sm" onclick="submitPallet(${platId}, '${stepKanbanNo}')">＋</button></td>
+                                <td><button class="btn btn-success btn-sm submit-pallet" data-plat="${platId}" data-kanban="${stepKanbanNo}">＋</button></td>
                                 <td>${stepKanbanNo}</td>
                                 <td>${loadNum}</td>
                                 <td id="take-count-${rowId}">${takeCount}</td>
-                                <td><button class="btn btn-danger btn-sm" onclick="submitDepallet(${platId}, '${stepKanbanNo}')">ー</button></td>
+                                <td><button class="btn btn-danger btn-sm submit-depallet" data-plat="${platId}" data-kanban="${stepKanbanNo}">ー</button></td>
                             </tr>
                         `);
                         
@@ -136,23 +130,51 @@ $(document).ready(function () {
                             </tr>
                         `);  
                     });
-                } 
+                } else {
+                    // Add the "No data" row to the table body
+                    tbody.append(`
+                        <tr>
+                            <td colspan="5" class="p-3 text-danger">
+                                データが見つかりません
+                            </td>
+                        </tr>
+                    `);
+                    cardNo.append(`
+                        <tr>
+                            <td colspan="5" class="text-danger">
+                                データが見つかりません
+                            </td>
+                        </tr>
+                    `); 
+                }
             }
         }
     }
-        
-    
-    // 定期実行 
-    setInterval(refreshPage, 5000); // TODD
 
+    // Attach event handler for '+' button clicks (submitPallet logic)
+    $(document).on('click', '.submit-pallet', function() {
+        const maguchiId = $(this).data('plat');
+        const stepKanbanNo = $(this).data('kanban');
+        submitPallet(maguchiId, stepKanbanNo); // submitPallet can now be local
+    });
+
+    // Attach event handler for '-' button clicks (submitDepallet logic)
+    $(document).on('click', '.submit-depallet', function() {
+        const maguchiId = $(this).data('plat');
+        const stepKanbanNo = $(this).data('kanban');
+        submitDepallet(maguchiId, stepKanbanNo); // submitDepallet can now be local
+    });
         
+    // 定期実行 
+    pageRefreshIntervalId = setInterval(refreshPage, 5000); 
+    console.log("Automatic refresh started.");
+
     $('#refreshButton').on('click', function () {
         refreshPage();
     });
 
-    window.callAMRReturn = function() { // You can define it like this to ensure it's global
+    function callAMRReturn() { // You can define it like this to ensure it's global
 
-    
         const params = new URLSearchParams(window.location.search);
         const buttonId = parseInt(params.get("id"));
             
@@ -178,9 +200,6 @@ $(document).ready(function () {
             }
         });
     }
-});
-
-
 
     /**
      * Updates the quantity input in the right-side card and the global data object.
@@ -242,149 +261,170 @@ $(document).ready(function () {
     }
 
     // Attach the function to the button click event
-    $(document).ready(function() {
-        $('#completeWorkButton').on('click', submitWorkCompletion);
-    });
+    $('#completeWorkButton').on('click', submitWorkCompletion);
 
-        /**
-         * Handles the click of the '+' button (Pallet/Increase takeCount)
-         * @param {number} maguchiId - The ID of the shelf (maguchi)
-         * @param {string} stepKanbanNo - The Kanban number identifying the item
-         */
-        function submitPallet(maguchiId, stepKanbanNo) {
-            // 1. Determine the IDs for the row and the takeCount cell
-            const rowId = `row-${maguchiId}-${stepKanbanNo}`;
-            const takeCountCell = $(`#take-count-${rowId}`);
-            
-            // 2. Get the current value and calculate the new value
-            let currentTakeCount = parseInt(takeCountCell.text().trim(), 10);
-            // let newTakeCount = currentTakeCount + 1; // No upper limit
-            // Ensure we don't exceed the max value of 2
-            let newTakeCount = Math.min(currentTakeCount + 1, 0); 
-            
-            // 3. Send AJAX request to update the backend
-            updateTakeCount(maguchiId, stepKanbanNo, newTakeCount, takeCountCell);
+    /**
+     * Handles the click of the '+' button (Pallet/Increase takeCount)
+     * @param {number} maguchiId - The ID of the shelf (maguchi)
+     * @param {string} stepKanbanNo - The Kanban number identifying the item
+     */
+    function submitPallet(maguchiId, stepKanbanNo) {
+        // 1. Determine the IDs for the row and the takeCount cell
+        const rowId = `row-${maguchiId}-${stepKanbanNo}`;
+        const takeCountCell = $(`#take-count-${rowId}`);
+        
+        // 2. Get the current value and calculate the new value
+        let currentTakeCount = parseInt(takeCountCell.text().trim(), 10);
+        // let newTakeCount = currentTakeCount + 1; // No upper limit
+        // Ensure we don't exceed the max value of 2
+        let newTakeCount = Math.min(currentTakeCount + 1, 0); 
+        
+        // 3. Send AJAX request to update the backend
+        updateTakeCount(maguchiId, stepKanbanNo, newTakeCount, takeCountCell);
+    }
+
+    /**
+     * Handles the click of the '-' button (Depallet/Decrease takeCount)
+     * @param {number} maguchiId - The ID of the shelf (maguchi)
+     * @param {string} stepKanbanNo - The Kanban number identifying the item
+     */
+    function submitDepallet(maguchiId, stepKanbanNo) {
+        const rowId = `row-${maguchiId}-${stepKanbanNo}`;
+        const takeCountCell = $(`#take-count-${rowId}`);
+
+        // 2. Get the current value and calculate the new value
+        let currentTakeCount = parseInt(takeCountCell.text().trim(), 10);
+        // let newTakeCount = currentTakeCount - 1; // No lower limit
+        // Ensure we don't go below the min value of -2
+        let newTakeCount = Math.max(currentTakeCount - 1, -20);
+        
+        // 3. Send AJAX request to update the backend
+        updateTakeCount(maguchiId, stepKanbanNo, newTakeCount, takeCountCell);
+    }
+
+    /**
+     * Common function to handle the AJAX call and UI update.
+     * @param {number} maguchiId 
+     * @param {string} stepKanbanNo 
+     * @param {number} newTakeCount 
+     * @param {object} takeCountCell - The jQuery object for the <td> cell
+     */
+
+    function updateTakeCount(maguchiId, stepKanbanNo, newTakeCount, takeCountCell) {
+        // Check if the number actually changed before hitting the API
+        if (parseInt(takeCountCell.text().trim(), 10) === newTakeCount) {
+            return; // No change, skip API call
         }
 
-        /**
-         * Handles the click of the '-' button (Depallet/Decrease takeCount)
-         * @param {number} maguchiId - The ID of the shelf (maguchi)
-         * @param {string} stepKanbanNo - The Kanban number identifying the item
-         */
-        function submitDepallet(maguchiId, stepKanbanNo) {
-            const rowId = `row-${maguchiId}-${stepKanbanNo}`;
-            const takeCountCell = $(`#take-count-${rowId}`);
-
-            // 2. Get the current value and calculate the new value
-            let currentTakeCount = parseInt(takeCountCell.text().trim(), 10);
-            // let newTakeCount = currentTakeCount - 1; // No lower limit
-            // Ensure we don't go below the min value of -2
-            let newTakeCount = Math.max(currentTakeCount - 1, -20);
-            
-            // 3. Send AJAX request to update the backend
-            updateTakeCount(maguchiId, stepKanbanNo, newTakeCount, takeCountCell);
+        // 🛑 1. PAUSE THE AUTOMATIC REFRESH TIMER
+        if (pageRefreshIntervalId) {
+            clearInterval(pageRefreshIntervalId);
+            pageRefreshIntervalId = null; // Clear the ID
+            console.log("Automatic refresh paused for update.");
         }
 
-        /**
-         * Common function to handle the AJAX call and UI update.
-         * @param {number} maguchiId 
-         * @param {string} stepKanbanNo 
-         * @param {number} newTakeCount 
-         * @param {object} takeCountCell - The jQuery object for the <td> cell
-         */
+        $.ajax({
+            url: "/api/update_take_count",
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                maguchi_id: maguchiId,
+                kanban_no: stepKanbanNo,
+                new_take_count: newTakeCount // ✅ Match Python key
+            }),
+            success: function(response) {
+                if (response.status === "success") {
+                    console.log("Success >> response.status:", response.message);
 
-        function updateTakeCount(maguchiId, stepKanbanNo, newTakeCount, takeCountCell) {
-            // Check if the number actually changed before hitting the API
-            if (parseInt(takeCountCell.text().trim(), 10) === newTakeCount) {
-                return; // No change, skip API call
-            }
-
-            $.ajax({
-                url: "/api/update_take_count",
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    maguchi_id: maguchiId,
-                    kanban_no: stepKanbanNo,
-                    new_take_count: newTakeCount // ✅ Match Python key
-                }),
-                success: function(response) {
-                    if (response.status === "success") {
-                        // 1. Update UI
-                        takeCountCell.text(newTakeCount);
-                        
-                        // 2. ⭐ UPDATE GLOBAL STORAGE HERE! ⭐
-                        updateAMRDataStorage(maguchiId, stepKanbanNo, newTakeCount);
-                        
-                        showInfo("✅ Take count updated successfully!");
-                        console.log("Take count updated successfully:", newTakeCount);
-                    } else {
-                        // Backend returned error
-                        alert(response.message || "更新に失敗しました (Update failed).");
-                        console.warn("Update failed:", response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error updating take count:", error);
-                    alert("サーバーエラーが発生しました (Server error occurred).");
-                }
-            });
-        }
-
-        // --- NEW HELPER FUNCTION TO UPDATE THE GLOBAL STORAGE ---
-        // --- NEW HELPER FUNCTION TO UPDATE THE GLOBAL STORAGE ---
-        function updateAMRDataStorage(maguchiId, kanbanNo, newTakeCount) {
-            // 1. Convert maguchiId to string (Keys in the object are strings)
-            const maguchiIdStr = String(maguchiId);
-            
-            // 2. RETRIEVE the data from Local Storage and PARSE it
-            let storedData = localStorage.getItem("getAMRDataStorage");
-            if (!storedData) {
-                console.warn("Local Storage item 'getAMRDataStorage' not found.");
-                return;
-            }
-            
-            let getAMRDataStorage;
-            try {
-                getAMRDataStorage = JSON.parse(storedData);
-            } catch (e) {
-                console.error("Error parsing getAMRDataStorage from Local Storage:", e);
-                return;
-            }
-
-            // 3. Check if the key (maguchiId) exists in the storage object
-            if (getAMRDataStorage[maguchiIdStr]) {
-                // The value should be an array of objects
-                const itemArray = getAMRDataStorage[maguchiIdStr];
-                
-                // --- FIX for 'find is not a function' ---
-                // Instead of .find(), use a standard for loop for better compatibility 
-                // and to guarantee it works on objects that might look like arrays but aren't.
-                let found = false;
-                
-                for (let i = 0; i < itemArray.length; i++) {
-                    const item = itemArray[i];
+                    // 1. Update UI
+                    takeCountCell.text(newTakeCount);
                     
-                    if (item.step_kanban_no === kanbanNo) {
-                        // Update the take_count property of the found item
-                        item.take_count = String(newTakeCount); // Store as string
-                        found = true;
-                        break; // Stop loop once item is found and updated
-                    }
-                }
-                
-                if (found) {
-                    // 4. ⭐ WRITE THE MODIFIED DATA BACK TO LOCAL STORAGE! ⭐
-                    localStorage.setItem("getAMRDataStorage", JSON.stringify(getAMRDataStorage));
+                    // 2. ⭐ UPDATE GLOBAL STORAGE HERE! ⭐
+                    updateAMRDataStorage(maguchiId, stepKanbanNo, newTakeCount);
                     
-                    console.log(`Updated Local Storage for maguchi ${maguchiId} and kanban ${kanbanNo}. New take_count: ${newTakeCount}`);
-                } else {
-                    console.warn(`Item not found in getAMRDataStorage for kanban_no: ${kanbanNo} under maguchi: ${maguchiIdStr}`);
+                    showInfo("✅ Take count updated successfully!");
+                    console.log("Take count updated successfully:", newTakeCount);
+                } 
+                
+                // ⏱️ RESTART THE AUTOMATIC REFRESH TIMER
+                pageRefreshIntervalId = setInterval(refreshPage, 5000);
+                console.log("Update success. Automatic refresh restarted.");
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Try to get the specific message from the server response
+                let errorMessage = "サーバーエラーが発生しました (Server error occurred).";
+                console.error("Error updating take count >> Status:", jqXHR.status, errorMessage);
+
+                if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                    errorMessage = jqXHR.responseJSON.message;
+                } else if (jqXHR.responseText) {
+                    // Fallback for non-JSON responses
+                    errorMessage = jqXHR.responseText.substring(0, 100) + '...'; // Limit length
                 }
+
+                // ⏱️ RESTART THE AUTOMATIC REFRESH TIMER (even on error)
+                pageRefreshIntervalId = setInterval(refreshPage, 5000);
+                console.log("Update failed. Automatic refresh restarted.");
+
+                alert(errorMessage);
+            }
+        });
+    }
+
+    // --- NEW HELPER FUNCTION TO UPDATE THE GLOBAL STORAGE ---
+    // --- NEW HELPER FUNCTION TO UPDATE THE GLOBAL STORAGE ---
+    function updateAMRDataStorage(maguchiId, kanbanNo, newTakeCount) {
+        // 1. Convert maguchiId to string (Keys in the object are strings)
+        const maguchiIdStr = String(maguchiId);
+        
+        // 2. RETRIEVE the data from Local Storage and PARSE it
+        let storedData = localStorage.getItem("getAMRDataStorage");
+        if (!storedData) {
+            console.warn("Local Storage item 'getAMRDataStorage' not found.");
+            return;
+        }
+        
+        let getAMRDataStorage;
+        try {
+            getAMRDataStorage = JSON.parse(storedData);
+        } catch (e) {
+            console.error("Error parsing getAMRDataStorage from Local Storage:", e);
+            return;
+        }
+
+        // 3. Check if the key (maguchiId) exists in the storage object
+        if (getAMRDataStorage[maguchiIdStr]) {
+            // The value should be an array of objects
+            const itemArray = getAMRDataStorage[maguchiIdStr];
+            
+            // --- FIX for 'find is not a function' ---
+            // Instead of .find(), use a standard for loop for better compatibility 
+            // and to guarantee it works on objects that might look like arrays but aren't.
+            let found = false;
+            
+            for (let i = 0; i < itemArray.length; i++) {
+                const item = itemArray[i];
+                
+                if (item.step_kanban_no === kanbanNo) {
+                    // Update the take_count property of the found item
+                    item.take_count = String(newTakeCount); // Store as string
+                    found = true;
+                    break; // Stop loop once item is found and updated
+                }
+            }
+            
+            if (found) {
+                // 4. ⭐ WRITE THE MODIFIED DATA BACK TO LOCAL STORAGE! ⭐
+                localStorage.setItem("getAMRDataStorage", JSON.stringify(getAMRDataStorage));
+                
+                console.log(`Updated Local Storage for maguchi ${maguchiId} and kanban ${kanbanNo}. New take_count: ${newTakeCount}`);
             } else {
-                console.warn(`Maguchi ID not found in getAMRDataStorage: ${maguchiIdStr}`);
+                console.warn(`Item not found in getAMRDataStorage for kanban_no: ${kanbanNo} under maguchi: ${maguchiIdStr}`);
             }
+        } else {
+            console.warn(`Maguchi ID not found in getAMRDataStorage: ${maguchiIdStr}`);
         }
+    }
 
    
 
@@ -458,3 +498,4 @@ $(document).ready(function () {
             });
         }     
     }
+});
