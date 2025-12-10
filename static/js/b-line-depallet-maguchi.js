@@ -1,21 +1,20 @@
 let getAMRDataStorage = {}
+// ⭐ Define a global variable to hold the timer ID
+let pageRefreshIntervalId;
 
 $(document).ready(function () {
  
     function refreshPage() {
-
+        console.log("Page refreshed automatically.");
         const params = new URLSearchParams(window.location.search);
         const idValue = parseInt(params.get("id"));
-        console.log('idValue >>>', idValue);
         const nameValue = params.get("name");
 
-        
         if (nameValue.includes("L")) {
             document.getElementById("layout-L").style.display = "block";
         } else {
             document.getElementById("layout-normal").style.display = "block";
         }
-
 
         $.ajax({
             url: "/api/get_depallet_area_by_plat",
@@ -65,7 +64,6 @@ $(document).ready(function () {
             const targetPlats = buttonIdMap[idValue] || [];
             document.getElementById("frontageName").textContent = 'デパレ間口 (' + nameValue + ')';
 
-
             // ✅ Loop through shelves in reverse order (5 → 1)
             for (let i = 5; i >= 1; i--) {
                 const shelfId = `#shelf-${i}`; // shelf-5, shelf-4, shelf-3, shelf-2, shelf-1
@@ -90,8 +88,8 @@ $(document).ready(function () {
                     thead.append(`
                         <tr>
                             <th>対象 : 間口${i}</th>
-                            <th colspan="2">コタツ No : ${items[0]?.shelf_code ?? 'N/A'}</th>
-                            <th colspan="2">かんばん No : ${items[0]?.step_kanban_no ?? 'N/A'}</th>
+                            <th colspan="2">コタツ No : ${items[0]?.shelf_code || 'N/A'}</th>
+                            <th colspan="2">かんばん No : ${items[0]?.step_kanban_no || 'N/A'}</th>
                         </tr>
                         <tr>
                             <th></th>
@@ -104,23 +102,26 @@ $(document).ready(function () {
 
                     // ✅ Populate rows
                     items.forEach((item, idx) => {
-                        const stepKanbanNo = item.step_kanban_no ?? '-';
-                        const loadNum = item.load_num ?? 0;
-                        const takeCount = item.take_count ?? 0;
-                        const rowId = `row-${platId}-${stepKanbanNo}`;
+                        const stepKanbanNo = item.step_kanban_no || '-';
+                        const loadNum = item.load_num || 0;
+                        const takeCount = item.take_count || 0;
+                        const rowId = `row-${platId}-${stepKanbanNo}` || '-';
 
                         // Update flow rack info
                         const flowRackNo = item.flow_rack_no ?? '-';
-                        $("#flow-rack-no").text(`対象フローラック　No：${flowRackNo}`);
+                        $("#flow-rack-no").text(`対象フローラック No: ${flowRackNo}`);
 
+                        
+                        // <td><button class="btn btn-success btn-sm" onclick="submitPallet(${platId}, '${stepKanbanNo}')">＋</button></td>
+                        // <td><button class="btn btn-danger btn-sm" onclick="submitDepallet(${platId}, '${stepKanbanNo}')">ー</button></td>
                         // Add row to shelf table
                         tbody.append(`
                             <tr id="${rowId}">
-                                <td><button class="btn btn-success btn-sm" onclick="submitPallet(${platId}, '${stepKanbanNo}')">＋</button></td>
+                                <td><button class="btn btn-success btn-sm submit-pallet" data-plat="${platId}" data-kanban="${stepKanbanNo}">＋</button></td>
                                 <td>${stepKanbanNo}</td>
                                 <td>${loadNum}</td>
                                 <td id="take-count-${rowId}">${takeCount}</td>
-                                <td><button class="btn btn-danger btn-sm" onclick="submitDepallet(${platId}, '${stepKanbanNo}')">ー</button></td>
+                                <td><button class="btn btn-danger btn-sm submit-depallet" data-plat="${platId}" data-kanban="${stepKanbanNo}">ー</button></td>
                             </tr>
                         `);
                         
@@ -131,22 +132,51 @@ $(document).ready(function () {
                             </tr>
                         `);  
                     });
-                } 
+                } else {
+                    // Add the "No data" row to the table body
+                    tbody.append(`
+                        <tr>
+                            <td colspan="5" class="p-3 text-danger">
+                                データが見つかりません
+                            </td>
+                        </tr>
+                    `);
+                    cardNo.append(`
+                        <tr>
+                            <td colspan="5" class="text-danger">
+                                データが見つかりません
+                            </td>
+                        </tr>
+                    `);  
+                }
             }
         }
 
     }
+
+    // Attach event handler for '+' button clicks (submitPallet logic)
+    $(document).on('click', '.submit-pallet', function() {
+        const maguchiId = $(this).data('plat');
+        const stepKanbanNo = $(this).data('kanban');
+        submitPallet(maguchiId, stepKanbanNo); // submitPallet can now be local
+    });
+
+    // Attach event handler for '-' button clicks (submitDepallet logic)
+    $(document).on('click', '.submit-depallet', function() {
+        const maguchiId = $(this).data('plat');
+        const stepKanbanNo = $(this).data('kanban');
+        submitDepallet(maguchiId, stepKanbanNo); // submitDepallet can now be local
+    });
     
     // 定期実行 
-    setInterval(refreshPage, 3000); // TODOO
-
+    pageRefreshIntervalId = setInterval(refreshPage, 5000); 
+    console.log("Automatic refresh started.");
         
     $('#refreshButton').on('click', function () {
         refreshPage();
     });
 
-
-    window.callAMRReturn = function() { 
+    function callAMRReturn() { 
 
         const params = new URLSearchParams(window.location.search);
         const buttonId = parseInt(params.get("id"));
@@ -175,48 +205,44 @@ $(document).ready(function () {
     }
     
 
-});
+    /**
+     * Updates the quantity input in the right-side card and the global data object.
+     * @param {number} maguchiId - The Maguchi ID (1-4).
+     * @param {number} newTakeCount - The new total take count.
+     */
+    function updateMaguchiInput(maguchiId, newTakeCount) {
+        if (maguchiId >= 1 && maguchiId <= 4) {
+            // Update the input field value
+            $(`#count-input-${maguchiId}`).val(newTakeCount);
 
-
-
-/**
- * Updates the quantity input in the right-side card and the global data object.
- * @param {number} maguchiId - The Maguchi ID (1-4).
- * @param {number} newTakeCount - The new total take count.
- */
-function updateMaguchiInput(maguchiId, newTakeCount) {
-    if (maguchiId >= 1 && maguchiId <= 4) {
-        // Update the input field value
-        $(`#count-input-${maguchiId}`).val(newTakeCount);
-
-        // Update the global data object for submission
-        if (maguchiInputData[maguchiId]) {
-            maguchiInputData[maguchiId].take_count = newTakeCount;
+            // Update the global data object for submission
+            if (maguchiInputData[maguchiId]) {
+                maguchiInputData[maguchiId].take_count = newTakeCount;
+            }
         }
     }
-}
 
-/**
- * Collects the final data from the input cards and sends it to the backend.
- */
-function submitWorkCompletion() {
-    const finalData = [];
-    
-    // Iterate through the stored data for Maguchi 1 through 4
-    for (let id = 1; id <= 4; id++) {
-        const data = maguchiInputData[id];
+    /**
+     * Collects the final data from the input cards and sends it to the backend.
+     */
+    function submitWorkCompletion() {
+        const finalData = [];
         
-        // Only include entries that have a rack number assigned
-        if (data && data.step_kanban_no && data.step_kanban_no !== 'N/A') {
-            finalData.push({
-                maguchi_id: id,
-                step_kanban_no: data.step_kanban_no,
-                final_take_count: parseInt(data.take_count) // Ensure count is an integer
-            });
+        // Iterate through the stored data for Maguchi 1 through 4
+        for (let id = 1; id <= 4; id++) {
+            const data = maguchiInputData[id];
+            
+            // Only include entries that have a rack number assigned
+            if (data && data.step_kanban_no && data.step_kanban_no !== 'N/A') {
+                finalData.push({
+                    maguchi_id: id,
+                    step_kanban_no: data.step_kanban_no,
+                    final_take_count: parseInt(data.take_count) // Ensure count is an integer
+                });
+            }
         }
-    }
     
-    console.log("Final Data for Submission:", finalData);
+        console.log("Final Data for Submission:", finalData);
     
     // TODO: Implement your actual AJAX/Fetch call to the backend API here
     // Example:
@@ -236,12 +262,11 @@ function submitWorkCompletion() {
         }
     });
     */
-}
+    }
 
 // Attach the function to the button click event
-$(document).ready(function() {
     $('#completeWorkButton').on('click', submitWorkCompletion);
-});
+
 
     /**
      * Handles the click of the '+' button (Pallet/Increase takeCount)
@@ -283,17 +308,24 @@ $(document).ready(function() {
     }
 
     /**
-     * Common function to handle the AJAX call and UI update.
-     * @param {number} maguchiId 
-     * @param {string} stepKanbanNo 
-     * @param {number} newTakeCount 
-     * @param {object} takeCountCell - The jQuery object for the <td> cell
-     */
+         * Common function to handle the AJAX call and UI update.
+         * @param {number} maguchiId 
+         * @param {string} stepKanbanNo 
+         * @param {number} newTakeCount 
+         * @param {object} takeCountCell - The jQuery object for the <td> cell
+         */
 
     function updateTakeCount(maguchiId, stepKanbanNo, newTakeCount, takeCountCell) {
         // Check if the number actually changed before hitting the API
         if (parseInt(takeCountCell.text().trim(), 10) === newTakeCount) {
             return; // No change, skip API call
+        }
+
+        // 🛑 1. PAUSE THE AUTOMATIC REFRESH TIMER
+        if (pageRefreshIntervalId) {
+            clearInterval(pageRefreshIntervalId);
+            pageRefreshIntervalId = null; // Clear the ID
+            console.log("Automatic refresh paused for update.");
         }
 
         $.ajax({
@@ -307,6 +339,8 @@ $(document).ready(function() {
             }),
             success: function(response) {
                 if (response.status === "success") {
+                    console.log("Success >> response.status:", response.message);
+
                     // 1. Update UI
                     takeCountCell.text(newTakeCount);
                     
@@ -315,143 +349,158 @@ $(document).ready(function() {
                     
                     showInfo("✅ Take count updated successfully!");
                     console.log("Take count updated successfully:", newTakeCount);
-                } else {
-                    // Backend returned error
-                    alert(response.message || "更新に失敗しました (Update failed).");
-                    console.warn("Update failed:", response.message);
-                }
+                } 
+                
+                // ⏱️ RESTART THE AUTOMATIC REFRESH TIMER
+                pageRefreshIntervalId = setInterval(refreshPage, 5000);
+                console.log("Update success. Automatic refresh restarted.");
             },
-            error: function(xhr, status, error) {
-                console.error("Error updating take count:", error);
-                alert("サーバーエラーが発生しました (Server error occurred).");
+            error: function(jqXHR, textStatus, errorThrown) {
+                // Try to get the specific message from the server response
+                let errorMessage = "サーバーエラーが発生しました (Server error occurred).";
+                console.error("Error updating take count >> Status:", jqXHR.status, errorMessage);
+
+                if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                    errorMessage = jqXHR.responseJSON.message;
+                } else if (jqXHR.responseText) {
+                    // Fallback for non-JSON responses
+                    errorMessage = jqXHR.responseText.substring(0, 100) + '...'; // Limit length
+                }
+
+                // ⏱️ RESTART THE AUTOMATIC REFRESH TIMER (even on error)
+                pageRefreshIntervalId = setInterval(refreshPage, 5000);
+                console.log("Update failed. Automatic refresh restarted.");
+
+                alert(errorMessage);
             }
         });
     }
 
     // --- NEW HELPER FUNCTION TO UPDATE THE GLOBAL STORAGE ---
-    // --- NEW HELPER FUNCTION TO UPDATE THE GLOBAL STORAGE ---
-function updateAMRDataStorage(maguchiId, kanbanNo, newTakeCount) {
-    // 1. Convert maguchiId to string (Keys in the object are strings)
-    const maguchiIdStr = String(maguchiId);
-    
-    // 2. RETRIEVE the data from Local Storage and PARSE it
-    let storedData = localStorage.getItem("getAMRDataStorage");
-    if (!storedData) {
-        console.warn("Local Storage item 'getAMRDataStorage' not found.");
-        return;
-    }
-    
-    let getAMRDataStorage;
-    try {
-        getAMRDataStorage = JSON.parse(storedData);
-    } catch (e) {
-        console.error("Error parsing getAMRDataStorage from Local Storage:", e);
-        return;
-    }
+    function updateAMRDataStorage(maguchiId, kanbanNo, newTakeCount) {
+        // 1. Convert maguchiId to string (Keys in the object are strings)
+        const maguchiIdStr = String(maguchiId);
+        
+        // 2. RETRIEVE the data from Local Storage and PARSE it
+        let storedData = localStorage.getItem("getAMRDataStorage");
+        if (!storedData) {
+            console.warn("Local Storage item 'getAMRDataStorage' not found.");
+            return;
+        }
+        
+        let getAMRDataStorage;
+        try {
+            getAMRDataStorage = JSON.parse(storedData);
+        } catch (e) {
+            console.error("Error parsing getAMRDataStorage from Local Storage:", e);
+            return;
+        }
 
-    // 3. Check if the key (maguchiId) exists in the storage object
-    if (getAMRDataStorage[maguchiIdStr]) {
-        // The value should be an array of objects
-        const itemArray = getAMRDataStorage[maguchiIdStr];
-        
-        // --- FIX for 'find is not a function' ---
-        // Instead of .find(), use a standard for loop for better compatibility 
-        // and to guarantee it works on objects that might look like arrays but aren't.
-        let found = false;
-        
-        for (let i = 0; i < itemArray.length; i++) {
-            const item = itemArray[i];
+        // 3. Check if the key (maguchiId) exists in the storage object
+        if (getAMRDataStorage[maguchiIdStr]) {
+            // The value should be an array of objects
+            const itemArray = getAMRDataStorage[maguchiIdStr];
             
-            if (item.step_kanban_no === kanbanNo) {
-                // Update the take_count property of the found item
-                item.take_count = String(newTakeCount); // Store as string
-                found = true;
-                break; // Stop loop once item is found and updated
+            // --- FIX for 'find is not a function' ---
+            // Instead of .find(), use a standard for loop for better compatibility 
+            // and to guarantee it works on objects that might look like arrays but aren't.
+            let found = false;
+            
+            for (let i = 0; i < itemArray.length; i++) {
+                const item = itemArray[i];
+                
+                if (item.step_kanban_no === kanbanNo) {
+                    // Update the take_count property of the found item
+                    item.take_count = String(newTakeCount); // Store as string
+                    found = true;
+                    break; // Stop loop once item is found and updated
+                }
             }
-        }
-        
-        if (found) {
-            // 4. ⭐ WRITE THE MODIFIED DATA BACK TO LOCAL STORAGE! ⭐
-            localStorage.setItem("getAMRDataStorage", JSON.stringify(getAMRDataStorage));
             
-            console.log(`Updated Local Storage for maguchi ${maguchiId} and kanban ${kanbanNo}. New take_count: ${newTakeCount}`);
+            if (found) {
+                // 4. ⭐ WRITE THE MODIFIED DATA BACK TO LOCAL STORAGE! ⭐
+                localStorage.setItem("getAMRDataStorage", JSON.stringify(getAMRDataStorage));
+                
+                console.log(`Updated Local Storage for maguchi ${maguchiId} and kanban ${kanbanNo}. New take_count: ${newTakeCount}`);
+            } else {
+                console.warn(`Item not found in getAMRDataStorage for kanban_no: ${kanbanNo} under maguchi: ${maguchiIdStr}`);
+            }
         } else {
-            console.warn(`Item not found in getAMRDataStorage for kanban_no: ${kanbanNo} under maguchi: ${maguchiIdStr}`);
+            console.warn(`Maguchi ID not found in getAMRDataStorage: ${maguchiIdStr}`);
         }
-    } else {
-        console.warn(`Maguchi ID not found in getAMRDataStorage: ${maguchiIdStr}`);
     }
-}
 
    
 
 
-//パレットおろし
-// function depallet(frontage_id,part_id) {
-//     $.ajax({
-//         url: "/api/to_flow_rack",
-//         type: "POST",
-//         contentType: "application/json",
-//         data: JSON.stringify({ "frontage_id": frontage_id,"part_id" :part_id }),
-//         success: function (data) {
-//             if (data["status"] === "success") {
-//                 console.log('depallet >> to_flow_rack API', "OK");
-//             } else {
-//                 alert("depalletizing error");
-//             }
-//         },
-//         error: function (error) {
-//             console.log('depallet >> to_flow_rack API >> Error', error.status + ": " + error.responseText);
-//             alert(error.status + ": " + error.responseText)
-//         }
-//     });
-// }
+    //パレットおろし
+    // function depallet(frontage_id,part_id) {
+    //     $.ajax({
+    //         url: "/api/to_flow_rack",
+    //         type: "POST",
+    //         contentType: "application/json",
+    //         data: JSON.stringify({ "frontage_id": frontage_id,"part_id" :part_id }),
+    //         success: function (data) {
+    //             if (data["status"] === "success") {
+    //                 console.log('depallet >> to_flow_rack API', "OK");
+    //             } else {
+    //                 alert("depalletizing error");
+    //             }
+    //         },
+    //         error: function (error) {
+    //             console.log('depallet >> to_flow_rack API >> Error', error.status + ": " + error.responseText);
+    //             alert(error.status + ": " + error.responseText)
+    //         }
+    //     });
+    // }
 
-//パレット戻し, + plus
-// function pallet(frontage_id, part_id) {
-//     $.ajax({
-//         url: "/api/to_kotatsu",
-//         type: "POST",
-//         contentType: "application/json",
-//         data: JSON.stringify({ "frontage_id": frontage_id, "part_id": part_id }),
-//         success: function (data) {
-//             if (data["status"] === "success") {
-//                 console.log('pallet >> to_kotatsu API', "OK");
-//             } else {
-//                 alert("palletizing error");
-//             }
-//         },
-//         error: function (error) {
-//             console.log('pallet >> to_kotatsu API >> Error', error.status + ">> " + error.responseText);
-//             alert(error.status + ": " + error.responseText)
-//         }
-//     });
-// }
+    //パレット戻し, + plus
+    // function pallet(frontage_id, part_id) {
+    //     $.ajax({
+    //         url: "/api/to_kotatsu",
+    //         type: "POST",
+    //         contentType: "application/json",
+    //         data: JSON.stringify({ "frontage_id": frontage_id, "part_id": part_id }),
+    //         success: function (data) {
+    //             if (data["status"] === "success") {
+    //                 console.log('pallet >> to_kotatsu API', "OK");
+    //             } else {
+    //                 alert("palletizing error");
+    //             }
+    //         },
+    //         error: function (error) {
+    //             console.log('pallet >> to_kotatsu API >> Error', error.status + ">> " + error.responseText);
+    //             alert(error.status + ": " + error.responseText)
+    //         }
+    //     });
+    // }
 
-// コタツ返却. - minus
-function returnKotatsu(id) {
-    // const frontage_id = element.getAttribute("data-id"); TODO: comment out
-    console.log('returnKotatsu >>', id);
-    const frontage_id = id;
-    const result = confirm(`間口 ${frontage_id}のコタツを返却します`);
+    // コタツ返却. - minus
+    function returnKotatsu(id) {
+        // const frontage_id = element.getAttribute("data-id"); TODO: comment out
+        console.log('returnKotatsu >>', id);
+        const frontage_id = id;
+        const result = confirm(`間口 ${frontage_id}のコタツを返却します`);
 
-    if (result) {
-        $.ajax({
-            url: "/api/return_kotatsu",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({ "frontage_id": frontage_id}),
-            success: function (data) {
-                if (data["status"] === "success") {
-                    console.log('returnKotatsu API >>', "OK");
-                } else {
-                    alert("error");
+        if (result) {
+            $.ajax({
+                url: "/api/return_kotatsu",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ "frontage_id": frontage_id}),
+                success: function (data) {
+                    if (data["status"] === "success") {
+                        console.log('returnKotatsu API >>', "OK");
+                    } else {
+                        alert("error");
+                    }
+                },
+                error: function (error) {
+                    console.log('returnKotatsu API >> Error', error);
+                    alert(error.status + ": " + error.responseText)
                 }
-            },
-            error: function (error) {
-                console.log('returnKotatsu API >> Error', error);
-                alert(error.status + ": " + error.responseText)
-            }
-        });
-    }     
-}
+            });
+        }     
+    }
+});
+

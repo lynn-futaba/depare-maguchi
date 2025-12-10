@@ -9,7 +9,7 @@ from config.config import BACKUP_DAYS  # ログ用
 
 # ログ出力開始
 LOG_FOLDER = "../log"
-LOG_FILE = "new_depallet_frontage_watcher.py_logging.log"
+LOG_FILE = "debug_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 

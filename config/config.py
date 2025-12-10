@@ -43,5 +43,7 @@ LOG_FOLDER = "../log"
 BACKUP_DAYS = 120
 LOG_LEVEL = "INFO"  # DEBUG, INFO, NOTSET, WARN, ERORR, CRITICAL
 ENCODING = "utf-8"
-
+# Timed rotating settings
+LOG_ROTATE_WHEN = "D" # Rotation frequency: 'D' (daily), 'H' (hourly), 'midnight', etc.
+LOG_ROTATE_INTERVAL = 1 # Rotate every 1 unit (e.g., 1 day)
 

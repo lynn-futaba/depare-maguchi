@@ -11,7 +11,7 @@ import logging
 
 # ログ出力開始
 LOG_FOLDER = "../log"
-LOG_FILE = "depallet_service.py_logging.log"
+LOG_FILE = "debug_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 class DepalletService:
