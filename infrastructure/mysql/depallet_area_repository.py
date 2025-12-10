@@ -88,17 +88,21 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
     def get_maguchi_no(self, plat: int) -> str:
         """Return maguchi_no for given plat from unified config."""
+        self.cfg.reload()
         return self.cfg.get_maguchi_no(plat)
 
     # If you previously needed shelf_codes groups:
     def get_shelf_codes_L3_R3(self) -> list[str]:
+        self.cfg.reload()
         return self.cfg.get_shelf_codes_group("L3_R3")
 
     def get_shelf_codes_R1_R2_L1_L2(self) -> list[str]:
+        self.cfg.reload()
         return self.cfg.get_shelf_codes_group("R1_R2_L1_L2")
 
     # If you need flowrack_no -> shelf_code mapping:
     def get_shelf_code_by_flowrack_no(self, flowrack_no: str) -> str:
+        self.cfg.reload()
         return self.cfg.get_shelf_code_by_flowrack_no(flowrack_no)
 
 
@@ -351,11 +355,11 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
             # ✅ Fetch shelf status for specific shelf_codes
             if line_frontage_id in (3, 6, 9, 12): # R3, L3 Aライン Bライン
-                shelf_codes = self.shelf_codes_L3_R3
-                logging.info(f"[DepalletAreaRepository >> insert_target_ids() self.shelf_codes_L3_R3] {self.shelf_codes_L3_R3}.")
+                shelf_codes = self.get_shelf_codes_L3_R3()
+                logging.info(f"[DepalletAreaRepository >> insert_target_ids() self.get_shelf_codes_L3_R3()] {self.get_shelf_codes_L3_R3()}.")
             else:
-                shelf_codes = self.shelf_codes_R1_R2_L1_L2
-                logging.info(f"[DepalletAreaRepository >> insert_target_ids() self.shelf_codes_R1_R2_L1_L2] {self.shelf_codes_R1_R2_L1_L2}.")
+                shelf_codes = self.get_shelf_codes_R1_R2_L1_L2()
+                logging.info(f"[DepalletAreaRepository >> insert_target_ids() self.get_shelf_codes_R1_R2_L1_L2()] {self.get_shelf_codes_R1_R2_L1_L2()}.")
 
             if not shelf_codes:
                 return []
@@ -594,7 +598,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
         except Exception as e:
             if conn:
                 conn.rollback()
-            print(f"[DepalletAreaRepository >> call_AMR_return() ❌ >> エラー]: {e}")
+            logging.error(f"[DepalletAreaRepository >> call_AMR_return() ❌ >> エラー]: {e}")
             raise Exception(f"[DepalletAreaRepository >> call_AMR_return() >> エラー]: {e}")
         finally:
             if cur:
@@ -692,10 +696,12 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             conn = self.db.wcs_pool.get_connection()
             cur = conn.cursor()
             logging.info(f"{log_prefix}: Setting signal_id {start_signal_id} value to 1...")
+            print(f"{log_prefix}: Setting signal_id {start_signal_id} value to 1...")
             cur.execute(f"UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = {start_signal_id}")
             conn.commit()
         except Exception as e:
             logging.error(f"Error in {log_prefix} initial setup: {e}")
+            print(f"Error in {log_prefix} initial setup: {e}")
         finally:
             if cur: cur.close()
             if conn: conn.close()
@@ -705,6 +711,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
         with self._listener_lock:
             if self._listener_thread is None or not self._listener_thread.is_alive():
                 logging.info(f"{log_prefix}: Starting background listener for signal reset condition...")
+                print(f"{log_prefix}: Starting background listener for signal reset condition...")
                 self._listener_thread = threading.Thread(
                     target=self._wait_and_reset_signal,
                     args=(reset_signal_id, log_prefix), # Pass parameters to the target function
@@ -713,6 +720,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 self._listener_thread.start()
             else:
                 logging.info(f"{log_prefix}: Background listener already running. Not starting another.")
+                print(f"{log_prefix}: Starting background listener for signal reset condition...")
 
     def _wait_and_reset_signal(self, reset_signal_id: int, log_prefix: str, check_interval_sec=1.0): 
         """
@@ -722,6 +730,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
         
         # Using logging instead of print for thread safety and better handling
         logging.info(f"Background listener started for {log_prefix}. Polling Interval: {check_interval_sec} seconds.")
+        print(f"Background listener started for {log_prefix}. Polling Interval: {check_interval_sec} seconds.")
         
         sql_check = """
             SELECT 1
@@ -747,14 +756,17 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 # 3. If condition met (using_flag is 0), update the signal and exit
                 if rows:
                     logging.info(f"{log_prefix}: Query matched rows (using_flag = 0) -> resetting signal_id {reset_signal_id} to 0.")
+                    print(f"{log_prefix}: Query matched rows (using_flag = 0) -> resetting signal_id {reset_signal_id} to 0.")
                     cur.execute(f"UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = {reset_signal_id}")
                     conn.commit()
                     logging.info(f"{log_prefix}: Reset signal_id {reset_signal_id} completed. Exiting listener.")
+                    print(f"{log_prefix}: Reset signal_id {reset_signal_id} completed. Exiting listener.")
                     break # <-- Exit the loop
                     
             except Exception as e:
                 # Handle connection or execution errors, log, and continue the loop
                 logging.error(f"{log_prefix} Database Error: {e}. Retrying soon.")
+                print(f"{log_prefix} Database Error: {e}. Retrying soon.")
                 try:
                     if conn:
                         conn.rollback()
@@ -768,8 +780,9 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 
             # 5. Wait for the next check
             time.sleep(check_interval_sec)
-                
+            
         logging.info(f"Background listener thread finished for {log_prefix}.")
+        print(f"Background listener thread finished for {log_prefix}.")
 
 if __name__ == "__main__":
     from mysql_db import MysqlDb

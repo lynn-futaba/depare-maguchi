@@ -9,17 +9,21 @@
     <link rel="stylesheet" href="../../static/css/bootstrap.min.css" />
 </head>
 <body>
-  <div class="container-fluid">
-    <div class="row">
-      
+
+  <header class="footer mt-auto py-1 bg-light">
+    <div class="container text-center text-success">
+      <h3>
+        310D デパレ作業画面 〈安全 . 品質 . 生産〉
+        <!-- <button id="refreshButton" class="btn btn-light text-right my-2">更新</button> -->
+      </h3>
+    </div>
+  </header>
+  <div class="container-fluid mt-2">
+    <div class="row">      
       <div class="container operation">
-        <h2 class="bg-dark text-center text-white border border-dark fw-bold my-2">
-          310D デパレ作業画面 〈安全 . 品質 . 生産〉
-          <button id="refreshButton" class="btn btn-light text-right my-2">更新</button>
-        </h2>
         <div class="row justify-content-center">
           <div class="col-2">
-            <button type="button" class="btn btn-danger text-white w-100" onclick="submitKanbanNuki()">かんばん抜き<br>①発信</button>
+            <button type="button" class="btn btn-success text-white w-100" onclick="submitKanbanNuki()">かんばん抜き<br>①発信</button>
           </div>
           <div class="col-2">
             <button type="button" class="btn btn-success text-white w-100" onclick="submitKanbanSashi()">かんばん差し<br>②発信</button>
@@ -348,6 +352,12 @@
       </div>
     </div>
   </div>
+
+  <footer class="footer mt-auto py-1 bg-light">
+    <div class="container text-center text-white">
+      <span class="text-dark">&copy; 2025 フタバ知立工場. All Rights Reserved.</span>
+    </div>
+  </footer>
 
     
     <!-- jQuery -->

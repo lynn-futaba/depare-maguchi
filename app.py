@@ -228,9 +228,6 @@ class DepalletWebServer:
             kanban_no = str(request.json.get('kanban_no'))
             new_take_count = str(request.json.get('new_take_count'))
 
-            print(f"[app.py >> update_take_count() >> new_take_count] : {new_take_count}")
-            print(f"[app.py >> update_take_count() >> kanban_no] : {kanban_no}")
-
             response = {}
 
             try:
@@ -252,8 +249,6 @@ class DepalletWebServer:
                     if not isinstance(take_count, dict):
                         response = jsonify({"status": "error", "message": "'take_count' section missing in app_config.json"}), 500
                         return response
-
-                    print(f"[app.py >> update_take_count() >> take_count] : {take_count}")
 
                     # Check if the kanban exists; if you want to allow new keys, remove this check
                     if kanban_no not in take_count:
