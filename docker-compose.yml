@@ -16,6 +16,8 @@ services:
       - ./static:/app/static
       - ./templates:/app/templates
       - ./static/js:/app/static/js
+      - ./common:/app/common
+      - ./log:/app/log
 
       - /etc/localtime:/etc/localtime:ro
       # - ./config:/app/src/config # vcsリポジトリを使うときはこっち
