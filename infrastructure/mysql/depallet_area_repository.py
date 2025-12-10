@@ -664,187 +664,112 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 if conn:
                     conn.close()
 
+    # TODO➞リン: かんばん抜きの発信を呼び出し
     def insert_kanban_nuki(self):
-        conn = None
-        cur = None
-        try:
-            conn = self.db.wcs_pool.get_connection()
-            cur = conn.cursor()
-            logging.info("Setting signal_id 9031 value to 1...")
-            cur.execute("UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = 9030")
-            conn.commit()
-        except Exception as e:
-            logging.error(f"Error in insert_kanban_sashi: {e}")
-            # 必要に応じて例外再送出も検討
-        finally:
-            if cur: cur.close()
-            if conn: conn.close()
-        # 監視スレッドの多重起動防止
-        with self._listener_lock:
-            if self._listener_thread is None or not self._listener_thread.is_alive():
-                logging.info("Starting background listener for signal reset condition...")
-                self._listener_thread = threading.Thread(
-                    target=self.kanban_sashi_wait_and_reset_signal, 
-                    daemon=True
-                )
-                self._listener_thread.start()
-            else:
-                logging.info("Background listener already running. Not starting another.")
-                
-    def wait_and_reset_signal(self, max_wait_sec=None, check_interval_sec=0.1):
-        """
-        max_wait_sec=Noneなら無制限に待機。
-        """
-        conn = None
-        cur = None
-        start_time = time.time()
-        logging.info(f"Background listener started. Max wait: {max_wait_sec} seconds, Interval: {check_interval_sec} seconds.")
-        try:
-            conn = self.db.wcs_pool.get_connection()
-            cur = conn.cursor()
-            while True:
-                if max_wait_sec is not None and (time.time() - start_time) > max_wait_sec:
-                    logging.warning(f"Background listener: condition not met within {max_wait_sec} seconds. Exiting listener.")
-                    break
-                sql_check = """
-                    SELECT *
-                    FROM `futaba-chiryu-3building`.t_location_status AS t1
-                    WHERE 
-                        t1.cell_code = 30550017 AND 
-                        t1.using_flag = 0 AND 
-                        (t1.shelf_code IS NULL OR t1.shelf_code = '')
-                """
-                cur.execute(sql_check)
-                rows = cur.fetchall()
-                if rows:
-                    logging.info("Background listener: Query matched rows → resetting signal_id 9030 to 0.")
-                    cur.execute("UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = 9030")
-                    conn.commit()
-                    logging.info("Background listener: Reset signal_id 9031 to 0 completed. Exiting listener.")
-                    break
-                time.sleep(check_interval_sec)
-        except Exception as e:
-            logging.error(f"Background listener Error: {e}")
-            try:
-                if conn and getattr(conn, "in_transaction", False):
-                    conn.rollback()
-            except Exception:
-                pass
-        finally:
-            if cur: cur.close()
-            if conn: conn.close()
-   
-    
-    
+        # Starts signal 9030 (start) and monitors to reset 9030 (reset)
+        self._start_signal_and_listener(
+            start_signal_id=9030,
+            reset_signal_id=9030,
+            log_prefix="Kanban Nuki (Signal 9030)"
+        )
+
     # TODO➞リン: かんばん差しの発信を呼び出し
-    # def insert_kanban_sashi(self):
-    #     try:
-    #         conn = self.db.wcs_pool.get_connection()
-    #         conn.start_transaction()
-    #         cur = conn.cursor()
-
-    #         # Step 1: Update value to 1
-    #         sql_first = "UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = 9031"
-    #         cur.execute(sql_first)
-    #         logging.info("[DepalletAreaRepository >> insert_kanban_sashi() >> Updated signal_id: 9031 to 1]")
-
-    #         # Step 2: Check using_flag
-    #         sql_check = """
-    #             SELECT s.using_flag
-    #             FROM `futaba-chiryu-3building`.t_shelf_status s
-    #             JOIN `futaba-chiryu-3building`.t_location_status l ON s.shelf_code = l.shelf_code
-    #             WHERE l.cell_code = 30550017
-    #         """
-    #         cur.execute(sql_check)
-    #         result = cur.fetchone()
-
-    #         # Step 3: If using_flag = 0, update value back to 0
-    #         if result and result[0] == 0:
-    #             sql_update = "UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = 9031"
-    #             cur.execute(sql_update)
-    #             logging.info("[DepalletAreaRepository >> insert_kanban_sashi() >> Updated signal_id: 9031 to 0]")
-
-    #             conn.commit()
-    #     except Exception as e:
-    #         if conn:
-    #             conn.rollback()
-    #             logging.info("[DepalletAreaRepository >> insert_kanban_sashi() >> Updated signal_id: 9031 to 0]")
-    #         raise Exception(f"[DepalletAreaRepository >> insert_kanban_sashi() >> エラー]: {e}")
-    #     finally:
-    #         if cur:
-    #             cur.close()
-    #         if conn:
-    #             conn.close()
-
     def insert_kanban_sashi(self):
+        # Starts signal 9031 (start) and monitors to reset 9031 (reset)
+        self._start_signal_and_listener(
+            start_signal_id=9031,
+            reset_signal_id=9031,
+            log_prefix="Kanban Sashi (Signal 9031)"
+        )
+
+    def _start_signal_and_listener(self, start_signal_id: int, reset_signal_id: int, log_prefix: str):
+        """
+        Unified function to set the starting signal and begin the listener thread.
+        """
         conn = None
         cur = None
         try:
             conn = self.db.wcs_pool.get_connection()
             cur = conn.cursor()
-            logging.info("Setting signal_id 9031 value to 1...")
-            cur.execute("UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = 9031")
+            logging.info(f"{log_prefix}: Setting signal_id {start_signal_id} value to 1...")
+            cur.execute(f"UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = {start_signal_id}")
             conn.commit()
         except Exception as e:
-            logging.error(f"Error in insert_kanban_sashi: {e}")
-            # 必要に応じて例外再送出も検討
+            logging.error(f"Error in {log_prefix} initial setup: {e}")
         finally:
             if cur: cur.close()
             if conn: conn.close()
-        # 監視スレッドの多重起動防止
+            
+        # Start the listener thread to monitor for the reset condition
+        # Note: We must pass the necessary parameters to the thread target function
         with self._listener_lock:
             if self._listener_thread is None or not self._listener_thread.is_alive():
-                logging.info("Starting background listener for signal reset condition...")
+                logging.info(f"{log_prefix}: Starting background listener for signal reset condition...")
                 self._listener_thread = threading.Thread(
-                    target=self.kanban_sashi_wait_and_reset_signal, 
+                    target=self._wait_and_reset_signal,
+                    args=(reset_signal_id, log_prefix), # Pass parameters to the target function
                     daemon=True
                 )
                 self._listener_thread.start()
             else:
-                logging.info("Background listener already running. Not starting another.")
-                
-    def kanban_sashi_wait_and_reset_signal(self, max_wait_sec=None, check_interval_sec=0.1):
+                logging.info(f"{log_prefix}: Background listener already running. Not starting another.")
+
+    def _wait_and_reset_signal(self, reset_signal_id: int, log_prefix: str, check_interval_sec=1.0): 
         """
-        max_wait_sec=Noneなら無制限に待機。
+        Unified polling function. Polls the database condition every second 
+        and resets the specified signal_id to 0 when met.
         """
-        conn = None
-        cur = None
-        start_time = time.time()
-        logging.info(f"Background listener started. Max wait: {max_wait_sec} seconds, Interval: {check_interval_sec} seconds.")
-        try:
-            conn = self.db.wcs_pool.get_connection()
-            cur = conn.cursor()
-            while True:
-                if max_wait_sec is not None and (time.time() - start_time) > max_wait_sec:
-                    logging.warning(f"Background listener: condition not met within {max_wait_sec} seconds. Exiting listener.")
-                    break
-                sql_check = """
-                    SELECT *
-                    FROM `futaba-chiryu-3building`.t_location_status AS t1
-                    WHERE 
-                        t1.cell_code = 30550017 AND 
-                        t1.using_flag = 0 AND 
-                        (t1.shelf_code IS NULL OR t1.shelf_code = '')
-                """
+        
+        # Using logging instead of print for thread safety and better handling
+        logging.info(f"Background listener started for {log_prefix}. Polling Interval: {check_interval_sec} seconds.")
+        
+        sql_check = """
+            SELECT 1
+            FROM `futaba-chiryu-3building`.t_location_status AS t1
+            WHERE 
+                t1.cell_code = 30550017 AND 
+                t1.using_flag = 0 AND 
+                (t1.shelf_code IS NULL OR t1.shelf_code = '')
+        """
+        
+        while True:
+            conn = None
+            cur = None
+            try:
+                # 1. Acquire connection for THIS check
+                conn = self.db.wcs_pool.get_connection()
+                cur = conn.cursor()
+
+                # 2. Execute the check query
                 cur.execute(sql_check)
                 rows = cur.fetchall()
+                
+                # 3. If condition met (using_flag is 0), update the signal and exit
                 if rows:
-                    logging.info("Background listener: Query matched rows → resetting signal_id 9031 to 0.")
-                    cur.execute("UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = 9031")
+                    logging.info(f"{log_prefix}: Query matched rows (using_flag = 0) -> resetting signal_id {reset_signal_id} to 0.")
+                    cur.execute(f"UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = {reset_signal_id}")
                     conn.commit()
-                    logging.info("Background listener: Reset signal_id 9031 to 0 completed. Exiting listener.")
-                    break
-                time.sleep(check_interval_sec)
-        except Exception as e:
-            logging.error(f"Background listener Error: {e}")
-            try:
-                if conn and getattr(conn, "in_transaction", False):
-                    conn.rollback()
-            except Exception:
-                pass
-        finally:
-            if cur: cur.close()
-            if conn: conn.close()
+                    logging.info(f"{log_prefix}: Reset signal_id {reset_signal_id} completed. Exiting listener.")
+                    break # <-- Exit the loop
+                    
+            except Exception as e:
+                # Handle connection or execution errors, log, and continue the loop
+                logging.error(f"{log_prefix} Database Error: {e}. Retrying soon.")
+                try:
+                    if conn:
+                        conn.rollback()
+                except Exception:
+                    pass
+                    
+            finally:
+                # 4. Close resources
+                if cur: cur.close()
+                if conn: conn.close()
+                
+            # 5. Wait for the next check
+            time.sleep(check_interval_sec)
+                
+        logging.info(f"Background listener thread finished for {log_prefix}.")
 
 if __name__ == "__main__":
     from mysql_db import MysqlDb

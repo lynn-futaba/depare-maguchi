@@ -176,35 +176,6 @@ $(document).ready(function () {
         refreshPage();
     });
 
-    function callAMRReturn() { 
-
-        const params = new URLSearchParams(window.location.search);
-        const buttonId = parseInt(params.get("id"));
-        
-        $.ajax({
-            url: "/api/call_AMR_return",
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                button_id: buttonId 
-            }),
-            success: function(response) {
-                if (response.status === "success") {
-                    confirm("✅ Bライン >> AMR return updated successfully!");
-                    console.log("Bライン >> AMR return updated successfully! Sent IDs:", buttonId);
-                } else {
-                    alert(response.message || "更新に失敗しました (Update failed).");
-                    console.warn("Bライン >> AMR return Update failed:", response.message);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Error updating Bライン >> AMR return:", error);
-                alert("Bライン AMR return>> サーバーエラーが発生しました.");
-            }
-        }); 
-    }
-    
-
     /**
      * Updates the quantity input in the right-side card and the global data object.
      * @param {number} maguchiId - The Maguchi ID (1-4).
@@ -341,7 +312,7 @@ $(document).ready(function () {
                 if (response.status === "success") {
                     console.log("Success >> response.status:", response.message);
 
-                    // 1. Update UI
+                    // 1. Update UI 
                     takeCountCell.text(newTakeCount);
                     
                     // 2. ⭐ UPDATE GLOBAL STORAGE HERE! ⭐
@@ -350,7 +321,8 @@ $(document).ready(function () {
                     showInfo("✅ Take count updated successfully!");
                     console.log("Take count updated successfully:", newTakeCount);
                 } 
-                
+                // UPDATE value for 行き先
+                refreshPage();
                 // ⏱️ RESTART THE AUTOMATIC REFRESH TIMER
                 pageRefreshIntervalId = setInterval(refreshPage, 5000);
                 console.log("Update success. Automatic refresh restarted.");
@@ -503,4 +475,33 @@ $(document).ready(function () {
         }     
     }
 });
+
+function callAMRReturn() { 
+
+    const params = new URLSearchParams(window.location.search);
+    const buttonId = parseInt(params.get("id"));
+    
+    $.ajax({
+        url: "/api/call_AMR_return",
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            button_id: buttonId 
+        }),
+        success: function(response) {
+            if (response.status === "success") {
+                confirm("✅ Bライン >> AMR return updated successfully!");
+                console.log("Bライン >> AMR return updated successfully! Sent IDs:", buttonId);
+            } else {
+                alert(response.message || "更新に失敗しました (Update failed).");
+                console.warn("Bライン >> AMR return Update failed:", response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error updating Bライン >> AMR return:", error);
+            alert("Bライン AMR return>> サーバーエラーが発生しました.");
+        }
+    }); 
+}
+
 
