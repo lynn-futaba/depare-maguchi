@@ -2,20 +2,24 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8" />
-    <title>310D デパレ作業画面</title>
+    <title>フタバ知立_310Dデパレ作業画面</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
     <!-- Your local CSS -->
     <link href="../../static/css/depallet/depallet.css" rel="stylesheet" />
     <link rel="stylesheet" href="../../static/css/bootstrap.min.css" />
 </head>
 <body>
 
-  <header class="footer mt-auto py-1 bg-light">
-    <div class="container text-center text-success">
-      <h3>
-        310D デパレ作業画面 〈安全 . 品質 . 生産〉
+  <header class="header mt-auto py-1 bg-success">
+    <div class="container text-center text-white">
+      <h3 class="d-flex justify-content-center align-items-center">
+        <span class="flex-grow-1">
+          310D デパレ作業画面 〈安全 . 品質 . 生産〉
+        </span>
         <!-- <button id="refreshButton" class="btn btn-light text-right my-2">更新</button> -->
-      </h3>
+        <span class="badge bg-danger rounded-pill fs-6">v1.0</span>
+        </h3>
     </div>
   </header>
   <div class="container-fluid mt-2">
@@ -23,7 +27,7 @@
       <div class="container operation">
         <div class="row justify-content-center">
           <div class="col-2">
-            <button type="button" class="btn btn-success text-white w-100" onclick="submitKanbanNuki()">かんばん抜き<br>①発信</button>
+            <button type="button" class="btn btn-warning text-white w-100" onclick="submitKanbanNuki()">かんばん抜き<br>①発信</button>
           </div>
           <div class="col-2">
             <button type="button" class="btn btn-success text-white w-100" onclick="submitKanbanSashi()">かんばん差し<br>②発信</button>
@@ -40,7 +44,7 @@
                 <table class="table table-bordered production-table text-center align-middle border-dark">
                     <thead class="table-secondary border-dark">
                         <tr>
-                            <th colspan="6" class="bg-primary">B-RH (378ライン)</th>
+                            <th colspan="6" class="bg-primary text-white">B-RH (378ライン)</th>
                         </tr>
                         <tr>
                             <th>生産品番</th>
@@ -116,7 +120,7 @@
               <table class="table table-bordered production-table text-center align-middle border-dark">
                   <thead class="table-secondary border-dark">
                       <tr>
-                          <th colspan="6" class="bg-warning" style="background-color: #fb8b4a !important;">B-LH (379ライン)</th>
+                          <th colspan="6" class="bg-warning text-white" style="background-color: #fb8b4a !important;">B-LH (379ライン)</th>
                       </tr>
                       <tr>
                           <th>生産品番</th>
@@ -200,7 +204,7 @@
               <table class="table table-bordered production-table text-center align-middle border-dark">
                   <thead class="table-secondary border-dark">
                       <tr>
-                          <th colspan="6" class="bg-primary">A-RH (376ライン)</th>
+                          <th colspan="6" class="bg-primary text-white">A-RH (376ライン)</th>
                       </tr>
                       <tr>
                           <th>生産品番</th>
@@ -277,7 +281,7 @@
               <table class="table table-bordered production-table text-center align-middle border-dark">
                   <thead class="table-secondary border-dark">
                       <tr>
-                          <th colspan="6" class="bg-warning" style="background-color: #fb8b4a !important;">A-LH (377ライン)</th>
+                          <th colspan="6" class="bg-warning text-white" style="background-color: #fb8b4a !important;">A-LH (377ライン)</th>
                       </tr>
                       <tr>
                           <th>生産品番</th>
@@ -353,9 +357,9 @@
     </div>
   </div>
 
-  <footer class="footer mt-auto py-1 bg-light">
+  <footer class="footer mt-auto py-1 bg-success">
     <div class="container text-center text-white">
-      <span class="text-dark">&copy; 2025 フタバ知立工場. All Rights Reserved.</span>
+      <span class="text-white">&copy; 2025 フタバ知立工場. All Rights Reserved.</span>
     </div>
   </footer>
 
