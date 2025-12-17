@@ -1,11 +1,11 @@
 ﻿import time
 
-from domain.infrastructure.wcs_controler import IWcsControler
+from domain.infrastructure.wcs_repository import IWCSRepository
 from domain.models.depallet import  DepalletFrontage
 from domain.models.line import LineFrontage
 from domain.models.part import Part
 
-class WcsControler(IWcsControler):
+class WCSRepository(IWCSRepository):
     
     def __init__(self,db):
          self.db =db
@@ -106,7 +106,7 @@ if __name__ == "__main__":
     from line_repository import LineRepository
     from domain.models.shelf import FlowRack
     db = MysqlDb()
-    w_repo = WcsControler(db)
+    w_repo = WCSRepository(db)
     d_repo = DepalletAreaRepository(db)
     l_repo = LineRepository(db)
     area = d_repo.get_depallet_area((1,2))

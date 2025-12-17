@@ -8,7 +8,7 @@ from domain.services.depallet_service import DepalletService
 from domain.services.line_service import LineService
 
 from infrastructure.mysql.depallet_area_repository import DepalletAreaRepository
-from infrastructure.mysql.wcs_controler import WcsControler
+from infrastructure.mysql.wcs_repository import WCSRepository
 from infrastructure.mysql.line_repository import LineRepository
 from infrastructure.mysql.product_info_repository import ProductInfoRepository
 from infrastructure.mysql.mysql_db import MysqlDb
@@ -16,14 +16,12 @@ from infrastructure.mysql.mysql_db import MysqlDb
 from .depallet_frontage_watcher import DepalletFrontegeWatcher, WatcherManager
 from .new_depallet_frontage_watcher import NewDepalletFrontegeWatcher, NewWatcherManager # TODO➞リン:
 from common.setup_logger import setup_log  # ログ用
-from config.config import BACKUP_DAYS  # ログ用
+from config.config import LOG_FOLDER, LOG_FILE, BACKUP_DAYS  # ログ用
 
 import logging
 import application.utility as util
 
 # ログ出力開始
-LOG_FOLDER = "../log"
-LOG_FILE = "depallet_app.py_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 # デパレ作業アプリケーション
@@ -43,7 +41,7 @@ class DepalletApplication():
 
         self.db = MysqlDb()
 
-        self.depallet_service = DepalletService(DepalletAreaRepository(self.db), WcsControler(self.db))
+        self.depallet_service = DepalletService(DepalletAreaRepository(self.db), WCSRepository(self.db))
         self.line_service = LineService(LineRepository(self.db), ProductInfoRepository(self.db))
         
         self.manager = WatcherManager()

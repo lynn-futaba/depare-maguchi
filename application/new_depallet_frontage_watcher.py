@@ -5,11 +5,9 @@ import threading
 from domain.models.depallet import DepalletFrontage
 from domain.services.depallet_service import DepalletService
 from common.setup_logger import setup_log  # ログ用
-from config.config import BACKUP_DAYS  # ログ用
+from config.config import LOG_FOLDER, LOG_FILE, BACKUP_DAYS  # ログ用
 
 # ログ出力開始
-LOG_FOLDER = "../log"
-LOG_FILE = "debug_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 
@@ -70,10 +68,10 @@ if __name__ == "__main__":
 
     from infrastructure.mysql.mysql_db import MysqlDb
     from infrastructure.mysql.depallet_area_repository import DepalletAreaRepository
-    from infrastructure.mysql.wcs_controler import WcsControler
+    from infrastructure.mysql.wcs_repository import WCSRepository
     db = MysqlDb()
     repo = DepalletAreaRepository(db)
-    w_repo = WcsControler(db)
+    w_repo = WCSRepository(db)
     area = repo.get_depallet_area_by_plat([20, 21, 22, 23, 24, 25, 26, 27, 28, 29])  
     f = area.get_by_id(1)
     service = DepalletService(repo, w_repo)

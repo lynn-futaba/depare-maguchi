@@ -6,7 +6,7 @@ from domain.models.depallet import DepalletFrontage
 from domain.models.product import Product, ProductInfo
 from domain.infrastructure.line_repository import ILineRepository
 from domain.infrastructure.product_info_repository import IProductInfoRepository
-from domain.infrastructure.wcs_controler import IWcsControler
+from domain.infrastructure.wcs_repository import IWCSRepository
 
 from typing import Sequence, Tuple
 

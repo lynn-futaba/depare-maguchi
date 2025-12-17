@@ -7,13 +7,11 @@ import asyncio
 
 from flask import Flask, render_template, request, jsonify, abort
 from common.setup_logger import setup_log  # ログ用
-from config.config import BACKUP_DAYS  # ログ用
+from config.config import LOG_FOLDER, LOG_FILE, BACKUP_DAYS  # ログ用
 from datetime import datetime
 from application.depallet_app import DepalletApplication
 
 # ログ出力開始
-LOG_FOLDER = "../log"
-LOG_FILE = "debug_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "./config/app_config.json")

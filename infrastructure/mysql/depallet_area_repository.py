@@ -6,7 +6,7 @@ from domain.models.line import LineFrontage
 
 from domain.infrastructure.depallet_area_repository import IDepalletAreaRepository
 from common.setup_logger import setup_log  # ログ用
-from config.config import BACKUP_DAYS  # ログ用
+from config.config import LOG_FOLDER, LOG_FILE, BACKUP_DAYS  # ログ用
 
 from typing import Optional
 from config.config_loader import AppConfig
@@ -18,8 +18,6 @@ import logging
 import threading
 
 # ログ出力開始
-LOG_FOLDER = "../log"
-LOG_FILE = "debug_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 #mysql実装
@@ -339,17 +337,17 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             #     12: [(300, 8502), (200, 8501), (15, 8500)],                            # L3 => button_id 12
             # }
             creates_map = {
-                # Bライン, 間口 4,3,2,1
-                1: [(103, 8403), (105, 8402), (106, 8401), (2, 8400)],  # R1 => button_id 1
-                2: [(108, 8403), (101, 8402), (104, 8401), (5, 8400)],  # R2 => button_id 2
-                3: [(100, 8403), (301, 8402)],                            # R3 => button_id 3
+                # Bライン, 間口 5,4,3,2
+                1: [(107, 8404), (103, 8403), (105, 8402), (106, 8401)],  # R1 => button_id 1
+                2: [(102, 8404), (108, 8403), (101, 8402), (104, 8401)],  # R2 => button_id 2
+                3: [(100, 8403), (300, 8402)],                            # R3 => button_id 3
                 4: [(206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 4
                 5: [(204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 5
                 6: [(300, 8502), (200, 8501)],                            # L3 => button_id 6
-                # Aライン, 間口 4,3,2,1
-                7: [(103, 8403), (105, 8402), (106, 8401), (2, 8400)],  # R1 => button_id 7
-                8: [(108, 8403), (101, 8402), (104, 8401), (5, 8400)],  # R2 => button_id 8
-                9: [(100, 8403), (300, 8402)],                            # R3 => button_id 9
+                # Aライン, 間口 5,4,3,2,
+                7: [(107, 8404), (103, 8403), (105, 8402), (106, 8401)],  # R1 => button_id 7
+                8: [(102, 8404), (108, 8403), (101, 8402), (104, 8401)],  # R2 => button_id 8
+                9: [(100, 8403), (301, 8402)],                            # R3 => button_id 9
                 10: [(206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 10
                 11: [(204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 11
                 12: [(300, 8502), (200, 8501)],                            # L3 => button_id 12
@@ -455,10 +453,10 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             #     signal_ids = (8231, 8216, 8200) # ( Bライン/ Aライン, L3 => 5,4,3)
 
             if line_frontage_id in (1, 7): # ( Bライン=> R1 button_id 1, Aライン=> R1 button_id 7)
-                signal_ids = (8046, 8031, 8016, 8000) # ( Bライン/ Aライン, R1 => 4,3,2,1)
+                signal_ids = (8061, 8046, 8031, 8016) # ( Bライン/ Aライン, R1 => 4,3,2,1)
 
             elif line_frontage_id in (2, 8): # ( Bライン=> R2 button_id 2, Aライン=> R2 button_id 8)
-                signal_ids = (8046, 8031, 8016, 8000) # ( Bライン/ Aライン, R2 => 4,3,2,1)
+                signal_ids = (8061, 8046, 8031, 8016) # ( Bライン/ Aライン, R2 => 4,3,2,1)
 
             elif line_frontage_id in (3, 9): # ( Bライン=> R3 button_id 3, Aライン=> R3 button_id 9)
                 signal_ids = (8046, 8031) # ( Bライン/ Aライン, R3 => 4,3)
@@ -551,15 +549,15 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
             "hashiru_ichi": {  # 呼び出し信号をリセット
                 # Bライン, 間口 4,3,2,1
-                1: (8046, 8031, 8016, 8000), # R1 => button_id 1
-                2: (8046, 8031, 8016, 8000), # R2 => button_id 2
+                1: (8061, 8046, 8031, 8016), # R1 => button_id 1
+                2: (8061, 8046, 8031, 8016), # R2 => button_id 2
                 3: (8046, 8031),             # R3 => button_id 3
                 4: (8246, 8231, 8216, 8201), # L1 => button_id 4
                 5: (8246, 8231, 8216, 8201), # L2 => button_id 5
                 6: (8231, 8216),             # L3 => button_id 6
                 # Aライン, 間口 4,3,2,1
-                7: (8046, 8031, 8016, 8000), # R1 => button_id 7
-                8: (8046, 8031, 8016, 8000), # R2 => button_id 8
+                7: (8061, 8046, 8031, 8016), # R1 => button_id 7
+                8: (8061, 8046, 8031, 8016), # R2 => button_id 8
                 9: (8046, 8031),             # R3 => button_id 9
                 10: (8246, 8231, 8216, 8201),# L1 => button_id 10
                 11: (8246, 8231, 8216, 8201),# L2 => button_id 11
@@ -567,15 +565,15 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             },
             "hashiru_ni": {  # 搬送指示 間口からストアに搬送
                 # Bライン, 間口 4,3,2,1
-                1: (8047, 8032, 8017, 8002), # R1 => button_id 1
-                2: (8047, 8032, 8017, 8002), # R2 => button_id 2
+                1: (8062, 8047, 8032, 8017), # R1 => button_id 1
+                2: (8062, 8047, 8032, 8017), # R2 => button_id 2
                 3: (8047, 8032),             # R3 => button_id 3
                 4: (8247, 8232, 8217, 8202), # L1 => button_id 4
                 5: (8247, 8232, 8217, 8202), # L2 => button_id 5
                 6: (8232, 8217),             # L3 => button_id 6
                 # Aライン, 間口 4,3,2,1
-                7: (8047, 8032, 8017, 8002), # R1 => button_id 7
-                8: (8047, 8032, 8017, 8002), # R2 => button_id 8
+                7: (8062, 8047, 8032, 8017), # R1 => button_id 7
+                8: (8062, 8047, 8032, 8017), # R2 => button_id 8
                 9: (8047, 8032),             # R3 => button_id 9
                 10: (8247, 8232, 8217, 8202),# L1 => button_id 10
                 11: (8247, 8232, 8217, 8202),# L2 => button_id 11
@@ -583,15 +581,15 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             },
             "kaeru_ichi": {  # 搬送対象idをリセット
                 # Bライン, 間口 5,4,3,2,1
-                1: (8403, 8402, 8401, 8400), # R1 => button_id 1
-                2: (8403, 8402, 8401, 8400), # R2 => button_id 2
+                1: (8404, 8403, 8402, 8401), # R1 => button_id 1
+                2: (8404, 8403, 8402, 8401), # R2 => button_id 2
                 3: (8403, 8402),             # R3 => button_id 3
                 4: (8503, 8502, 8501, 8500), # L1 => button_id 4
                 5: (8503, 8502, 8501, 8500), # L2 => button_id 5
                 6: (8502, 8501),             # L3 => button_id 6
                 # Aライン, 間口 5,4,3,2,1
-                7: (8403, 8402, 8401, 8400), # R1 => button_id 7
-                8: (8403, 8402, 8401, 8400), # R2 => button_id 8
+                7: (8404, 8403, 8402, 8401), # R1 => button_id 7
+                8: (8404, 8403, 8402, 8401), # R2 => button_id 8
                 9: (8403, 8402),             # R3 => button_id 9
                 10: (8503, 8502, 8501, 8500),# L1 => button_id 10
                 11: (8503, 8502, 8501, 8500),# L2 => button_id 11
@@ -894,6 +892,7 @@ if __name__ == "__main__":
         #        inv.remove(2)
 
         #    repo.save_kotatsu(f)
+
    
 
            

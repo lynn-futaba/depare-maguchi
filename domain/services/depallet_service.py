@@ -3,20 +3,18 @@ from domain.models.shelf import FlowRack, Kotatsu, Shelf
 from domain.models.depallet import DepalletArea, DepalletFrontage
 from domain.models.part import Part
 from domain.infrastructure.depallet_area_repository import IDepalletAreaRepository
-from domain.infrastructure.wcs_controler import IWcsControler
+from domain.infrastructure.wcs_repository import IWCSRepository
 from common.setup_logger import setup_log  # ログ用
-from config.config import BACKUP_DAYS  # ログ用
+from config.config import LOG_FOLDER, LOG_FILE, BACKUP_DAYS  # ログ用
 
 import logging
 
 # ログ出力開始
-LOG_FOLDER = "../log"
-LOG_FILE = "debug_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 class DepalletService:
 
-    def __init__(self, depallet_area_repo:IDepalletAreaRepository, wcs:IWcsControler):
+    def __init__(self, depallet_area_repo:IDepalletAreaRepository, wcs:IWCSRepository):
 
         self.depallet_area_repo = depallet_area_repo
         self.wcs = wcs

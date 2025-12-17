@@ -4,7 +4,7 @@ from domain.models.depallet import DepalletFrontage
 from domain.models.part import Part
 from domain.models.line import LineFrontage
 
-class IWcsControler(ABC):
+class IWCSRepository(ABC):
     # ���i�v��
     @abstractmethod #TODO modified 
     def request_kotatsu(self, frontage:DepalletFrontage, part:Part):
