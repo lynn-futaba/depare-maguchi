@@ -1,11 +1,12 @@
 ﻿from abc import ABC, abstractmethod
 
-from .part import Part, Inventory,KotatsuInventory
+from .part import Part, Inventory, KotatsuInventory
+
 
 # Shelf Interface
 class Shelf(ABC):
-    def __init__(self, shelf_id:str,type:int):
-        self.id = shelf_id 
+    def __init__(self, shelf_id: str, type: int):
+        self.id = shelf_id
         self.type = type  # 1:コタツ, 2:フローラック
         if self.validate() is False:
             raise ValueError("Invalid Shelf data.")
@@ -16,35 +17,37 @@ class Shelf(ABC):
         return True
 
     @abstractmethod
-    def is_empty(self)->bool:
-         pass
-
-    @abstractmethod
-    def get_by_part_number(self,part_number:str)->Part:
-         pass
-    @abstractmethod
-    def get_by_kanban(self,part_number:str)->Part:
+    def is_empty(self) -> bool:
         pass
 
     @abstractmethod
-    def add(self,part:Part,count:int):
-         pass
+    def get_by_part_number(self, part_number: str) -> Part:
+        pass
 
     @abstractmethod
-    def remove(self,part:Part,count:int):
-         pass
+    def get_by_kanban(self, part_number: str) -> Part:
+        pass
+
+    @abstractmethod
+    def add(self, part: Part, count: int):
+        pass
+
+    @abstractmethod
+    def remove(self, part: Part, count: int):
+        pass
+
 
 # コタツ ※複数の部品在庫を持つ
 class Kotatsu(Shelf):
-    def __init__(self, shelf_id:str,inventories:list[KotatsuInventory]):
+    def __init__(self, shelf_id: str, inventories: list[KotatsuInventory]):
         _type = 1
-        super().__init__(shelf_id,_type)
+        super().__init__(shelf_id, _type)
         self.inventories = inventories
 
     def is_empty(self) -> bool:
         return all(inventory.is_empty() for inventory in self.inventories)
 
-    def get_by_part_number(self, part_number: str)-> Part :
+    def get_by_part_number(self, part_number: str) -> Part:
         for inventory in self.inventories:
             try:
                 if inventory.part.id == part_number:
@@ -53,7 +56,7 @@ class Kotatsu(Shelf):
                 raise Exception(f"Error getting part by id: {e}")
         return None
 
-    def get_by_kanban(self, kanban: str)-> Part :
+    def get_by_kanban(self, kanban: str) -> Part:
         # print(f"[Kotatsu model >> get_by_kanban >> inventories ] : {self.inventories.to_dict()}")
         for inventory in self.inventories:
             try:
@@ -64,7 +67,7 @@ class Kotatsu(Shelf):
                 raise Exception(f"Error getting part by id: {e}")
         return None
 
-    def add(self,part:Part,count:int):
+    def add(self, part: Part, count: int):
         for inventory in self.inventories:
             try:
                 if inventory.part == part:
@@ -84,14 +87,15 @@ class Kotatsu(Shelf):
                 raise Exception(f"Error removing part: {e}")
         raise Exception("Part not found in inventory.")
 
+
 # フローラック　※ラックとして4つの部品在庫を持つ
 class FlowRack(Shelf):
     def __init__(self, shelf_id: str):
         _type = 2
-        super().__init__(shelf_id,_type)
-        #頭からrack_position_id=1,2,3,4　設定なしの場合はNoneが入る
-        self.rack= []
-        self.dest_line_frontage_id:int = 0
+        super().__init__(shelf_id, _type)
+        # 頭からrack_position_id=1,2,3,4　設定なしの場合はNoneが入る
+        self.rack = []
+        self.dest_line_frontage_id: int = 0
 
     def is_empty(self) -> bool:
         if len(self.rack) == 0:

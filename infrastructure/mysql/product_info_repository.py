@@ -3,26 +3,27 @@
 from domain.models.product import ProductInfo, Product
 from domain.infrastructure.product_info_repository import IProductInfoRepository
 
-#mysql実装
+
+# mysql実装
 class ProductInfoRepository(IProductInfoRepository):
 
-    def __init__(self,db):
-         self.db = db
+    def __init__(self, db):
+        self.db = db
 
-    def get_product(self, line_id:int)->Product:
+    def get_product(self, line_id: int) -> Product:
         try:
             conn = self.db.depal_pool.get_connection()
             cur = conn.cursor(dictionary=True)
 
             sql = f"SELECT product_id, kanban_no, name FROM depal.futaba_product inner join depal.line_product using(product_id) WHERE line_id={line_id};"
             cur.execute(sql)
-            result= cur.fetchall()
+            result = cur.fetchall()
 
             # print(f"[ProductInfoRepository >> Get_product >> Query Result] : {result}")
-        
+
             for row in result:
                 product = Product(row["product_id"], row["kanban_no"], line_id, row["name"])
-         
+
         except Exception as e:
             print(f"ProductInfoRepository >> Get_product >> Error] : {e}")
         finally:
@@ -32,9 +33,9 @@ class ProductInfoRepository(IProductInfoRepository):
                 conn.close()
         return product
 
-    def get_product_info(self,line_id:int)->ProductInfo:
+    def get_product_info(self, line_id: int) -> ProductInfo:
         try:
-            conn =self.db.depal_pool.get_connection()
+            conn = self.db.depal_pool.get_connection()
             cur = conn.cursor(dictionary=True)
 
             product = self.get_product(line_id)
@@ -73,7 +74,7 @@ if __name__ == "__main__":
     from mysql_db import MysqlDb
     db = MysqlDb()
     repo = ProductInfoRepository(db)
-    product_info= repo.get_product_info(1)
+    product_info = repo.get_product_info(1)
     print(product_info)
 
 

@@ -14,9 +14,9 @@ LOG_FOLDER = "../log"
 LOG_FILE = "debug_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
-class DepalletService:
 
-    def __init__(self, depallet_area_repo:IDepalletAreaRepository, wcs:IWcsControler):
+class DepalletService:
+    def __init__(self, depallet_area_repo: IDepalletAreaRepository, wcs: IWcsControler):
 
         self.depallet_area_repo = depallet_area_repo
         self.wcs = wcs
@@ -28,16 +28,16 @@ class DepalletService:
             area = self.depallet_area_repo.get_depallet_area(line_id_list)
             # print(f"[DepalletService >> get_depallet_area >> area Result] : {area}") # TODO➞リン: testing
             return area
-        
+
         except Exception as e:
             raise Exception(f"Error loading depallet area: {e}")
-    
+
     def is_frontage_ready(self, frontage:DepalletFrontage)->bool:    
         try:
             return self.depallet_area_repo.is_frontage_ready(frontage)
         except Exception as e:
             raise Exception(f"Error checking frontage readiness: {e}")
-    
+
     # デパレタイズ（コタツ<->フローラック）
     def depalletizing(self, source:Shelf, dest:Shelf, target:Part):
 
@@ -56,14 +56,14 @@ class DepalletService:
         except Exception as e:
             raise Exception(f"Error during depalletizing: {e}")
 
-        try:    
+        try:
             source.remove(target, 1)
             # print("[DepalletService >> depalletizing >> source coming] :")
         except Exception as e:
             dest.remove(target, 1)
             raise Exception(f"Error during depalletizing: {e}")
 
-    #コタツ取得
+    # コタツ取得
     def set_kotatsu(self,frontage:DepalletFrontage):
         try:
             if frontage.shelf is not None:
@@ -77,7 +77,7 @@ class DepalletService:
         except Exception as e:
             raise Exception(f"Error setting kotatsu: {e}")
 
-     # コタツ保存
+    # コタツ保存
     def _save_kotatsu(self, shelf: Shelf):
         try:
             if shelf is None:
@@ -112,18 +112,18 @@ class DepalletService:
         except Exception as e:
             raise Exception(f"Error during request flow rack: {e}")   
 
-        #搬出
+    # 搬出
     def dispatch(self, source: DepalletFrontage):
         try:
             self.wcs.dispatch(source)
             if isinstance(source.shelf, Kotatsu):
                 self._save_kotatsu(source.shelf)
-            source.remove_shlef() 
+            source.remove_shlef()
             source.status = 0
         except Exception as e:
             raise Exception(f"Error during dispatch: {e}")
 
-     #全搬出
+    # 全搬出
     def dispatch_all(self, source: DepalletArea):
         try:
             for frontage in source.frontages.values():
@@ -131,8 +131,7 @@ class DepalletService:
                     self.wcs.dispatch(frontage)
         except Exception as e:
             raise Exception(f"Error during dispatch: {e}")
-        
-    
+
     # update maguchi signal 1
     def insert_target_ids(self, line_frontage_id):
         try:
@@ -141,7 +140,7 @@ class DepalletService:
         except Exception as e:
             logging.error(f"[DepalletService >> insert_target_ids() >> エラー]: {e}")
             raise Exception(f"[DepalletService >> insert_target_ids >> エラー]: {e}")
-        
+
     # update maguchi signal 2
     def call_target_ids(self, line_frontage_id):
         try:
@@ -150,7 +149,6 @@ class DepalletService:
         except Exception as e:
             logging.error(f"[DepalletService >> call_target_ids() >> エラー]: {e}")
             raise Exception(f"[DepalletService >> call_target_ids() >> エラー]: {e}")
-        
 
     def call_AMR_return(self, line_frontage_id):
         try:
@@ -159,17 +157,17 @@ class DepalletService:
         except Exception as e:
             logging.error(f"[DepalletService >> call_AMR_return() >> エラー]: {e}")
             raise Exception(f"[DepalletService >> call_AMR_return() >> エラー]: {e}")
-                
+
     # update new depallet area
     def get_depallet_area_by_plat(self, plat_id_list: list, button_id: int):
         try:
             new_area = self.depallet_area_repo.get_depallet_area_by_plat(plat_id_list, button_id)
-            logging.info(f"[DepalletService >> get_depallet_area_by_plat() >> new_area Result] : {new_area}") # TODO➞リン: testing
+            logging.info(f"[DepalletService >> get_depallet_area_by_plat() >> new_area Result] : {new_area}")  # TODO➞リン: testing
             return new_area
         except Exception as e:
             logging.error(f"[DepalletService >> get_depallet_area_by_plat() >> エラー]: {e}")
             raise Exception(f"[DepalletService >> get_depallet_area_by_plat() >> エラー]: {e}")
-        
+
     # insert kanban nuki
     def insert_kanban_nuki(self):
         try:
@@ -178,7 +176,7 @@ class DepalletService:
         except Exception as e:
             logging.error(f"[DepalletService >> insert_kanban_nuki() >> エラー]: {e}")
             raise Exception(f"[DepalletService >> insert_kanban_nuki() >> エラー]: {e}")
-        
+
     # insert kanban sashi
     def insert_kanban_sashi(self):
         try:
@@ -188,6 +186,7 @@ class DepalletService:
             logging.error(f"[DepalletService >> insert_kanban_sashi() >> エラー]: {e}")
             raise Exception(f"[DepalletService >> insert_kanban_sashi() >> エラー]: {e}")
 
+
 if __name__ == "__main__":
-  
+
     s = DepalletService()

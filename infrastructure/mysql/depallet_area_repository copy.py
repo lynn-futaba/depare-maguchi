@@ -1,17 +1,17 @@
-﻿from domain.models.shelf import Kotatsu ,Shelf, FlowRack
-from domain.models.part import Inventory, Part ,KotatsuInventory
+﻿from domain.models.shelf import Kotatsu, Shelf, FlowRack
+from domain.models.part import Inventory, Part, KotatsuInventory
 
 from domain.models.depallet import DepalletArea, DepalletFrontage
 from domain.models.line import LineFrontage
 
 from domain.infrastructure.depallet_area_repository import IDepalletAreaRepository
 
-#mysql実装
+# mysql実装
 class DepalletAreaRepository(IDepalletAreaRepository):
 
     def __init__(self,db):
          self.db =db
-        
+
     def get_depallet_area(self, line_id_list:list)->DepalletArea:
         area = DepalletArea("A")
         conn = None

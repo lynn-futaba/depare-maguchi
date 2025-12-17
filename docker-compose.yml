@@ -11,16 +11,17 @@ services:
     volumes:
       - ./app.py:/app/app.py # ホストディレクトリの設定ファイルをコンテナにマウント（必要であれば変更）
       - ./application:/app/application
+      - ./common:/app/common
+      - ./config:/app/src/config # vcsリポジトリを使うときはこっち
       - ./domain:/app/domain
       - ./infrastructure:/app/infrastructure
       - ./static:/app/static
       - ./templates:/app/templates
       - ./static/js:/app/static/js
-      - ./common:/app/common
       - ./log:/app/log
 
       - /etc/localtime:/etc/localtime:ro
-      # - ./config:/app/src/config # vcsリポジトリを使うときはこっち
+      
 
     command: sh -c "python /app/app.py"
 

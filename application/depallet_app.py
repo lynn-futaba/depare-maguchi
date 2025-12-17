@@ -26,17 +26,18 @@ LOG_FOLDER = "../log"
 LOG_FILE = "depallet_app.py_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
+
 # デパレ作業アプリケーション
 class DepalletApplication():
 
     def __init__(self):
-        self.LINE_ID = (1, 2, 3, 4) #TODO: added 3,4
-        self.PLAT_ID_LIST = (20, 21, 22, 23, 24, 25, 26, 27, 28, 29) # TODO➞リン: plat of maguchi 5,4,3,2,1 for both LINE A and B
-        self.button_id = 0 # TODO➞リン: button id from R1, R2, R3, L1, L2, L3 for both A and B Line from frontend
+        self.LINE_ID = (1, 2, 3, 4)  # TODO: added 3,4
+        self.PLAT_ID_LIST = (20, 21, 22, 23, 24, 25, 26, 27, 28, 29)  # TODO➞リン: plat of maguchi 5,4,3,2,1 for both LINE A and B
+        self.button_id = 0  # TODO➞リン: button id from R1, R2, R3, L1, L2, L3 for both A and B Line from frontend
 
-        self._running  = True
+        self._running = True
         self.depallet_area = None
-        self.new_depallet_area = None # TODO➞リン: added
+        self.new_depallet_area = None  # TODO➞リン: added
         self.lines = None
         self.product_r = None
         self.product_l = None
@@ -44,10 +45,11 @@ class DepalletApplication():
         self.db = MysqlDb()
 
         self.depallet_service = DepalletService(DepalletAreaRepository(self.db), WcsControler(self.db))
+        self.depallet_support = WcsControler(self.db)
         self.line_service = LineService(LineRepository(self.db), ProductInfoRepository(self.db))
-        
+
         self.manager = WatcherManager()
-        self.new_manager = NewWatcherManager() # TODO➞リン:
+        self.new_manager = NewWatcherManager()  # TODO➞リン:
 
         self.lines = self.line_service.get_lines(self.LINE_ID)
         self.a_product_r, self.a_product_l, self.b_product_r, self.b_product_l = self.line_service.get_product_infos(self.lines)
@@ -64,7 +66,7 @@ class DepalletApplication():
     def stop(self):
         self.manager.stop_all()
 
-     # TODO➞リン: added 
+    # TODO➞リン: added
     def new_start(self):
         logging.info(f"[DepalletApplication >> self.new_depallet_area.update_frontages.values() ] : {self.new_depallet_area.update_frontages.values()}")
         for new_frontage in self.new_depallet_area.update_frontages.values():
@@ -80,44 +82,44 @@ class DepalletApplication():
         self.lines = self.line_service.get_lines(self.LINE_ID)
         self.a_product_r, self.a_product_l, self.b_product_r, self.b_product_l = self.line_service.get_product_infos(self.lines)
 
-    def depallet_start(self,line_frontage_id: int):
+    def depallet_start(self, line_frontage_id: int):
         self.request_target_flow_rack(line_frontage_id)
         self._request_target_kotatsu(line_frontage_id)
-        
+
     def request_target_flow_rack(self, line_frontage_id: int):
-          try:
-              for line in self.lines:
-                    line_frontage = line.get_by_id(line_frontage_id)
-                    if line_frontage is not None:
-                        break
-              if line_frontage is None:
-                  raise Exception("Line frontage not found")
-              self.depallet_service.request_flow_rack(self.depallet_area, line_frontage)
-          
-          except Exception as e:
-              raise Exception(f"Error requesting flow rack: {e}")
+        try:
+            for line in self.lines:
+                line_frontage = line.get_by_id(line_frontage_id)
+                if line_frontage is not None:
+                    break
+            if line_frontage is None:
+                raise Exception("Line frontage not found")
+            self.depallet_service.request_flow_rack(self.depallet_area, line_frontage)
+
+        except Exception as e:
+            raise Exception(f"Error requesting flow rack: {e}")
 
     def _request_target_kotatsu(self, line_frontage_id: int):
         try:
             for line in self.lines:
-                    line_frontage = line.get_by_id(line_frontage_id)
-                    if line_frontage is not None:
-                        break
+                line_frontage = line.get_by_id(line_frontage_id)
+                if line_frontage is not None:
+                    break
             if line_frontage is None:
-                  raise Exception("Line frontage not found")
+                raise Exception("Line frontage not found")
             self.depallet_service.request_parts(self.depallet_area, line_frontage)
         except Exception as e:
             raise Exception(f"Error requesting kotatsu: {e}")
 
     # フローラックに部品を置く
-    def fetch_part(self, frontage_id:int, part_id:int):
+    def fetch_part(self, frontage_id: int, part_id: int):
         # print(f"[DepalletApplication >> fetch_part >> part_id ] : {part_id}")
         try:
             source = self.depallet_area.get_by_id(frontage_id)
             # print(f"[DepalletApplication >> fetch_part >> source ] : {source}")
             if source is None:
                 raise Exception("No frontage found")
-            
+
             dest = self.depallet_area.get_flow_rack_frontage()
             # print(f"[DepalletApplication >> fetch_part >> dest ] : {dest}")
             if dest is None:
@@ -128,19 +130,18 @@ class DepalletApplication():
             # print(f"[DepalletApplication >> fetch_part >> part ] : {part}")
             if part is None:
                 raise Exception("No part found")
-            
+
             self.depallet_service.depalletizing(source.shelf, dest.shelf, part)
-           
+
         except Exception as e:
             raise Exception(f"Error depalletizing: {e}")
-        
-        
+
     def insert_target_ids(self, line_frontage_id):
         try:
             self.depallet_service.insert_target_ids(line_frontage_id)
             logging.info("[DepalletApplication >> insert_target_ids() >> 成功]")
         except Exception as e:
-            logging.error(f"[DepalletApplication >> insert_target_ids() >> エラー] : {e}")
+            logging.error(f"[DepalletApplication >> insert_target_ids() >> エラー]: {e}")
             raise Exception(f"DepalletApplication >> insert_target_ids >> エラー]: {e}")
 
     def call_target_ids(self, line_frontage_id):
@@ -150,16 +151,17 @@ class DepalletApplication():
         except Exception as e:
             logging.error(f"[DepalletApplication >> call_target_ids() >> エラー] : {e}")
             raise Exception(f"DepalletApplication >> call_target_ids() >> エラー]: {e}")
-        
+
     def call_AMR_return(self, line_frontage_id):
         try:
             logging.info("[DepalletApplication >> call_AMR_return() >> 成功]")
             self.depallet_service.call_AMR_return(line_frontage_id)
+            self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST, line_frontage_id)  # TODO➞リン: added
+            self.depallet_support.dispallet(self.new_depallet_area)
         except Exception as e:
             logging.error(f"[DepalletApplication >> call_AMR_return() >> エラー] : {e}")
             raise Exception(f"DepalletApplication >> call_AMR_return() >> エラー]: {e}")
-        
-    
+
     def insert_kanban_nuki(self):
         try:
             logging.info("[DepalletApplication >> insert_kanban_nuki() >> 成功]")
@@ -167,7 +169,7 @@ class DepalletApplication():
         except Exception as e:
             logging.error(f"[DepalletApplication >> insert_kanban_nuki() >> エラー] : {e}")
             raise Exception(f"DepalletApplication >> insert_kanban_nuki() >> エラー]: {e}")
-        
+
     def insert_kanban_sashi(self):
         try:
             logging.info("[DepalletApplication >> insert_kanban_sashi() >> 成功]")
@@ -176,15 +178,15 @@ class DepalletApplication():
             logging.error(f"[DepalletApplication >> insert_kanban_sashi() >> エラー] : {e}")
             raise Exception(f"DepalletApplication >> insert_kanban_sashi >> エラー]: {e}")
 
-     # コタツに部品を戻す
-    def return_part(self, frontage_id:int, part_id:int):
+    # コタツに部品を戻す
+    def return_part(self, frontage_id: int, part_id: int):
         try:
             dest = self.depallet_area.get_by_id(frontage_id)
             # print(f"[return_part >> dest] : {dest}")
 
             if dest is None:
                 raise Exception("No frontage found")
-            
+
             source = self.depallet_area.get_flow_rack_frontage()
             # print(f"[return_part >> source] : {source}")
 
@@ -199,14 +201,14 @@ class DepalletApplication():
             if part is None:
                 # print(f"[return_part >> part is None] : {part}")
                 raise Exception(f"Part with ID '{part_id}' not found in the source shelf.")
-            
+
             self.depallet_service.depalletizing(source.shelf, dest.shelf, part)
-           
+
         except Exception as e:
             # print(f"[return_part >> エラー] depalletizing] : {e}")
             raise Exception(f"Error depalletizing: {e}")
-        
-    def return_kotatsu(self, frontage_id:int):
+
+    def return_kotatsu(self, frontage_id: int):
         try:
             frontage = self.depallet_area.get_by_id(frontage_id)
             if frontage is None:
@@ -219,7 +221,7 @@ class DepalletApplication():
 
         except Exception as e:
             raise Exception(f"Error returning kotatsu: {e}")
-     
+
     def complete(self):
         try:
             flow_rack_frontage = self.depallet_area.get_flow_rack_frontage()
@@ -233,7 +235,7 @@ class DepalletApplication():
             for frontage in self.depallet_area.frontages.values():
                 if frontage.shelf is not None:
                     self.depallet_service.dispatch(frontage)
-              
+
         except Exception as e:
             raise Exception(f"Error completing depalletizing: {e}")
 
@@ -248,23 +250,26 @@ class DepalletApplication():
 
     def get_flow_rack_json(self):
         flow_rack_frontage = self.depallet_area.get_flow_rack_frontage()
-        if  flow_rack_frontage is None:
+        if flow_rack_frontage is None:
             return "{}"
         return util.to_json(flow_rack_frontage.shelf)
-    
-    # TODO➞リン: Added 
+
+    # TODO➞リン: Added
     def get_depallet_area_by_plat_json(self, button_id):
         self.button_id = button_id
         logging.info(f"[DepalletApplication >> get_depallet_area_by_plat_json >> self.new_depallet_area] : {self.new_depallet_area}")
-        self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST, button_id) # TODO➞リン: added
+        self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST, button_id)  # TODO➞リン: added
+        # add sugiura
+        self.depallet_support.dispallet(self.new_depallet_area)
         return util.to_json(self.new_depallet_area)
-    
+
+
 if __name__ == "__main__":
 
-   app = DepalletApplication()
-#  app.start()
-   app.new_start()
-   try:
+    app = DepalletApplication()
+    # app.start()
+    app.new_start()
+    try:
         while True:
             sleep(1)
             logging.info(f"[DepalletApplication >> get_lines_json()] : {app.get_lines_json()}")
@@ -274,10 +279,10 @@ if __name__ == "__main__":
             logging.info(f"[DepalletApplication >> get_depallet_area_by_plat_json()] : {app.get_depallet_area_by_plat_json()}")
             logging.info("----------------------")
             logging.info(f"[DepalletApplication >> get_product_infos_json()] : {app.get_product_infos_json()}")
-   except KeyboardInterrupt:
-    #  app.manager.stop_all()
-       app.new_manager.stop_all()
-       print("Stopped by user")
+    except KeyboardInterrupt:
+        #  app.manager.stop_all()
+        app.new_manager.stop_all()
+        print("Stopped by user")
 
   
 

@@ -1,25 +1,25 @@
 ﻿import time
 
 from domain.infrastructure.wcs_controler import IWcsControler
-from domain.models.depallet import  DepalletFrontage
+from domain.models.depallet import DepalletFrontage
 from domain.models.line import LineFrontage
 from domain.models.part import Part
 
+
 class WcsControler(IWcsControler):
-    
     def __init__(self,db):
-         self.db =db
+        self.db = db
 
     # 部品要求
-    def request_kotatsu(self,frontage:DepalletFrontage,part:Part):
+    def request_kotatsu(self, frontage: DepalletFrontage, part: Part):
         try:
-            conn =self.db.wcs_pool.get_connection()
+            conn = self.db.wcs_pool.get_connection()
             conn.start_transaction()
             cur = conn.cursor()
 
             if frontage.shelf is not None:
                 raise Exception("[DepalletAreaRepository] Shelf already exists")
-               
+
             signal_id = frontage.signals["model_id"]
             cur.execute("UPDATE `eip_signal`.word_input SET value = %s WHERE signal_id = %s", (part.car_model_id, signal_id))
             signal_id = frontage.signals["kotatsu_request"]
@@ -38,12 +38,12 @@ class WcsControler(IWcsControler):
         finally:
             cur.close()
             conn.close()
-        return  
-    
+        return
+
     # フローラック要求
-    def request_flow_rack(self,frontage:DepalletFrontage,line_frontage:LineFrontage):
+    def request_flow_rack(self, frontage: DepalletFrontage, line_frontage: LineFrontage):
         try:
-            conn =self.db.wcs_pool.get_connection()
+            conn = self.db.wcs_pool.get_connection()
             conn.start_transaction()
             cur = conn.cursor()
 
@@ -61,44 +61,112 @@ class WcsControler(IWcsControler):
             conn.start_transaction()
             cur.execute("UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = %s", (signal_id,))  
             conn.commit()
-      
+
         except Exception as e:
             conn.rollback()
             raise Exception(f"[DepalletAreaRepository] Error: {e}")
         finally:
             cur.close()
             conn.close()
-        return  
+        return
 
-       # 搬出
-    
-    def dispatch(self,frontage:DepalletFrontage):
+    # 搬出
+    def dispatch(self, frontage: DepalletFrontage):
         try:
             conn = self.db.wcs_pool.get_connection()
             conn.start_transaction()
             cur = conn.cursor()
 
             if frontage.shelf is None:
-               raise Exception("[DepalletAreaRepository] No shelf in frontage")
+                raise Exception("[DepalletAreaRepository] No shelf in frontage")
 
+            # add sugiura ###################################################
+            signal_fetch1 = frontage.signals["fetch1"]
+            cur.execute("UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = %s", (signal_fetch1,))
+            conn.commit()
+
+            time.sleep(1)
             signal_id = frontage.signals["dispatch"]
-            cur.execute("UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = %s", (signal_id,))  
+            cur.execute("UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = %s", (signal_id,))
             conn.commit()
 
             # 一秒後に再度リクエスト信号を0に戻す
             time.sleep(1)
             conn.start_transaction()
-            cur.execute("UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id = %s", (signal_id,))  
+            cur.execute("UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = %s", (signal_id,))
+            cur.execute("UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = %s", (signal_fetch1,))
+
             conn.commit()
-               
+
         except Exception as e:
             conn.rollback()
             raise Exception(f"[DepalletAreaRepository] Error: {e}")
-        
+
         finally:
             cur.close()
             conn.close()
-        return  
+        return
+
+    # add sugiura ###################################################
+    # デパレ箱数登録
+    def dispallet(self, depallet_area):
+        try:
+            conn = self.db.wcs_pool.get_connection()
+            conn.start_transaction()
+            cur = conn.cursor()
+
+            for i in depallet_area:
+                id = None
+                data = None
+                if i == "20":
+                    id = 8405
+                    data = depallet_area[i][0]
+                elif i == "21":
+                    id = 8411
+                    data = depallet_area[i][0]
+                elif i == "22":
+                    id = 8417
+                    data = depallet_area[i][0]
+                elif i == "23":
+                    id = 8423
+                    data = depallet_area[i][0]
+                elif i == "24":
+                    id = 8429
+                    data = depallet_area[i][0]
+                elif i == "25":
+                    id = 8505
+                    data = depallet_area[i][0]
+                elif i == "26":
+                    id = 8511
+                    data = depallet_area[i][0]
+                elif i == "27":
+                    id = 8517
+                    data = depallet_area[i][0]
+                elif i == "28":
+                    id = 8523
+                    data = depallet_area[i][0]
+                elif i == "29":
+                    id = 8529
+                    data = depallet_area[i][0]
+
+                num = abs(int(data["take_count"]))
+                cur.execute("""
+                            UPDATE `eip_signal`.word_input
+                            SET value = %s
+                            WHERE signal_id = %s
+                            """, (num, id,))
+
+            conn.commit()
+
+        except Exception as e:
+            conn.rollback()
+            raise Exception(f"[DepalletAreaRepository] Error: {e}")
+
+        finally:
+            cur.close()
+            conn.close()
+        return
+
 
 if __name__ == "__main__":
     from mysql_db import MysqlDb
@@ -111,7 +179,7 @@ if __name__ == "__main__":
     l_repo = LineRepository(db)
     area = d_repo.get_depallet_area((1,2))
     lines = l_repo.get_lines((1, 2))
-    
+
     f=area.get_empty_frontage()
     w_repo.request_flow_rack(f,lines[0].get_by_id(1))
     flow_rack = FlowRack("1")
@@ -119,9 +187,6 @@ if __name__ == "__main__":
 
 
     f=area.get_empty_frontage()
-    
+
     part = lines[0].get_by_id(1).inventories[0].part
     w_repo.request_kotatsu(f,part)
-
-    
-

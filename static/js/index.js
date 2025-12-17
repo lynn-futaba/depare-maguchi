@@ -170,7 +170,7 @@ function callToBLineDepalletMaguchi(id) {
 function callToALineDepalletMaguchi(id) {
     // TODO: to display 供給間口 
     const maguchiMap = {
-        7: "Aライン R1", 8: "Aライン R2", 9: "Aライン R3", 10: "Aライン L1", 11: "Aライン L2", 12: "Aライン L3"
+        7: "Aライン(R1)", 8: "Aライン(R2)", 9: "Aライン(R3)", 10: "Aライン(L1)", 11: "Aライン(L2)", 12: "Aライン(L3)"
     };
 
     const kyokuuMaguchi = maguchiMap[id] || "不明 invalid ID"; // Default if id is invalid

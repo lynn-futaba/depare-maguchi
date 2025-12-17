@@ -1,9 +1,9 @@
 from .shelf import Shelf
 
-#�f�p���Ԍ�
+
+# �f�p���Ԍ�
 class DepalletFrontage():
-    
-    def __init__(self, cell_code:str, frontage_id: int, name:str, priority:int):
+    def __init__(self, cell_code: str, frontage_id: int, name: str, priority: int):
 
         self.cell_code = cell_code
         self.name = name
@@ -27,7 +27,7 @@ class DepalletFrontage():
         return False
 
     def validate(self):
-        if len(self.cell_code) >8:
+        if len(self.cell_code) > 8:
             return False
         return True
 
@@ -39,14 +39,15 @@ class DepalletFrontage():
         self.shelf = None
         self.status = 0
 
+
 # �f�p���G���A�i�Ԍ��O���[�v�j
 class DepalletArea():
 
-    def __init__(self,name):
+    def __init__(self, name):
 
         self.name = name
-        self.frontages= {}
-        self.update_frontages = {} # TODO➞リン: added
+        self.frontages = {}
+        self.update_frontages = {}  # TODO➞リン: added
        
     def register_frontage(self, frontage: DepalletFrontage):
         self.frontages[frontage.id] = frontage
@@ -68,13 +69,10 @@ class DepalletArea():
                 return frontage
         return None
 
-    def get_empty_frontage(self)->DepalletFrontage | None:
+    def get_empty_frontage(self) -> DepalletFrontage | None:
         # priority�Ń\�[�g���āA�D��x�̍������Ɏ擾
         sorted_frontages = sorted(
             self.frontages.values(), key=lambda f: f.priority)
         for frontage in sorted_frontages:
             if not frontage.is_using() and not frontage.is_booking():
                 return frontage
-
-
-

@@ -62,11 +62,11 @@ $(document).ready(function () {
             };
 
             const targetPlats = buttonIdMap[idValue] || [];
-            document.getElementById("frontageName").textContent = 'デパレ間口 (' + nameValue + ')';
+            document.getElementById("frontageName").textContent = 'デパレ間口 <' + nameValue + '>';
 
-            // ✅ Loop through shelves in reverse order (5 → 1)
-            for (let i = 5; i >= 1; i--) {
-                const shelfId = `#shelf-${i}`; // shelf-5, shelf-4, shelf-3, shelf-2, shelf-1
+            // ✅ Loop through shelves in reverse order (4 → 1)
+            for (let i = 4; i >= 1; i--) {
+                const shelfId = `#shelf-${i}`; // shelf-4, shelf-3, shelf-2, shelf-1
                 // const cardBody = $(shelfId).closest('.card-body');
                 const tbody = $(`${shelfId} tbody`);
                 const thead = $(`${shelfId} thead`);
@@ -80,7 +80,7 @@ $(document).ready(function () {
                 cardNo.empty();
                 
 
-                const platId = targetPlats[5 - i]; // Map correctly to buttonIdMap array
+                const platId = targetPlats[4 - i]; // Map correctly to buttonIdMap array
                 const items = result[platId] || [];
 
                 if (items.length > 0) {

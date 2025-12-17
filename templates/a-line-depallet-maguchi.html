@@ -2,8 +2,9 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8" />
-    <title>310D デパレ作業画面 - 間口</title>
+    <title>フタバ知立_310Dデパレ作業画面</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
     <!-- Your custom CSS -->
     <link href="../../static/css/depallet/maguchi.css" rel="stylesheet" />
     <!-- Your custom CSS -->
@@ -38,7 +39,7 @@
         <h1 class="title m-2" id="frontageName"></h1>
         <div class="">
             <form method="get" action="/" class="m-0">
-                <button type="button" class="btn btn-secondary" onclick="window.top.location.href='/'">戻る</button>
+                <button type="button" class="btn btn-danger" onclick="window.top.location.href='/'">戻る</button>
             </form>
         </div>
     </div>
@@ -54,23 +55,28 @@
             </div> -->
 
             <div id="maguchiCards">
-              <div class="card mb-3">
+              <!-- <div class="card mb-3">
                 <div class="card-header text-center text-white bg-danger">
                   <b>間口5</b>
                 </div>
                 <div class="card-body text-center bg-light">
                   <table class="table table-bordered" id="shelf-5">
-                    <!-- <label>取出部品を選択してください</label> -->
                     <thead>
                       </thead>
                     <tbody>
                       </tbody>
                   </table>
                 </div>
+              </div> -->
+
+              <div class="row text-center mb-2">
+                <div class="col-12">
+                    <h5>コタツ部品</h5>
+                </div>
               </div>
 
               <div class="card mb-3">
-                <div class="card-header text-white text-center bg-success">
+                <div class="card-header text-white text-center bg-primary">
                   <b>間口4</b>
                 </div>
                 <div class="card-body text-center bg-light">
@@ -83,7 +89,7 @@
               </div>
 
               <div class="card mb-3">
-                <div class="card-header text-white text-center bg-success">
+                <div class="card-header text-white text-center bg-primary">
                   <b>間口3</b>
                 </div>
                 <div class="card-body text-center bg-light">
@@ -96,7 +102,7 @@
               </div>
 
               <div class="card mb-3">
-                <div class="card-header text-white text-center bg-success">
+                <div class="card-header text-white text-center bg-primary">
                   <b>間口2</b>
                 </div>
                 <div class="card-body text-center bg-light">
@@ -109,7 +115,7 @@
               </div>
 
               <div class="card mb-3">
-                <div class="card-header text-white text-center bg-success">
+                <div class="card-header text-white text-center bg-primary">
                   <b>間口1</b>
                 </div>
                 <div class="card-body text-center bg-light">
@@ -130,13 +136,13 @@
     <div class="col-12">
         <h5>行き先</h5> <!-- 投入部品画面 -->
     </div>
-</div>
+  </div>
 
-<div class="row text-end">
+<!-- <div class="row text-end">
   <div class="col-12">
     <p id="flow-rack-no">対象フローラックNo:</p>
   </div>
-</div>
+</div> -->
   
 <!-- Layout for L -->
 <div id="layout-L" style="display:none;">
@@ -144,7 +150,7 @@
     <!-- Cards ③ and ④ -->
     <div class="col-md-6">
       <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-success">間口③</div>
+        <div class="card-header text-white text-center fw-bold bg-primary">③</div>
         <div class="card-body p-0">
           <table class="table table-bordered mb-0 text-center" id="card3">
             <thead class="table-light">
@@ -157,7 +163,7 @@
     </div>
     <div class="col-md-6">
       <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-success">間口④</div>
+        <div class="card-header text-white text-center fw-bold bg-primary">④</div>
         <div class="card-body p-0">
           <table class="table table-bordered mb-0 text-center" id="card4">
             <thead class="table-light">
@@ -174,7 +180,7 @@
     <!-- Cards ① and ② -->
     <div class="col-md-6">
       <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-success">間口①</div>
+        <div class="card-header text-white text-center fw-bold bg-primary">①</div>
         <div class="card-body p-0">
           <table class="table table-bordered mb-0 text-center" id="card1">
             <thead class="table-light">
@@ -187,7 +193,7 @@
     </div>
     <div class="col-md-6">
       <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-success">間口②</div>
+        <div class="card-header text-white text-center fw-bold bg-primary">②</div>
         <div class="card-body p-0">
           <table class="table table-bordered mb-0 text-center" id="card2">
             <thead class="table-light">
@@ -207,7 +213,7 @@
     <!-- Cards ① and ② -->
     <div class="col-md-6">
       <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-success">間口①</div>
+        <div class="card-header text-white text-center fw-bold bg-primary">①</div>
         <div class="card-body p-0">
           <table class="table table-bordered mb-0 text-center" id="card1">
             <thead class="table-light">
@@ -220,7 +226,7 @@
     </div>
     <div class="col-md-6">
       <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-success">間口②</div>
+        <div class="card-header text-white text-center fw-bold bg-primary">②</div>
         <div class="card-body p-0">
           <table class="table table-bordered mb-0 text-center" id="card2">
             <thead class="table-light">
@@ -237,7 +243,7 @@
     <!-- Cards ③ and ④ -->
     <div class="col-md-6">
       <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-success">間口③</div>
+        <div class="card-header text-white text-center fw-bold bg-primary">③</div>
         <div class="card-body p-0">
           <table class="table table-bordered mb-0 text-center" id="card3">
             <thead class="table-light">
@@ -250,7 +256,7 @@
     </div>
     <div class="col-md-6">
       <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-success">間口④</div>
+        <div class="card-header text-white text-center fw-bold bg-primary">④</div>
         <div class="card-body p-0">
           <table class="table table-bordered mb-0 text-center" id="card4">
             <thead class="table-light">
@@ -265,7 +271,7 @@
 </div>
 </div>
           <div class="container text-danger mb-2">
-            <label>部品取出完了後に押してください</label> <br><br>
+            <label>*部品取出完了後に押してください</label> <br><br>
             <button class="btn btn-primary" onclick="callAMRReturn()">作業完了</button>
           </div>
 
@@ -275,8 +281,6 @@
   </div>
 </div>
 
-
-    
 <!-- jQuery -->
 <script src="../../static/js/jquery-3.7.0.min.js"></script>
 <!-- Your custom JS -->

@@ -40,6 +40,7 @@ MYSQL_EIP_DB = {
 
 # LOG
 LOG_FOLDER = "../log"
+LOG_FILE = "debug_logging.log"
 BACKUP_DAYS = 120
 LOG_LEVEL = "INFO"  # DEBUG, INFO, NOTSET, WARN, ERORR, CRITICAL
 ENCODING = "utf-8"

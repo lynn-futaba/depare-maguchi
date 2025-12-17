@@ -4,11 +4,12 @@ from domain.models.shelf import FlowRack
 
 from domain.infrastructure.line_repository import ILineRepository
 
-#mysql実装
+
+# mysql実装
 class LineRepository(ILineRepository):
-    def __init__(self,db):
-         self.db =db
-    
+    def __init__(self, db):
+        self.db = db
+
     # TODO➞リン: Handle DB CONSTRAINTS in the application layer because there is no root or DB admin permission in the dabase
     def validate_line_ids(self, line_id_list: list) -> set[int]:
         """
