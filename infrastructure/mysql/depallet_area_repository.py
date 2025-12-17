@@ -499,241 +499,369 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
     
     # TODO➞リン: call AMR return
+    # def call_AMR_return(self, line_frontage_id):
+    #     # Mapping for signal IDs
+    #     signal_map = {
+    #         # TODO: v2
+    #         # "hashiru_ichi": {  # 呼び出し信号をリセット
+    #         #     # Bライン, 間口 5,4,3,2,1
+    #         #     1: (8061, 8046, 8031, 8016, 8000), # R1 => button_id 1
+    #         #     2: (8061, 8046, 8031, 8016, 8000), # R2 => button_id 2
+    #         #     3: (8060, 8046, 8031),             # R3 => button_id 3
+    #         #     4: (8260, 8246, 8231, 8216, 8201), # L1 => button_id 4
+    #         #     5: (8260, 8246, 8231, 8216, 8201), # L2 => button_id 5
+    #         #     6: (8231, 8216, 8200),             # L3 => button_id 6
+    #         #     # Aライン, 間口 5,4,3,2,1
+    #         #     7: (8061, 8046, 8031, 8016, 8000), # R1 => button_id 7
+    #         #     8: (8061, 8046, 8031, 8016, 8000), # R2 => button_id 8
+    #         #     9: (8060, 8046, 8031),             # R3 => button_id 9
+    #         #     10: (8260, 8246, 8231, 8216, 8201),# L1 => button_id 10
+    #         #     11: (8260, 8246, 8231, 8216, 8201),# L2 => button_id 11
+    #         #     12: (8231, 8216, 8200),            # L3 => button_id 12
+    #         # },
+    #         # "hashiru_ni": {  # 搬送指示 間口からストアに搬送
+    #         #     # Bライン, 間口 5,4,3,2,1
+    #         #     1: (8062, 8047, 8032, 8017, 8002), # R1 => button_id 1
+    #         #     2: (8062, 8047, 8032, 8017, 8002), # R2 => button_id 2
+    #         #     3: (8062, 8047, 8032),             # R3 => button_id 3
+    #         #     4: (8262, 8247, 8232, 8217, 8202), # L1 => button_id 4
+    #         #     5: (8262, 8247, 8232, 8217, 8202), # L2 => button_id 5
+    #         #     6: (8232, 8217, 8202),             # L3 => button_id 6
+    #         #     # Aライン, 間口 5,4,3,2,1
+    #         #     7: (8062, 8047, 8032, 8017, 8002), # R1 => button_id 7
+    #         #     8: (8062, 8047, 8032, 8017, 8002), # R2 => button_id 8
+    #         #     9: (8062, 8047, 8032),             # R3 => button_id 9
+    #         #     10: (8262, 8247, 8232, 8217, 8202),# L1 => button_id 10
+    #         #     11: (8262, 8247, 8232, 8217, 8202),# L2 => button_id 11
+    #         #     12: (8232, 8217, 8202),            # L3 => button_id 12
+    #         # },
+    #         # "kaeru_ichi": {  # 搬送対象idをリセット
+    #         #     # Bライン, 間口 5,4,3,2,1
+    #         #     1: (8404, 8403, 8402, 8401, 8400), # R1 => button_id 1
+    #         #     2: (8404, 8403, 8402, 8401, 8400), # R2 => button_id 2
+    #         #     3: (8404, 8403, 8402),             # R3 => button_id 3
+    #         #     4: (8504, 8503, 8502, 8501, 8500), # L1 => button_id 4
+    #         #     5: (8504, 8503, 8502, 8501, 8500), # L2 => button_id 5
+    #         #     6: (8502, 8501, 8500),             # L3 => button_id 6
+    #         #     # Aライン, 間口 5,4,3,2,1
+    #         #     7: (8404, 8403, 8402, 8401, 8400), # R1 => button_id 7
+    #         #     8: (8404, 8403, 8402, 8401, 8400), # R2 => button_id 8
+    #         #     9: (8404, 8403, 8402),             # R3 => button_id 9
+    #         #     10: (8504, 8503, 8502, 8501, 8500),# L1 => button_id 10
+    #         #     11: (8504, 8503, 8502, 8501, 8500),# L2 => button_id 11
+    #         #     12: (8502, 8501, 8500),            # L3 => button_id 12
+    #         # },
+    #         "hashiru_ichi": {  # 呼び出し信号をリセット
+    #             # Bライン, 間口 4,3,2,1
+    #             1: (8061, 8046, 8031, 8016),   # R1 => button_id 1
+    #             2: (8061, 8046, 8031, 8016),   # R2 => button_id 2
+    #             3: (8046, 8031),               # R3 => button_id 3
+    #             4: (8246, 8231, 8216, 8201),   # L1 => button_id 4
+    #             5: (8246, 8231, 8216, 8201),   # L2 => button_id 5
+    #             6: (8231, 8216),               # L3 => button_id 6
+    #             # Aライン, 間口 4,3,2,1
+    #             7: (8061, 8046, 8031, 8016),   # R1 => button_id 7
+    #             8: (8061, 8046, 8031, 8016),   # R2 => button_id 8
+    #             9: (8046, 8031),               # R3 => button_id 9
+    #             10: (8246, 8231, 8216, 8201),  # L1 => button_id 10
+    #             11: (8246, 8231, 8216, 8201),  # L2 => button_id 11
+    #             12: (8231, 8216),              # L3 => button_id 12
+    #         },
+    #         "hashiru_ni": {  # 搬送指示 間口からストアに搬送
+    #             # Bライン, 間口 4,3,2,1
+    #             1: (8062, 8047, 8032, 8017),   # R1 => button_id 1
+    #             2: (8062, 8047, 8032, 8017),   # R2 => button_id 2
+    #             3: (8047, 8032),               # R3 => button_id 3
+    #             4: (8247, 8232, 8217, 8202),   # L1 => button_id 4
+    #             5: (8247, 8232, 8217, 8202),   # L2 => button_id 5
+    #             6: (8232, 8217),               # L3 => button_id 6
+    #             # Aライン, 間口 4,3,2,1
+    #             7: (8062, 8047, 8032, 8017),   # R1 => button_id 7
+    #             8: (8062, 8047, 8032, 8017),   # R2 => button_id 8
+    #             9: (8047, 8032),               # R3 => button_id 9
+    #             10: (8247, 8232, 8217, 8202),  # L1 => button_id 10
+    #             11: (8247, 8232, 8217, 8202),  # L2 => button_id 11
+    #             12: (8232, 8217),              # L3 => button_id 12
+    #         },
+    #         "kaeru_ichi": {  # 搬送対象idをリセット
+    #             # Bライン, 間口 5,4,3,2,1
+    #             1: (8404, 8403, 8402, 8401),   # R1 => button_id 1
+    #             2: (8404, 8403, 8402, 8401),   # R2 => button_id 2
+    #             3: (8403, 8402),               # R3 => button_id 3
+    #             4: (8503, 8502, 8501, 8500),   # L1 => button_id 4
+    #             5: (8503, 8502, 8501, 8500),   # L2 => button_id 5
+    #             6: (8502, 8501),               # L3 => button_id 6
+    #             # Aライン, 間口 5,4,3,2,1
+    #             7: (8404, 8403, 8402, 8401),   # R1 => button_id 7
+    #             8: (8404, 8403, 8402, 8401),   # R2 => button_id 8
+    #             9: (8403, 8402),               # R3 => button_id 9
+    #             10: (8503, 8502, 8501, 8500),  # L1 => button_id 10
+    #             11: (8503, 8502, 8501, 8500),  # L2 => button_id 11
+    #             12: (8502, 8501),              # L3 => button_id 12
+    #         },
+    #         # "kaeru_ni": {  # 搬送指示リセット
+    #         #     # Bライン, 間口 5,4,3,2,1
+    #         #     1: (8062, 8047, 8032, 8017, 8002), # R1 => button_id 1
+    #         #     2: (8062, 8047, 8032, 8017, 8002), # R2 => button_id 2
+    #         #     3: (8062, 8047, 8032),             # R3 => button_id 3
+    #         #     4: (8262, 8247, 8232, 8217, 8202), # L1 => button_id 4
+    #         #     5: (8262, 8247, 8232, 8217, 8202), # L2 => button_id 5
+    #         #     6: (8232, 8217, 8202),             # L3 => button_id 6
+    #         #     # Aライン, 間口 5,4,3,2,1
+    #         #     7: (8062, 8047, 8032, 8017, 8002), # R1 => button_id 7
+    #         #     8: (8062, 8047, 8032, 8017, 8002), # R2 => button_id 8
+    #         #     9: (8062, 8047, 8032),             # R3 => button_id 9
+    #         #     10: (8262, 8247, 8232, 8217, 8202),# L1 => button_id 10
+    #         #     11: (8262, 8247, 8232, 8217, 8202),# L2 => button_id 11
+    #         #     12: (8232, 8217, 8202),            # L3 => button_id 12
+    #         # },
+    #         "ni_herasu": {  # 搬送対象の取出し信号
+    #             # Bライン, 間口 4,3,2,1
+    #             1: (8063, 8048, 8033, 8018),   # R1 => button_id 1
+    #             2: (8063, 8048, 8033, 8018),   # R2 => button_id 2
+    #             3: (8048, 8033),               # R3 => button_id 3
+    #             4: (8248, 8233, 8218, 8203),   # L1 => button_id 4
+    #             5: (8248, 8233, 8218, 8203),   # L2 => button_id 5
+    #             6: (8233, 8218),               # L3 => button_id 6
+    #             # Aライン, 間口 4,3,2,1
+    #             7: (8063, 8048, 8033, 8018),   # R1 => button_id 7
+    #             8: (8063, 8048, 8033, 8018),   # R2 => button_id 8
+    #             9: (8048, 8033),               # R3 => button_id 9
+    #             10: (8248, 8233, 8218, 8203),  # L1 => button_id 10
+    #             11: (8248, 8233, 8218, 8203),  # L2 => button_id 11
+    #             12: (8233, 8218),              # L3 => button_id 12
+    #         }
+    #     }
+
+    #     if line_frontage_id not in range(1, 13):
+    #         logging.error(f"[DepalletAreaRepository >> call_AMR_return() >> Invalid line_frontage_id]: {line_frontage_id}")
+    #         raise ValueError(f"[DepalletAreaRepository >> call_AMR_return() >> Invalid line_frontage_id]: {line_frontage_id}")
+       
+    #     try:
+    #         conn = self.db.wcs_pool.get_connection()
+    #         conn.start_transaction()
+    #         cur = conn.cursor()
+
+    #         # Collect IDs
+            
+    #         ids_step1 = signal_map.get("hashiru_ichi", {}).get(line_frontage_id, [])
+    #         ids_step2 = signal_map.get("hashiru_ni", {}).get(line_frontage_id, [])
+    #         ids_step3 = signal_map.get("kaeru_ichi", {}).get(line_frontage_id, [])
+
+    #         # add sugiura
+    #         ids_step4 = signal_map.get("ni_herasu", {}).get(line_frontage_id, [])
+
+    #         # add sugiura  *ids_step4
+    #         all_ids = [*ids_step1, *ids_step2, *ids_step3, *ids_step4]
+
+    #         if not all_ids:
+    #             logging.error(f"[DepalletAreaRepository >> call_AMR_return() >> ⚠ No signal IDs found for update.]")
+    #             return
+
+    #         # Build CASE dynamically
+    #         conditions = []
+    #         params = []
+
+    #         if ids_step1:
+    #             conditions.append(f"WHEN signal_id IN ({','.join(['%s']*len(ids_step1))}) THEN 0")
+    #             params.extend(ids_step1)
+    #         if ids_step3:
+    #             conditions.append(f"WHEN signal_id IN ({','.join(['%s']*len(ids_step3))}) THEN 0")
+    #             params.extend(ids_step3)
+    #         if ids_step2:
+    #             conditions.append(f"WHEN signal_id IN ({','.join(['%s']*len(ids_step2))}) THEN 1")
+    #             params.extend(ids_step2)
+    #         # add sugiura
+    #         if ids_step4:
+    #             conditions.append(f"WHEN signal_id IN ({','.join(['%s']*len(ids_step4))}) THEN 1")
+    #             params.extend(ids_step4)
+            
+    #         placeholders_all = ','.join(['%s'] * len(all_ids))
+    #         params.extend(all_ids)
+
+    #         sql = f"""
+    #         UPDATE eip_signal.word_input
+    #         SET value = CASE {' '.join(conditions)} END
+    #         WHERE signal_id IN ({placeholders_all})
+    #         """
+
+    #         # Execute combined update
+    #         cur.execute(sql, params)
+    #         logging.info(f"[DepalletAreaRepository >> call_AMR_return() >> ✅ Combined update executed (rows changed)]: {cur.rowcount}")
+
+    #         conn.commit()
+
+    #         # Wait before checking Step 2
+    #         time.sleep(1)
+
+    #         # Check Step 2 signals
+    #         if ids_step2:
+    #             placeholders2 = ','.join(['%s'] * len(ids_step2))
+    #             cur.execute(f"SELECT COUNT(*) FROM eip_signal.word_input WHERE signal_id IN ({placeholders2}) AND value = 1", ids_step2)
+    #             count = cur.fetchone()[0]
+    #             logging.info(f"[DepalletAreaRepository >> call_AMR_return() >> ✅ Step 2 active signals]: {count}")
+
+    #             # Reset Step 2 to 0
+    #             cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders2})", ids_step2)
+    #             logging.info(f"[DepalletAreaRepository >> call_AMR_return() >> ✅ Step 2 reset to 0]")
+    #             conn.commit()
+            
+    #         # Wait before checking Step 2
+    #         time.sleep(1)
+
+    #         # Check Step 4 signals
+    #         if ids_step4:
+    #             placeholders4 = ','.join(['%s'] * len(ids_step4))
+    #             cur.execute(f"SELECT COUNT(*) FROM eip_signal.word_input WHERE signal_id IN ({placeholders4}) AND value = 1", ids_step4)
+    #             count = cur.fetchone()[0]
+    #             logging.info(f"[DepalletAreaRepository >> call_AMR_return() >> ✅ Step 2 active signals]: {count}")
+
+    #             # Reset Step 2 to 0
+    #             cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders4})", ids_step4)
+    #             logging.info(f"[DepalletAreaRepository >> call_AMR_return() >> ✅ Step 2 reset to 0]")
+    #             conn.commit()
+
+
+    #         logging.info(f"[DepalletAreaRepository >> call_AMR_return() >> ✅ Transaction committed for line_frontage_id]: {line_frontage_id}")
+
+    #     except Exception as e:
+    #         if conn:
+    #             conn.rollback()
+    #         logging.error(f"[DepalletAreaRepository >> call_AMR_return() ❌ >> エラー]: {e}")
+    #         raise Exception(f"[DepalletAreaRepository >> call_AMR_return() >> エラー]: {e}")
+    #     finally:
+    #         if cur:
+    #             cur.close()
+    #         if conn:
+    #             conn.close()
+
     def call_AMR_return(self, line_frontage_id):
         # Mapping for signal IDs
         signal_map = {
-            # TODO: v2
-            # "hashiru_ichi": {  # 呼び出し信号をリセット
-            #     # Bライン, 間口 5,4,3,2,1
-            #     1: (8061, 8046, 8031, 8016, 8000), # R1 => button_id 1
-            #     2: (8061, 8046, 8031, 8016, 8000), # R2 => button_id 2
-            #     3: (8060, 8046, 8031),             # R3 => button_id 3
-            #     4: (8260, 8246, 8231, 8216, 8201), # L1 => button_id 4
-            #     5: (8260, 8246, 8231, 8216, 8201), # L2 => button_id 5
-            #     6: (8231, 8216, 8200),             # L3 => button_id 6
-            #     # Aライン, 間口 5,4,3,2,1
-            #     7: (8061, 8046, 8031, 8016, 8000), # R1 => button_id 7
-            #     8: (8061, 8046, 8031, 8016, 8000), # R2 => button_id 8
-            #     9: (8060, 8046, 8031),             # R3 => button_id 9
-            #     10: (8260, 8246, 8231, 8216, 8201),# L1 => button_id 10
-            #     11: (8260, 8246, 8231, 8216, 8201),# L2 => button_id 11
-            #     12: (8231, 8216, 8200),            # L3 => button_id 12
-            # },
-            # "hashiru_ni": {  # 搬送指示 間口からストアに搬送
-            #     # Bライン, 間口 5,4,3,2,1
-            #     1: (8062, 8047, 8032, 8017, 8002), # R1 => button_id 1
-            #     2: (8062, 8047, 8032, 8017, 8002), # R2 => button_id 2
-            #     3: (8062, 8047, 8032),             # R3 => button_id 3
-            #     4: (8262, 8247, 8232, 8217, 8202), # L1 => button_id 4
-            #     5: (8262, 8247, 8232, 8217, 8202), # L2 => button_id 5
-            #     6: (8232, 8217, 8202),             # L3 => button_id 6
-            #     # Aライン, 間口 5,4,3,2,1
-            #     7: (8062, 8047, 8032, 8017, 8002), # R1 => button_id 7
-            #     8: (8062, 8047, 8032, 8017, 8002), # R2 => button_id 8
-            #     9: (8062, 8047, 8032),             # R3 => button_id 9
-            #     10: (8262, 8247, 8232, 8217, 8202),# L1 => button_id 10
-            #     11: (8262, 8247, 8232, 8217, 8202),# L2 => button_id 11
-            #     12: (8232, 8217, 8202),            # L3 => button_id 12
-            # },
-            # "kaeru_ichi": {  # 搬送対象idをリセット
-            #     # Bライン, 間口 5,4,3,2,1
-            #     1: (8404, 8403, 8402, 8401, 8400), # R1 => button_id 1
-            #     2: (8404, 8403, 8402, 8401, 8400), # R2 => button_id 2
-            #     3: (8404, 8403, 8402),             # R3 => button_id 3
-            #     4: (8504, 8503, 8502, 8501, 8500), # L1 => button_id 4
-            #     5: (8504, 8503, 8502, 8501, 8500), # L2 => button_id 5
-            #     6: (8502, 8501, 8500),             # L3 => button_id 6
-            #     # Aライン, 間口 5,4,3,2,1
-            #     7: (8404, 8403, 8402, 8401, 8400), # R1 => button_id 7
-            #     8: (8404, 8403, 8402, 8401, 8400), # R2 => button_id 8
-            #     9: (8404, 8403, 8402),             # R3 => button_id 9
-            #     10: (8504, 8503, 8502, 8501, 8500),# L1 => button_id 10
-            #     11: (8504, 8503, 8502, 8501, 8500),# L2 => button_id 11
-            #     12: (8502, 8501, 8500),            # L3 => button_id 12
-            # },
-            "ni_herasu": {  # 搬送対象の取出し信号
+            "ni_herasu": {  # Step 4: # 搬送対象の取出し信号
                 # Bライン, 間口 4,3,2,1
-                1: (8063, 8048, 8033, 8018),   # R1 => button_id 1
-                2: (8063, 8048, 8033, 8018),   # R2 => button_id 2
-                3: (8048, 8033),               # R3 => button_id 3
-                4: (8248, 8233, 8218, 8203),   # L1 => button_id 4
-                5: (8248, 8233, 8218, 8203),   # L2 => button_id 5
-                6: (8233, 8218),               # L3 => button_id 6
+                1: (8063, 8048, 8033, 8018), # R1 => button_id 1
+                2: (8063, 8048, 8033, 8018), # R2 => button_id 2
+                3: (8048, 8033), # R3 => button_id 3
+                4: (8248, 8233, 8218, 8203), # L1 => button_id 4
+                5: (8248, 8233, 8218, 8203), # L2 => button_id 5
+                6: (8233, 8218), # L3 => button_id 6
                 # Aライン, 間口 4,3,2,1
-                7: (8063, 8048, 8033, 8018),   # R1 => button_id 7
-                8: (8063, 8048, 8033, 8018),   # R2 => button_id 8
-                9: (8048, 8033),               # R3 => button_id 9
-                10: (8248, 8233, 8218, 8203),  # L1 => button_id 10
-                11: (8248, 8233, 8218, 8203),  # L2 => button_id 11
-                12: (8233, 8218),              # L3 => button_id 12
+                7: (8063, 8048, 8033, 8018), # R1 => button_id 7
+                8: (8063, 8048, 8033, 8018), # R2 => button_id 8
+                9: (8048, 8033), # R3 => button_id 9
+                10: (8248, 8233, 8218, 8203), # L1 => button_id 10
+                11: (8248, 8233, 8218, 8203), # L2 => button_id 11
+                12: (8233, 8218), # L3 => button_id 12
             },
-            "hashiru_ichi": {  # 呼び出し信号をリセット
+            "hashiru_ichi": { # Step 1 # 呼び出し信号をリセット
                 # Bライン, 間口 4,3,2,1
-                1: (8061, 8046, 8031, 8016),   # R1 => button_id 1
-                2: (8061, 8046, 8031, 8016),   # R2 => button_id 2
-                3: (8046, 8031),               # R3 => button_id 3
-                4: (8246, 8231, 8216, 8201),   # L1 => button_id 4
-                5: (8246, 8231, 8216, 8201),   # L2 => button_id 5
-                6: (8231, 8216),               # L3 => button_id 6
+                1: (8061, 8046, 8031, 8016), # R1 => button_id 1
+                2: (8061, 8046, 8031, 8016), # R2 => button_id 2
+                3: (8046, 8031), # R3 => button_id 3
+                4: (8246, 8231, 8216, 8201), # L1 => button_id 4
+                5: (8246, 8231, 8216, 8201), # L2 => button_id 5
+                6: (8231, 8216), # L3 => button_id 6
                 # Aライン, 間口 4,3,2,1
-                7: (8061, 8046, 8031, 8016),   # R1 => button_id 7
-                8: (8061, 8046, 8031, 8016),   # R2 => button_id 8
-                9: (8046, 8031),               # R3 => button_id 9
-                10: (8246, 8231, 8216, 8201),  # L1 => button_id 10
-                11: (8246, 8231, 8216, 8201),  # L2 => button_id 11
-                12: (8231, 8216),              # L3 => button_id 12
+                7: (8061, 8046, 8031, 8016), # R1 => button_id 7
+                8: (8061, 8046, 8031, 8016), # R2 => button_id 8
+                9: (8046, 8031), # R3 => button_id 9
+                10: (8246, 8231, 8216, 8201), # L1 => button_id 10
+                11: (8246, 8231, 8216, 8201), # L2 => button_id 11
+                12: (8231, 8216), # L3 => button_id 12
             },
-            "hashiru_ni": {  # 搬送指示 間口からストアに搬送
+            "hashiru_ni": { # Step 2 # 搬送指示 間口からストアに搬送
                 # Bライン, 間口 4,3,2,1
-                1: (8062, 8047, 8032, 8017),   # R1 => button_id 1
-                2: (8062, 8047, 8032, 8017),   # R2 => button_id 2
-                3: (8047, 8032),               # R3 => button_id 3
-                4: (8247, 8232, 8217, 8202),   # L1 => button_id 4
-                5: (8247, 8232, 8217, 8202),   # L2 => button_id 5
-                6: (8232, 8217),               # L3 => button_id 6
+                1: (8062, 8047, 8032, 8017), # R1 => button_id 1
+                2: (8062, 8047, 8032, 8017), # R2 => button_id 2
+                3: (8047, 8032), # R3 => button_id 3
+                4: (8247, 8232, 8217, 8202), # L1 => button_id 4
+                5: (8247, 8232, 8217, 8202), # L2 => button_id 5
+                6: (8232, 8217), # L3 => button_id 6
                 # Aライン, 間口 4,3,2,1
-                7: (8062, 8047, 8032, 8017),   # R1 => button_id 7
-                8: (8062, 8047, 8032, 8017),   # R2 => button_id 8
-                9: (8047, 8032),               # R3 => button_id 9
-                10: (8247, 8232, 8217, 8202),  # L1 => button_id 10
-                11: (8247, 8232, 8217, 8202),  # L2 => button_id 11
-                12: (8232, 8217),              # L3 => button_id 12
+                7: (8062, 8047, 8032, 8017), # R1 => button_id 7
+                8: (8062, 8047, 8032, 8017), # R2 => button_id 8
+                9: (8047, 8032), # R3 => button_id 9
+                10: (8247, 8232, 8217, 8202), # L1 => button_id 10
+                11: (8247, 8232, 8217, 8202), # L2 => button_id 11
+                12: (8232, 8217), # L3 => button_id 12
             },
-            "kaeru_ichi": {  # 搬送対象idをリセット
-                # Bライン, 間口 5,4,3,2,1
-                1: (8404, 8403, 8402, 8401),   # R1 => button_id 1
-                2: (8404, 8403, 8402, 8401),   # R2 => button_id 2
-                3: (8403, 8402),               # R3 => button_id 3
-                4: (8503, 8502, 8501, 8500),   # L1 => button_id 4
-                5: (8503, 8502, 8501, 8500),   # L2 => button_id 5
-                6: (8502, 8501),               # L3 => button_id 6
-                # Aライン, 間口 5,4,3,2,1
-                7: (8404, 8403, 8402, 8401),   # R1 => button_id 7
-                8: (8404, 8403, 8402, 8401),   # R2 => button_id 8
-                9: (8403, 8402),               # R3 => button_id 9
-                10: (8503, 8502, 8501, 8500),  # L1 => button_id 10
-                11: (8503, 8502, 8501, 8500),  # L2 => button_id 11
-                12: (8502, 8501),              # L3 => button_id 12
+            "kaeru_ichi": { # Step 3 # 搬送対象idをリセット
+                # Bライン, 間口 4,3,2,1
+                1: (8404, 8403, 8402, 8401), # R1 => button_id 1
+                2: (8404, 8403, 8402, 8401), # R2 => button_id 2
+                3: (8403, 8402), # R3 => button_id 3
+                4: (8503, 8502, 8501, 8500), # L1 => button_id 4
+                5: (8503, 8502, 8501, 8500), # L2 => button_id 5
+                6: (8502, 8501), # L3 => button_id 6
+                # Aライン, 間口 4,3,2,1
+                7: (8404, 8403, 8402, 8401), # R1 => button_id 7
+                8: (8404, 8403, 8402, 8401), # R2 => button_id 8 
+                9: (8403, 8402), # R3 => button_id 9
+                10: (8503, 8502, 8501, 8500), # L1 => button_id 10 
+                11: (8503, 8502, 8501, 8500), # L2 => button_id 11 
+                12: (8502, 8501), # L3 => button_id 12
             },
-            # "kaeru_ni": {  # 搬送指示リセット
-            #     # Bライン, 間口 5,4,3,2,1
-            #     1: (8062, 8047, 8032, 8017, 8002), # R1 => button_id 1
-            #     2: (8062, 8047, 8032, 8017, 8002), # R2 => button_id 2
-            #     3: (8062, 8047, 8032),             # R3 => button_id 3
-            #     4: (8262, 8247, 8232, 8217, 8202), # L1 => button_id 4
-            #     5: (8262, 8247, 8232, 8217, 8202), # L2 => button_id 5
-            #     6: (8232, 8217, 8202),             # L3 => button_id 6
-            #     # Aライン, 間口 5,4,3,2,1
-            #     7: (8062, 8047, 8032, 8017, 8002), # R1 => button_id 7
-            #     8: (8062, 8047, 8032, 8017, 8002), # R2 => button_id 8
-            #     9: (8062, 8047, 8032),             # R3 => button_id 9
-            #     10: (8262, 8247, 8232, 8217, 8202),# L1 => button_id 10
-            #     11: (8262, 8247, 8232, 8217, 8202),# L2 => button_id 11
-            #     12: (8232, 8217, 8202),            # L3 => button_id 12
-            # },
         }
 
         if line_frontage_id not in range(1, 13):
-            logging.error(f"[DepalletAreaRepository >> call_AMR_return() >> Invalid line_frontage_id]: {line_frontage_id}")
-            raise ValueError(f"[DepalletAreaRepository >> call_AMR_return() >> Invalid line_frontage_id]: {line_frontage_id}")
+            raise ValueError(f"Invalid line_frontage_id: {line_frontage_id}")
        
         try:
             conn = self.db.wcs_pool.get_connection()
             conn.start_transaction()
             cur = conn.cursor()
 
-            # Collect IDs
-            # add sugiura
-            ids_step4 = signal_map.get("ni_herasu", {}).get(line_frontage_id, [])
-            ids_step1 = signal_map.get("hashiru_ichi", {}).get(line_frontage_id, [])
-            ids_step2 = signal_map.get("hashiru_ni", {}).get(line_frontage_id, [])
-            ids_step3 = signal_map.get("kaeru_ichi", {}).get(line_frontage_id, [])
+            # --- ORIGINAL STEPS (1, 2, 3) ---
+            ids_s1 = signal_map["hashiru_ichi"].get(line_frontage_id, [])
+            ids_s2 = signal_map["hashiru_ni"].get(line_frontage_id, [])
+            ids_s3 = signal_map["kaeru_ichi"].get(line_frontage_id, [])
 
-            # add sugiura  *ids_step4
-            all_ids = [*ids_step4, *ids_step1, *ids_step2, *ids_step3]
+            # Reset Step 1 and 3 to 0
+            for ids in [ids_s1, ids_s3]:
+                if ids:
+                    placeholders = ','.join(['%s'] * len(ids))
+                    cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders})", ids)
 
-            if not all_ids:
-                logging.error(f"[DepalletAreaRepository >> call_AMR_return() >> ⚠ No signal IDs found for update.]")
-                return
-
-            # Build CASE dynamically
-            conditions = []
-            params = []
-
-            # add sugiura
-            if ids_step4:
-                conditions.append(f"WHEN signal_id IN ({','.join(['%s']*len(ids_step4))}) THEN 1")
-                params.extend(ids_step4)
-            if ids_step1:
-                conditions.append(f"WHEN signal_id IN ({','.join(['%s']*len(ids_step1))}) THEN 0")
-                params.extend(ids_step1)
-            if ids_step3:
-                conditions.append(f"WHEN signal_id IN ({','.join(['%s']*len(ids_step3))}) THEN 0")
-                params.extend(ids_step3)
-            if ids_step2:
-                conditions.append(f"WHEN signal_id IN ({','.join(['%s']*len(ids_step2))}) THEN 1")
-                params.extend(ids_step2)
-            
-            placeholders_all = ','.join(['%s'] * len(all_ids))
-            params.extend(all_ids)
-
-            sql = f"""
-            UPDATE eip_signal.word_input
-            SET value = CASE {' '.join(conditions)} END
-            WHERE signal_id IN ({placeholders_all})
-            """
-
-            # Execute combined update
-            cur.execute(sql, params)
-            logging.info(f"[DepalletAreaRepository >> call_AMR_return() >> ✅ Combined update executed (rows changed)]: {cur.rowcount}")
-
-            conn.commit()
-
-            # Wait before checking Step 2
-            time.sleep(1)
-
-            # Check Step 4 signals
-            if ids_step4:
-                placeholders4 = ','.join(['%s'] * len(ids_step4))
-                cur.execute(f"SELECT COUNT(*) FROM eip_signal.word_input WHERE signal_id IN ({placeholders4}) AND value = 1", ids_step4)
-                count = cur.fetchone()[0]
-                logging.info(f"[DepalletAreaRepository >> call_AMR_return() >> ✅ Step 2 active signals]: {count}")
-
-                # Reset Step 2 to 0
-                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders4})", ids_step4)
-                logging.info(f"[DepalletAreaRepository >> call_AMR_return() >> ✅ Step 2 reset to 0]")
+            # Set Step 2 to 1, then reset after a delay
+            if ids_s2:
+                placeholders = ','.join(['%s'] * len(ids_s2))
+                cur.execute(f"UPDATE eip_signal.word_input SET value = 1 WHERE signal_id IN ({placeholders})", ids_s2)
+                conn.commit()
+                time.sleep(1)
+                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders})", ids_s2)
                 conn.commit()
 
-            # Wait before checking Step 2
-            time.sleep(1)
-
-            # Check Step 2 signals
-            if ids_step2:
-                placeholders2 = ','.join(['%s'] * len(ids_step2))
-                cur.execute(f"SELECT COUNT(*) FROM eip_signal.word_input WHERE signal_id IN ({placeholders2}) AND value = 1", ids_step2)
-                count = cur.fetchone()[0]
-                logging.info(f"[DepalletAreaRepository >> call_AMR_return() >> ✅ Step 2 active signals]: {count}")
-
-                # Reset Step 2 to 0
-                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders2})", ids_step2)
-                logging.info(f"[DepalletAreaRepository >> call_AMR_return() >> ✅ Step 2 reset to 0]")
+            # --- NEW STEP 4 (ni_herasu) ---
+            # Handling Step 4 independently to ensure it works
+            ids_s4 = signal_map["ni_herasu"].get(line_frontage_id, [])
+            if ids_s4:
+                logging.info(f"Executing Step 4 (ni_herasu) for ID: {line_frontage_id}")
+                placeholders4 = ','.join(['%s'] * len(ids_s4))
+                
+                # Set value to 1
+                cur.execute(f"UPDATE eip_signal.word_input SET value = 1 WHERE signal_id IN ({placeholders4})", ids_s4)
                 conn.commit()
+                
+                # Wait for the system to read the trigger
+                time.sleep(1)
+                
+                # Reset value back to 0
+                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders4})", ids_s4)
+                conn.commit()
+                logging.info(f"Step 4 reset completed.")
 
-
-            logging.info(f"[DepalletAreaRepository >> call_AMR_return() >> ✅ Transaction committed for line_frontage_id]: {line_frontage_id}")
+            logging.info(f"All steps completed for line_frontage_id: {line_frontage_id}")
 
         except Exception as e:
-            if conn:
-                conn.rollback()
-            logging.error(f"[DepalletAreaRepository >> call_AMR_return() ❌ >> エラー]: {e}")
-            raise Exception(f"[DepalletAreaRepository >> call_AMR_return() >> エラー]: {e}")
+            if conn: conn.rollback()
+            logging.error(f"Error in call_AMR_return: {e}")
+            raise e
         finally:
-            if cur:
-                cur.close()
-            if conn:
-                conn.close()
+            if cur: cur.close()
+            if conn: conn.close()
 
-    def get_depallet_area_by_plat(self, plat_id_list: list, button_id: int = 0):
+    def get_depallet_area_by_plat(self, plat_id_list: list):
         """
         Build update_frontages for plats 20-29 (or custom plat_id_list).
         Each plat key contains a list of shelf details.
@@ -764,6 +892,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
             cur.execute(sql, plat_id_list)
             result = cur.fetchall()
+
 
             # ✅ Build response
             update_frontages = {}

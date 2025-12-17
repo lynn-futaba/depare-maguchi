@@ -3,7 +3,7 @@ from domain.models.shelf import FlowRack, Kotatsu, Shelf
 from domain.models.depallet import DepalletArea, DepalletFrontage
 from domain.models.part import Part
 from domain.infrastructure.depallet_area_repository import IDepalletAreaRepository
-from domain.infrastructure.wcs_controler import IWcsControler
+from domain.infrastructure.wcs_repository import IWCSRepository
 from common.setup_logger import setup_log  # ログ用
 from config.config import BACKUP_DAYS  # ログ用
 
@@ -16,7 +16,7 @@ setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 
 class DepalletService:
-    def __init__(self, depallet_area_repo: IDepalletAreaRepository, wcs: IWcsControler):
+    def __init__(self, depallet_area_repo: IDepalletAreaRepository, wcs: IWCSRepository):
 
         self.depallet_area_repo = depallet_area_repo
         self.wcs = wcs
@@ -159,9 +159,9 @@ class DepalletService:
             raise Exception(f"[DepalletService >> call_AMR_return() >> エラー]: {e}")
 
     # update new depallet area
-    def get_depallet_area_by_plat(self, plat_id_list: list, button_id: int):
+    def get_depallet_area_by_plat(self, plat_id_list: list):
         try:
-            new_area = self.depallet_area_repo.get_depallet_area_by_plat(plat_id_list, button_id)
+            new_area = self.depallet_area_repo.get_depallet_area_by_plat(plat_id_list)
             logging.info(f"[DepalletService >> get_depallet_area_by_plat() >> new_area Result] : {new_area}")  # TODO➞リン: testing
             return new_area
         except Exception as e:

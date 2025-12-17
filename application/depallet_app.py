@@ -6,9 +6,11 @@ from domain.models.shelf import Kotatsu,FlowRack
 
 from domain.services.depallet_service import DepalletService
 from domain.services.line_service import LineService
+from domain.services.wcs_service import WCSService
+
 
 from infrastructure.mysql.depallet_area_repository import DepalletAreaRepository
-from infrastructure.mysql.wcs_controler import WcsControler
+from infrastructure.mysql.wcs_repository import WCSRepository
 from infrastructure.mysql.line_repository import LineRepository
 from infrastructure.mysql.product_info_repository import ProductInfoRepository
 from infrastructure.mysql.mysql_db import MysqlDb
@@ -44,8 +46,11 @@ class DepalletApplication():
 
         self.db = MysqlDb()
 
-        self.depallet_service = DepalletService(DepalletAreaRepository(self.db), WcsControler(self.db))
-        self.depallet_support = WcsControler(self.db)
+        self.depallet_service = DepalletService(DepalletAreaRepository(self.db), WCSRepository(self.db))
+
+        self.wcs_service = WCSService(WCSRepository(self.db))
+
+        # self.depallet_support = WCSRepository(self.db)
         self.line_service = LineService(LineRepository(self.db), ProductInfoRepository(self.db))
 
         self.manager = WatcherManager()
@@ -55,7 +60,7 @@ class DepalletApplication():
         self.a_product_r, self.a_product_l, self.b_product_r, self.b_product_l = self.line_service.get_product_infos(self.lines)
 
         self.depallet_area = self.depallet_service.get_depallet_area(self.LINE_ID)
-        self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST, self.button_id) # TODO➞リン: added
+        self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST) # TODO➞リン: added
 
     def start(self):
         for frontage in self.depallet_area.frontages.values():
@@ -156,8 +161,6 @@ class DepalletApplication():
         try:
             logging.info("[DepalletApplication >> call_AMR_return() >> 成功]")
             self.depallet_service.call_AMR_return(line_frontage_id)
-            self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST, line_frontage_id)  # TODO➞リン: added
-            self.depallet_support.dispallet(self.new_depallet_area)
         except Exception as e:
             logging.error(f"[DepalletApplication >> call_AMR_return() >> エラー] : {e}")
             raise Exception(f"DepalletApplication >> call_AMR_return() >> エラー]: {e}")
@@ -177,6 +180,15 @@ class DepalletApplication():
         except Exception as e:
             logging.error(f"[DepalletApplication >> insert_kanban_sashi() >> エラー] : {e}")
             raise Exception(f"DepalletApplication >> insert_kanban_sashi >> エラー]: {e}")
+        
+    def dispallet(self):
+        try:
+            logging.info("[DepalletApplication >> dispallet() >> 成功]")
+            self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST)  # TODO➞リン: added
+            self.wcs_service.dispallet(self.new_depallet_area)
+        except Exception as e:
+            logging.error(f"[DepalletApplication >> dispallet() >> エラー] : {e}")
+            raise Exception(f"DepalletApplication >> dispallet >> エラー]: {e}")
 
     # コタツに部品を戻す
     def return_part(self, frontage_id: int, part_id: int):
@@ -255,12 +267,11 @@ class DepalletApplication():
         return util.to_json(flow_rack_frontage.shelf)
 
     # TODO➞リン: Added
-    def get_depallet_area_by_plat_json(self, button_id):
-        self.button_id = button_id
+    def get_depallet_area_by_plat_json(self):
         logging.info(f"[DepalletApplication >> get_depallet_area_by_plat_json >> self.new_depallet_area] : {self.new_depallet_area}")
-        self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST, button_id)  # TODO➞リン: added
+        self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST)  # TODO➞リン: added
         # add sugiura
-        self.depallet_support.dispallet(self.new_depallet_area)
+        # self.depallet_support.dispallet(self.new_depallet_area)
         return util.to_json(self.new_depallet_area)
 
 

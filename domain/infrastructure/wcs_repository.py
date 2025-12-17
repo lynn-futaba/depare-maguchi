@@ -5,7 +5,7 @@ from domain.models.part import Part
 from domain.models.line import LineFrontage
 
 
-class IWcsControler(ABC):
+class IWCSRepository(ABC):
     # ���i�v��
     @abstractmethod  # TODO modified
     def request_kotatsu(self, frontage: DepalletFrontage, part: Part):
@@ -19,5 +19,10 @@ class IWcsControler(ABC):
     # ���o
     @abstractmethod  # TODO modified
     def dispatch(self, frontage: DepalletFrontage):
+        pass
+
+    # ���o
+    @abstractmethod  # TODO modified
+    def dispallet(self, depallet_area):
         pass
 

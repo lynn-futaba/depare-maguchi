@@ -216,8 +216,8 @@ class DepalletWebServer:
         @app.route("/api/get_depallet_area_by_plat", methods=["POST"])  # TODO➞リン: added 
         def get_depallet_area_by_plat():
             try:
-                button_id = request.json.get("button_id")
-                new_depallet_area = self._depallet_app.get_depallet_area_by_plat_json(button_id)
+                # button_id = request.json.get("button_id")
+                new_depallet_area = self._depallet_app.get_depallet_area_by_plat_json()
                 logging.info(f"[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {new_depallet_area}")
                 return new_depallet_area
             except Exception as e:
@@ -269,11 +269,15 @@ class DepalletWebServer:
                         json.dump(config, f, ensure_ascii=False, indent=2)
                     os.replace(tmp_path, CONFIG_PATH)
 
-                    self.depallet_support.dispallet(self.new_depallet_area)
+                    # ✅ Now run DB logic to trigger the flag
+                    self._depallet_app.dispallet()
+                    logging.info(f"[app.py >> update_take_count() >> DB >> success]")
 
                     response = jsonify({"status": "success", "message": f"背番号 '{kanban_no}' を '{new_take_count}' に更新しました。", "updated": {kanban_no: new_take_count}})
                     return response
-                # add sugiura
+               
+
+                return jsonify({"status": "success", "message": "DB saved successfully"})
                 
             except Exception as e:
                 logging.error(f"[app.py >> update_take_count() >> ERROR] : {e}", exc_info=True)

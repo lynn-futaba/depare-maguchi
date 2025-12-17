@@ -20,9 +20,9 @@ $(document).ready(function () {
             url: "/api/get_depallet_area_by_plat",
             type: "POST",
             contentType: 'application/json',
-            data: JSON.stringify({
-                button_id: idValue 
-            }),
+            // data: JSON.stringify({
+            //     button_id: idValue 
+            // }),
             success: function (data) {
                 // console.log('get_depallet_area_by_plat >>', data); // TODO: testing
                 // updateTable(data);
@@ -41,37 +41,155 @@ $(document).ready(function () {
         });
 
     
+        // function getDepalletAreaByPlat(data, idValue, nameValue) {
+
+        //     const result = JSON.parse(data);
+
+        //     // Button → Plat mapping
+        //     const buttonIdMap = { 
+        //         1: [29, 28, 27, 26], // R1, Bライン
+        //         2: [29, 28, 27, 26], // R2, Bライン
+        //         3: [28,27],         // R3, Bライン
+        //         4: [28, 27, 26, 25], // L1, Bライン
+        //         5: [28, 27, 26, 25], // L2, Bライン
+        //         6: [27, 26],         // L3, Bライン
+        //     };
+
+        //     const targetPlats = buttonIdMap[idValue] || [];
+        //     document.getElementById("frontageName").textContent = 'デパレ間口 <' + nameValue + '>';
+
+        //     // ✅ Loop through shelves in reverse order (4 → 1)
+        //     for (let i = 4; i >= 1; i--) {
+        //         const shelfId = `#shelf-${i}`; // shelf-4, shelf-3, shelf-2, shelf-1
+        //         // const cardBody = $(shelfId).closest('.card-body');
+        //         const tbody = $(`${shelfId} tbody`);
+        //         const thead = $(`${shelfId} thead`);
+
+        //         let cardId = `#card${i}`;
+        //         let cardNo = $(`${cardId} tbody`);
+
+        //         // cardBody.find('.dynamic-labels').remove();
+        //         thead.empty();
+        //         tbody.empty();
+        //         cardNo.empty();
+                
+
+        //         const platId = targetPlats[4 - i]; // Map correctly to buttonIdMap array
+        //         const items = result[platId] || [];
+
+        //         if (items.length > 0) {
+        //             // ✅ Add table header
+        //             thead.append(`
+        //                 <tr>
+        //                     <th>対象 : 間口${i}</th>
+        //                     <th colspan="2">コタツ No : ${items[0]?.shelf_code || 'N/A'}</th>
+        //                     <th colspan="2">かんばん No : ${items[0]?.step_kanban_no || 'N/A'}</th>
+        //                 </tr>
+        //                 <tr>
+        //                     <th></th>
+        //                     <th>背番号</th>
+        //                     <th>在庫数</th>
+        //                     <th>取出数量</th>
+        //                     <th></th>
+        //                 </tr>
+        //             `);
+
+        //             // ✅ Populate rows
+        //             items.forEach((item, idx) => {
+        //                 const stepKanbanNo = item.step_kanban_no || '-';
+        //                 const loadNum = item.load_num || 0;
+        //                 const takeCount = item.take_count || 0;
+        //                 const rowId = `row-${platId}-${stepKanbanNo}` || '-';
+
+        //                 // Update flow rack info
+        //                 const flowRackNo = item.flow_rack_no ?? '-';
+        //                 $("#flow-rack-no").text(`対象フローラック No: ${flowRackNo}`);
+
+                        
+        //                 // <td><button class="btn btn-success btn-sm" onclick="submitPallet(${platId}, '${stepKanbanNo}')">＋</button></td>
+        //                 // <td><button class="btn btn-danger btn-sm" onclick="submitDepallet(${platId}, '${stepKanbanNo}')">ー</button></td>
+        //                 // Add row to shelf table
+        //                 tbody.append(`
+        //                     <tr id="${rowId}">
+        //                         <td><button class="btn btn-success btn-sm submit-pallet" data-plat="${platId}" data-kanban="${stepKanbanNo}">＋</button></td>
+        //                         <td>${stepKanbanNo}</td>
+        //                         <td>${loadNum}</td>
+        //                         <td id="take-count-${rowId}">${takeCount}</td>
+        //                         <td><button class="btn btn-danger btn-sm submit-depallet" data-plat="${platId}" data-kanban="${stepKanbanNo}">ー</button></td>
+        //                     </tr>
+        //                 `);
+                        
+        //                 cardNo.append(`
+        //                     <tr id="${rowId}">
+        //                         <td>${stepKanbanNo}</td>
+        //                         <td id="take-count-${rowId}">${takeCount}</td>
+        //                     </tr>
+        //                 `);  
+        //             });
+        //         } else {
+        //             // Add the "No data" row to the table body
+        //             tbody.append(`
+        //                 <tr>
+        //                     <td colspan="5" class="p-3 text-danger">
+        //                         データが見つかりません
+        //                     </td>
+        //                 </tr>
+        //             `);
+        //             cardNo.append(`
+        //                 <tr>
+        //                     <td colspan="5" class="text-danger">
+        //                         データが見つかりません
+        //                     </td>
+        //                 </tr>
+        //             `);  
+        //         }
+        //     }
+        // }
+
         function getDepalletAreaByPlat(data, idValue, nameValue) {
 
             const result = JSON.parse(data);
 
-            // Button → Plat mapping
+            // 1. Button → Plat (Data Source) mapping
             const buttonIdMap = { 
-                1: [24, 23, 22, 21, 20], // R1, Bライン
-                2: [24, 23, 22, 21, 20], // R2, Bライン
-                3: [24, 23, 22],         // R3, Aライン
-                4: [29, 28, 27, 26, 25], // L1, Bライン
-                5: [29, 28, 27, 26, 25], // L2, Bライン
-                6: [27, 26, 25],         // L3, Bライン
-                7: [24, 23, 22, 21, 20], // R1, Aライン
-                8: [24, 23, 22, 21, 20], // R2, Aライン
-                9: [24, 23, 22],         // R3, Aライン
-                10: [29, 28, 27, 26, 25],// L1, Aライン
-                11: [29, 28, 27, 26, 25],// L2, Aライン
-                12: [27, 26, 25]         // L3, Aライン
+                1: [29, 28, 27, 26], // R1, Bライン, 間口[5,4,3,2]
+                2: [29, 28, 27, 26], // R2, Bライン, 間口[5,4,3,2]
+                3: [28, 27],         // R3, Bライン, 間口[4,3]
+                4: [28, 27, 26, 25],// L1, Bライン, 間口[4,3,2,1]
+                5: [28, 27, 26, 25],// L2, Bライン, 間口[4,3,2,1]
+                6: [27, 26]         // L3, Bライン, 間口[3,2]
+            };
+
+            // 2. Button → Shelf IDs (Display UI) mapping
+            const shelfMap = {
+                1:  [5, 4, 3, 2], 
+                2:  [5, 4, 3, 2],
+                3:  [4, 3],
+                4: [4, 3, 2, 1],
+                5: [4, 3, 2, 1],
+                6: [3, 2]
             };
 
             const targetPlats = buttonIdMap[idValue] || [];
+            const targetShelves = shelfMap[idValue] || [];
+
             document.getElementById("frontageName").textContent = 'デパレ間口 <' + nameValue + '>';
 
-            // ✅ Loop through shelves in reverse order (4 → 1)
-            for (let i = 4; i >= 1; i--) {
-                const shelfId = `#shelf-${i}`; // shelf-4, shelf-3, shelf-2, shelf-1
+            // First, clear ALL possible shelves (1-5) to avoid ghost data from previous clicks
+            for (let i = 1; i <= 5; i++) {
+                $(`#shelf-${i} thead, #shelf-${i} tbody, #card${i} tbody`).empty();
+            }
+
+            // ✅ Dynamic Loop based on the targetShelves array
+            // shelfIndex helps pick the correct platId from the buttonIdMap
+            targetShelves.forEach((shelfNum, shelfIndex) => {
+
+                const shelfId = `#shelf-${shelfNum}`; // shelf-4, shelf-3, shelf-2, shelf-1
                 // const cardBody = $(shelfId).closest('.card-body');
                 const tbody = $(`${shelfId} tbody`);
                 const thead = $(`${shelfId} thead`);
 
-                let cardId = `#card${i}`;
+                let cardId = `#card${shelfNum}`;
                 let cardNo = $(`${cardId} tbody`);
 
                 // cardBody.find('.dynamic-labels').remove();
@@ -80,16 +198,16 @@ $(document).ready(function () {
                 cardNo.empty();
                 
 
-                const platId = targetPlats[4 - i]; // Map correctly to buttonIdMap array
+                const platId = targetPlats[shelfIndex]; // Map correctly to buttonIdMap array
                 const items = result[platId] || [];
 
-                if (items.length > 0) {
+                if (items && items.length > 0) {
                     // ✅ Add table header
                     thead.append(`
                         <tr>
-                            <th>対象 : 間口${i}</th>
-                            <th colspan="2">コタツ No : ${items[0]?.shelf_code || 'N/A'}</th>
-                            <th colspan="2">かんばん No : ${items[0]?.step_kanban_no || 'N/A'}</th>
+                            <th>対象 : 間口${shelfNum}</th>
+                            <th colspan="2">コタツ No : ${items[0]?.shelf_code ?? 'N/A'}</th>
+                            <th colspan="2">かんばん No : ${items[0]?.step_kanban_no ?? 'N/A'}</th>
                         </tr>
                         <tr>
                             <th></th>
@@ -102,18 +220,15 @@ $(document).ready(function () {
 
                     // ✅ Populate rows
                     items.forEach((item, idx) => {
-                        const stepKanbanNo = item.step_kanban_no || '-';
-                        const loadNum = item.load_num || 0;
-                        const takeCount = item.take_count || 0;
-                        const rowId = `row-${platId}-${stepKanbanNo}` || '-';
+                        const stepKanbanNo = item.step_kanban_no ?? '-';
+                        const loadNum = item.load_num ?? 0;
+                        const takeCount = item.take_count ?? 0;
+                        const rowId = `row-${platId}-${stepKanbanNo}`;
 
                         // Update flow rack info
                         const flowRackNo = item.flow_rack_no ?? '-';
-                        $("#flow-rack-no").text(`対象フローラック No: ${flowRackNo}`);
+                        $("#flow-rack-no").text(`対象フローラック No:${flowRackNo}`);
 
-                        
-                        // <td><button class="btn btn-success btn-sm" onclick="submitPallet(${platId}, '${stepKanbanNo}')">＋</button></td>
-                        // <td><button class="btn btn-danger btn-sm" onclick="submitDepallet(${platId}, '${stepKanbanNo}')">ー</button></td>
                         // Add row to shelf table
                         tbody.append(`
                             <tr id="${rowId}">
@@ -133,23 +248,23 @@ $(document).ready(function () {
                         `);  
                     });
                 } else {
-                    // Add the "No data" row to the table body
+                    // ✅ Show "No data" message specifically for this shelf-id
                     tbody.append(`
                         <tr>
-                            <td colspan="5" class="p-3 text-danger">
-                                データが見つかりません
+                            <td colspan="5" class="p-3 text-danger text-center">
+                                間口${shelfNum}: データが見つかりません
                             </td>
                         </tr>
                     `);
                     cardNo.append(`
                         <tr>
-                            <td colspan="5" class="text-danger">
-                                データが見つかりません
+                            <td colspan="2" class="text-danger text-center">
+                                データなし
                             </td>
                         </tr>
-                    `);  
+                    `); 
                 }
-            }
+            });
         }
 
     }

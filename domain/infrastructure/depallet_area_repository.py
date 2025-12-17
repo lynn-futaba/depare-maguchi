@@ -39,7 +39,7 @@ class IDepalletAreaRepository(ABC):
         pass
 
     @abstractmethod  # TODO➞リン: added
-    def get_depallet_area_by_plat(self, plat_list, button_id: int) -> DepalletArea:
+    def get_depallet_area_by_plat(self, plat_list) -> DepalletArea:
         pass
 
     @abstractmethod  # TODO➞リン: added
