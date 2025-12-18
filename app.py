@@ -131,9 +131,9 @@ class DepalletWebServer:
         @app.route("/api/insert_target_ids", methods=["POST"])
         def insert_target_ids():
             try:
-                line_frontage_id = request.json.get('line_frontage_id')
+                button_id = request.json.get('button_id')
                 logging.info("[app.py >> [insert_target_ids() >> 成功]")
-                self._depallet_app.insert_target_ids(line_frontage_id)
+                self._depallet_app.insert_target_ids(button_id)
                 return jsonify({"status": "success"})
             except Exception as e:
                 logging.error(f"[app.py >> insert_target_ids() >> エラー] : {e}")
@@ -142,9 +142,9 @@ class DepalletWebServer:
         @app.route("/api/call_target_ids", methods=["POST"])
         def call_target_ids():
             try:
-                line_frontage_id = request.json.get('line_frontage_id')
+                button_id = request.json.get('button_id')
                 logging.info("[app.py >> call_target_ids() >> 成功]")
-                self._depallet_app.call_target_ids(line_frontage_id)
+                self._depallet_app.call_target_ids(button_id)
                 return jsonify({"status": "success"})
             except Exception as e:
                 logging.error(f"[app.py >> call_target_ids() >> エラー] : {e}")

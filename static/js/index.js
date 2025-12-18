@@ -130,7 +130,7 @@ function callToBLineDepalletMaguchi(id) {
                             url: "/api/insert_target_ids",
                             type: "POST",
                             contentType: "application/json",
-                            data: JSON.stringify({ "line_frontage_id": id }),
+                            data: JSON.stringify({ "button_id": id }),
                             success: function (data) {
                                 console.log("insert_target_ids・間口に搬送対象idを入力 >> data >>", data);
                                 showInfo("✅ 間口に搬送対象idを入力 完了しました!");
@@ -138,7 +138,7 @@ function callToBLineDepalletMaguchi(id) {
                                     url: "/api/call_target_ids",
                                     type: "POST",
                                     contentType: "application/json",
-                                    data: JSON.stringify({ "line_frontage_id": id }),
+                                    data: JSON.stringify({ "button_id": id }),
                                     success: function (data) {
                                         console.log("call_target_ids >> data >>", data);
                                         showInfo("✅ 間口に搬送対象を呼び出ました!");

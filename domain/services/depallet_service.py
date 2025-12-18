@@ -132,23 +132,23 @@ class DepalletService:
         except Exception as e:
             raise Exception(f"Error during dispatch: {e}")
 
-    # update maguchi signal 1
-    def insert_target_ids(self, line_frontage_id):
-        try:
-            logging.info("[DepalletService >> insert_target_ids() >> 成功]")
-            self.depallet_area_repo.insert_target_ids(line_frontage_id)
-        except Exception as e:
-            logging.error(f"[DepalletService >> insert_target_ids() >> エラー]: {e}")
-            raise Exception(f"[DepalletService >> insert_target_ids >> エラー]: {e}")
+    # # update maguchi signal 1
+    # def insert_target_ids(self, line_frontage_id):
+    #     try:
+    #         logging.info("[DepalletService >> insert_target_ids() >> 成功]")
+    #         self.depallet_area_repo.insert_target_ids(line_frontage_id)
+    #     except Exception as e:
+    #         logging.error(f"[DepalletService >> insert_target_ids() >> エラー]: {e}")
+    #         raise Exception(f"[DepalletService >> insert_target_ids >> エラー]: {e}")
 
-    # update maguchi signal 2
-    def call_target_ids(self, line_frontage_id):
-        try:
-            logging.info("[DepalletService >> call_target_ids() >> 成功]")
-            self.depallet_area_repo.call_target_ids(line_frontage_id)
-        except Exception as e:
-            logging.error(f"[DepalletService >> call_target_ids() >> エラー]: {e}")
-            raise Exception(f"[DepalletService >> call_target_ids() >> エラー]: {e}")
+    # # update maguchi signal 2
+    # def call_target_ids(self, line_frontage_id):
+    #     try:
+    #         logging.info("[DepalletService >> call_target_ids() >> 成功]")
+    #         self.depallet_area_repo.call_target_ids(line_frontage_id)
+    #     except Exception as e:
+    #         logging.error(f"[DepalletService >> call_target_ids() >> エラー]: {e}")
+    #         raise Exception(f"[DepalletService >> call_target_ids() >> エラー]: {e}")
 
     def call_AMR_return(self, line_frontage_id):
         try:

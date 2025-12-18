@@ -319,185 +319,196 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             conn.close()
         return  
     
-    # TODO➞リン: 間口に搬送対象idを入力
-    def insert_target_ids(self, line_frontage_id):
-        conn = None
-        cur = None
-        try:
-            # Mapping for creates
-            #  creates_map = { # TODO: v2
-            #     # Bライン, 間口 5,4,3,2,1
-            #     1: [(107, 8404), (103, 8403), (105, 8402), (106, 8401), (2, 8400)],  # R1 => button_id 1
-            #     2: [(102, 8404), (108, 8403), (101, 8402), (104, 8401), (5, 8400)],  # R2 => button_id 2
-            #     3: [(7, 8404), (100, 8403), (301, 8402)],                            # R3 => button_id 3
-            #     4: [(10, 8504), (206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 4
-            #     5: [(13, 8504), (204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 5
-            #     6: [(300, 8502), (200, 8501), (15, 8500)],                            # L3 => button_id 6
-            #     # Aライン, 間口 5,4,3,2,1
-            #     7: [(107, 8404), (103, 8403), (105, 8402), (106, 8401), (2, 8400)],  # R1 => button_id 7
-            #     8: [(102, 8404), (108, 8403), (101, 8402), (104, 8401), (5, 8400)],  # R2 => button_id 8
-            #     9: [(7, 8404), (100, 8403), (300, 8402)],                            # R3 => button_id 9
-            #     10: [(10, 8504), (206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 10
-            #     11: [(13, 8504), (204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 11
-            #     12: [(300, 8502), (200, 8501), (15, 8500)],                            # L3 => button_id 12
-            # }
-            creates_map = {
-                # Bライン, 間口 5,4,3,2
-                1: [(107, 8404), (103, 8403), (105, 8402), (106, 8401)],  # R1 => button_id 1
-                2: [(102, 8404), (108, 8403), (101, 8402), (104, 8401)],  # R2 => button_id 2
-                3: [(100, 8403), (300, 8402)],                            # R3 => button_id 3
-                4: [(206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 4
-                5: [(204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 5
-                6: [(300, 8502), (200, 8501)],                            # L3 => button_id 6
-                # Aライン, 間口 5,4,3,2,
-                7: [(107, 8404), (103, 8403), (105, 8402), (106, 8401)],  # R1 => button_id 7
-                8: [(102, 8404), (108, 8403), (101, 8402), (104, 8401)],  # R2 => button_id 8
-                9: [(100, 8403), (301, 8402)],                            # R3 => button_id 9
-                10: [(206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 10
-                11: [(204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 11
-                12: [(300, 8502), (200, 8501)],                            # L3 => button_id 12
-            }
+    # # TODO➞リン: 間口に搬送対象idを入力
+    # def insert_target_ids(self, line_frontage_id):
+    #     conn = None
+    #     cur = None
+    #     try:
+    #         # Mapping for creates
+    #         #  creates_map = { # TODO: v2
+    #         #     # Bライン, 間口 5,4,3,2,1
+    #         #     1: [(107, 8404), (103, 8403), (105, 8402), (106, 8401), (2, 8400)],  # R1 => button_id 1
+    #         #     2: [(102, 8404), (108, 8403), (101, 8402), (104, 8401), (5, 8400)],  # R2 => button_id 2
+    #         #     3: [(7, 8404), (100, 8403), (301, 8402)],                            # R3 => button_id 3
+    #         #     4: [(10, 8504), (206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 4
+    #         #     5: [(13, 8504), (204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 5
+    #         #     6: [(300, 8502), (200, 8501), (15, 8500)],                            # L3 => button_id 6
+    #         #     # Aライン, 間口 5,4,3,2,1
+    #         #     7: [(107, 8404), (103, 8403), (105, 8402), (106, 8401), (2, 8400)],  # R1 => button_id 7
+    #         #     8: [(102, 8404), (108, 8403), (101, 8402), (104, 8401), (5, 8400)],  # R2 => button_id 8
+    #         #     9: [(7, 8404), (100, 8403), (300, 8402)],                            # R3 => button_id 9
+    #         #     10: [(10, 8504), (206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 10
+    #         #     11: [(13, 8504), (204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 11
+    #         #     12: [(300, 8502), (200, 8501), (15, 8500)],                            # L3 => button_id 12
+    #         # }
+    #         creates_map = {
+    #             # Bライン, 間口 5,4,3,2
+    #             1: [(107, 8404), (103, 8403), (105, 8402), (106, 8401)],  # R1 => button_id 1
+    #             2: [(102, 8404), (108, 8403), (101, 8402), (104, 8401)],  # R2 => button_id 2
+    #             3: [(100, 8403), (300, 8402)],                            # R3 => button_id 3
+    #             4: [(206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 4
+    #             5: [(204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 5
+    #             6: [(300, 8502), (200, 8501)],                            # L3 => button_id 6
+    #             # Aライン, 間口 5,4,3,2,
+    #             7: [(107, 8404), (103, 8403), (105, 8402), (106, 8401)],  # R1 => button_id 7
+    #             8: [(102, 8404), (108, 8403), (101, 8402), (104, 8401)],  # R2 => button_id 8
+    #             9: [(100, 8403), (301, 8402)],                            # R3 => button_id 9
+    #             10: [(206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 => button_id 10
+    #             11: [(204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 => button_id 11
+    #             12: [(300, 8502), (200, 8501)],                            # L3 => button_id 12
+    #         }
 
-            kanban_map = {1: 2001, 2: 2002, 3: 2003, 4: 2004, 5: 2005, 6: 2006, 7: 1001, 8: 1002, 9: 1003, 10: 1004, 11: 1005, 12: 1006} # Bライン (button_id 1～6 R1,R2,R3,L1,L2,L3), # Aライン (button_id 7～12 R1,R2,R3,L1,L2,L3)
+    #         kanban_map = {
+    #             1: 2001, # Bライン (button_id 1～6 R1,R2,R3,L1,L2,L3)
+    #             2: 2002, 
+    #             3: 2003, 
+    #             4: 2004, 
+    #             5: 2005, 
+    #             6: 2006, 
+    #             7: 1001, # Aライン (button_id 7～12 R1,R2,R3,L1,L2,L3)
+    #             8: 1002, 
+    #             9: 1003, 
+    #             10: 1004, 
+    #             11: 1005, 
+    #             12: 1006} 
 
-            creates = creates_map.get(line_frontage_id)
-            step_kanban_no = kanban_map.get(line_frontage_id)
+    #         creates = creates_map.get(line_frontage_id)
+    #         step_kanban_no = kanban_map.get(line_frontage_id)
 
-            if not creates:
-                logging.info(f"[DepalletAreaRepository >> insert_target_ids() >> No mappings found for given line_frontage_id.]")
-                return
+    #         if not creates:
+    #             logging.info(f"[DepalletAreaRepository >> insert_target_ids() >> No mappings found for given line_frontage_id.]")
+    #             return
 
-            # Connect for flowrack update
-            conn = self.db.wcs_pool.get_connection()
-            conn.start_transaction()
-            cur = conn.cursor(dictionary=True)
+    #         # Connect for flowrack update
+    #         conn = self.db.wcs_pool.get_connection()
+    #         conn.start_transaction()
+    #         cur = conn.cursor(dictionary=True)
 
-            # ✅ Fetch shelf status for specific shelf_codes
-            if line_frontage_id in (3, 6, 9, 12): # R3, L3 Aライン Bライン
-                shelf_codes = self.get_shelf_codes_L3_R3()
-                logging.info(f"[DepalletAreaRepository >> insert_target_ids() self.get_shelf_codes_L3_R3()] {self.get_shelf_codes_L3_R3()}.")
-            else:
-                shelf_codes = self.get_shelf_codes_R1_R2_L1_L2()
-                logging.info(f"[DepalletAreaRepository >> insert_target_ids() self.get_shelf_codes_R1_R2_L1_L2()] {self.get_shelf_codes_R1_R2_L1_L2()}.")
+    #         # ✅ Fetch shelf status for specific shelf_codes
+    #         if line_frontage_id in (3, 6, 9, 12): # R3, L3 Aライン Bライン
+    #             shelf_codes = self.get_shelf_codes_L3_R3()
+    #             logging.info(f"[DepalletAreaRepository >> insert_target_ids() self.get_shelf_codes_L3_R3()] {self.get_shelf_codes_L3_R3()}.")
+    #         else:
+    #             shelf_codes = self.get_shelf_codes_R1_R2_L1_L2()
+    #             logging.info(f"[DepalletAreaRepository >> insert_target_ids() self.get_shelf_codes_R1_R2_L1_L2()] {self.get_shelf_codes_R1_R2_L1_L2()}.")
 
-            if not shelf_codes:
-                return []
+    #         if not shelf_codes:
+    #             return []
 
-            sql = f"""
-                SELECT shelf_code, kotatsu_status, update_datetime, step_kanban_no
-                FROM `futaba-chiryu-3building`.t_shelf_status
-                WHERE shelf_code IN ({','.join(['%s'] * len(shelf_codes))})
-            """
-            cur.execute(sql, shelf_codes)
-            result = cur.fetchall()
+    #         sql = f"""
+    #             SELECT shelf_code, kotatsu_status, update_datetime, step_kanban_no
+    #             FROM `futaba-chiryu-3building`.t_shelf_status
+    #             WHERE shelf_code IN ({','.join(['%s'] * len(shelf_codes))})
+    #         """
+    #         cur.execute(sql, shelf_codes)
+    #         result = cur.fetchall()
 
-            # Filter EMPTY rows and sort by earliest update_datetime
-            empty_rows = [row for row in result if row["kotatsu_status"] == "EMPTY"]
-            empty_rows.sort(key=lambda r: r["update_datetime"])
-            logging.info(f"[DepalletAreaRepository >> insert_target_ids() >> Found {len(empty_rows)} EMPTY shelves.]")
+    #         # Filter EMPTY rows and sort by earliest update_datetime
+    #         empty_rows = [row for row in result if row["kotatsu_status"] == "EMPTY"]
+    #         empty_rows.sort(key=lambda r: r["update_datetime"])
+    #         logging.info(f"[DepalletAreaRepository >> insert_target_ids() >> Found {len(empty_rows)} EMPTY shelves.]")
 
-            if not empty_rows:
-                logging.error("[DepalletAreaRepository >> insert_target_ids() >> No EMPTY shelves found for given shelf_codes.]")
-                conn.rollback()
-                return
+    #         if not empty_rows:
+    #             logging.error("[DepalletAreaRepository >> insert_target_ids() >> No EMPTY shelves found for given shelf_codes.]")
+    #             conn.rollback()
+    #             return
 
-            # ✅ Update t_shelf_status with new step_kanban_no for the first EMPTY shelf
-            update_sql = """
-                UPDATE `futaba-chiryu-3building`.t_shelf_status
-                SET step_kanban_no = %s
-                WHERE shelf_code = %s
-            """
-            cur.execute(update_sql, (step_kanban_no, empty_rows[0]["shelf_code"]))
-            logging.info(f"[DepalletAreaRepository >> insert_target_ids() >> Updated t_shelf_status]: shelf_code={empty_rows[0]['shelf_code']} -> step_kanban_no={step_kanban_no}")
+    #         # ✅ Update t_shelf_status with new step_kanban_no for the first EMPTY shelf
+    #         update_sql = """
+    #             UPDATE `futaba-chiryu-3building`.t_shelf_status
+    #             SET step_kanban_no = %s
+    #             WHERE shelf_code = %s
+    #         """
+    #         cur.execute(update_sql, (step_kanban_no, empty_rows[0]["shelf_code"]))
+    #         logging.info(f"[DepalletAreaRepository >> insert_target_ids() >> Updated t_shelf_status]: shelf_code={empty_rows[0]['shelf_code']} -> step_kanban_no={step_kanban_no}")
 
-            # ✅ Update signals once
-            cur.executemany(
-                "UPDATE `eip_signal`.word_input SET value = %s WHERE signal_id = %s",
-                creates
-            )
-            conn.commit()
-            logging.info(f"[DepalletAreaRepository >> insert_target_ids() >> Signal updates completed for line_frontage_id] : {line_frontage_id}")
+    #         # ✅ Update signals once
+    #         cur.executemany(
+    #             "UPDATE `eip_signal`.word_input SET value = %s WHERE signal_id = %s",
+    #             creates
+    #         )
+    #         conn.commit()
+    #         logging.info(f"[DepalletAreaRepository >> insert_target_ids() >> Signal updates completed for line_frontage_id] : {line_frontage_id}")
 
 
-        except Exception as e:
-            if conn:
-                conn.rollback()
-            logging.error(f"[DepalletAreaRepository >> insert_target_ids() >> エラー]: {e}")
-            raise Exception(f"[DepalletAreaRepository >> insert_target_ids() >> エラー]: {e}")
+    #     except Exception as e:
+    #         if conn:
+    #             conn.rollback()
+    #         logging.error(f"[DepalletAreaRepository >> insert_target_ids() >> エラー]: {e}")
+    #         raise Exception(f"[DepalletAreaRepository >> insert_target_ids() >> エラー]: {e}")
             
-        finally:
-            if cur:
-                cur.close()
-            if conn:
-                conn.close()
+    #     finally:
+    #         if cur:
+    #             cur.close()
+    #         if conn:
+    #             conn.close()
 
-    # TODO➞リン: 間口に搬送対象を呼び出す
-    def call_target_ids(self, line_frontage_id):
-        try:
-            conn = self.db.wcs_pool.get_connection()
-            conn.start_transaction()
-            cur = conn.cursor()
+    # # TODO➞リン: 間口に搬送対象を呼び出す
+    # def call_target_ids(self, line_frontage_id):
+    #     try:
+    #         conn = self.db.wcs_pool.get_connection()
+    #         conn.start_transaction()
+    #         cur = conn.cursor()
 
-            # TODO: v2
-            #  if line_frontage_id in (1, 7): # ( Bライン=> R1 button_id 1, Aライン=> R1 button_id 7)
-            #     signal_ids = (8061, 8046, 8031, 8016, 8000) # ( Bライン/ Aライン, R1 => 5,4,3,2,1)
+    #         # TODO: v2
+    #         #  if line_frontage_id in (1, 7): # ( Bライン=> R1 button_id 1, Aライン=> R1 button_id 7)
+    #         #     signal_ids = (8061, 8046, 8031, 8016, 8000) # ( Bライン/ Aライン, R1 => 5,4,3,2,1)
 
-            # elif line_frontage_id in (2, 8): # ( Bライン=> R2 button_id 2, Aライン=> R2 button_id 8)
-            #     signal_ids = (8061, 8046, 8031, 8016, 8000) # ( Bライン/ Aライン, R2 => 5,4,3,2,1)
+    #         # elif line_frontage_id in (2, 8): # ( Bライン=> R2 button_id 2, Aライン=> R2 button_id 8)
+    #         #     signal_ids = (8061, 8046, 8031, 8016, 8000) # ( Bライン/ Aライン, R2 => 5,4,3,2,1)
 
-            # elif line_frontage_id in (3, 9): # ( Bライン=> R3 button_id 3, Aライン=> R3 button_id 9)
-            #     signal_ids = (8060, 8046, 8031) # ( Bライン/ Aライン, R3 => 5,4,3)
+    #         # elif line_frontage_id in (3, 9): # ( Bライン=> R3 button_id 3, Aライン=> R3 button_id 9)
+    #         #     signal_ids = (8060, 8046, 8031) # ( Bライン/ Aライン, R3 => 5,4,3)
 
-            # elif line_frontage_id in (4, 10): # ( Bライン=> L1 button_id 4, Aライン=> L1 button_id 10)
-            #     signal_ids = (8260, 8246, 8231, 8216, 8201) # ( Bライン/ Aライン, L1 => 5,4,3,2,1)
+    #         # elif line_frontage_id in (4, 10): # ( Bライン=> L1 button_id 4, Aライン=> L1 button_id 10)
+    #         #     signal_ids = (8260, 8246, 8231, 8216, 8201) # ( Bライン/ Aライン, L1 => 5,4,3,2,1)
 
-            # elif line_frontage_id in (5, 11): # ( Bライン=> L2 button_id 5, Aライン=> L2 button_id 11)
-            #     signal_ids = (8260, 8246, 8231, 8216, 8201) # ( Bライン/ Aライン, L2 => 5,4,3,2,1)
+    #         # elif line_frontage_id in (5, 11): # ( Bライン=> L2 button_id 5, Aライン=> L2 button_id 11)
+    #         #     signal_ids = (8260, 8246, 8231, 8216, 8201) # ( Bライン/ Aライン, L2 => 5,4,3,2,1)
 
-            # elif line_frontage_id in (6, 12): # ( Bライン=> L3 button_id 6, Aライン=> L3 button_id 12)
-            #     signal_ids = (8231, 8216, 8200) # ( Bライン/ Aライン, L3 => 5,4,3)
+    #         # elif line_frontage_id in (6, 12): # ( Bライン=> L3 button_id 6, Aライン=> L3 button_id 12)
+    #         #     signal_ids = (8231, 8216, 8200) # ( Bライン/ Aライン, L3 => 5,4,3)
 
-            if line_frontage_id in (1, 7): # ( Bライン=> R1 button_id 1, Aライン=> R1 button_id 7)
-                signal_ids = (8061, 8046, 8031, 8016) # ( Bライン/ Aライン, R1 => 4,3,2,1)
+    #         if line_frontage_id in (1, 7): # ( Bライン=> R1 button_id 1, Aライン=> R1 button_id 7)
+    #             signal_ids = (8061, 8046, 8031, 8016) # ( Bライン/ Aライン, R1 => 4,3,2,1)
 
-            elif line_frontage_id in (2, 8): # ( Bライン=> R2 button_id 2, Aライン=> R2 button_id 8)
-                signal_ids = (8061, 8046, 8031, 8016) # ( Bライン/ Aライン, R2 => 4,3,2,1)
+    #         elif line_frontage_id in (2, 8): # ( Bライン=> R2 button_id 2, Aライン=> R2 button_id 8)
+    #             signal_ids = (8061, 8046, 8031, 8016) # ( Bライン/ Aライン, R2 => 4,3,2,1)
 
-            elif line_frontage_id in (3, 9): # ( Bライン=> R3 button_id 3, Aライン=> R3 button_id 9)
-                signal_ids = (8046, 8031) # ( Bライン/ Aライン, R3 => 4,3)
+    #         elif line_frontage_id in (3, 9): # ( Bライン=> R3 button_id 3, Aライン=> R3 button_id 9)
+    #             signal_ids = (8046, 8031) # ( Bライン/ Aライン, R3 => 4,3)
 
-            elif line_frontage_id in (4, 10): # ( Bライン=> L1 button_id 4, Aライン=> L1 button_id 10)
-                signal_ids = (8246, 8231, 8216, 8201) # ( Bライン/ Aライン, L1 => 4,3,2,1)
+    #         elif line_frontage_id in (4, 10): # ( Bライン=> L1 button_id 4, Aライン=> L1 button_id 10)
+    #             signal_ids = (8246, 8231, 8216, 8201) # ( Bライン/ Aライン, L1 => 4,3,2,1)
 
-            elif line_frontage_id in (5, 11): # ( Bライン=> L2 button_id 5, Aライン=> L2 button_id 11)
-                signal_ids = (8246, 8231, 8216, 8201) # ( Bライン/ Aライン, L2 => 4,3,2,1)
+    #         elif line_frontage_id in (5, 11): # ( Bライン=> L2 button_id 5, Aライン=> L2 button_id 11)
+    #             signal_ids = (8246, 8231, 8216, 8201) # ( Bライン/ Aライン, L2 => 4,3,2,1)
 
-            elif line_frontage_id in (6, 12): # ( Bライン=> L3 button_id 6, Aライン=> L3 button_id 12)
-                signal_ids = (8231, 8216) # ( Bライン/ Aライン, L3 => 4,3)
+    #         elif line_frontage_id in (6, 12): # ( Bライン=> L3 button_id 6, Aライン=> L3 button_id 12)
+    #             signal_ids = (8231, 8216) # ( Bライン/ Aライン, L3 => 4,3)
 
-            else:
-                logging.error(f"[DepalletAreaRepository >> call_target_ids() >> Invalid line_frontage_id]: {line_frontage_id}")
-                raise ValueError(f"[DepalletAreaRepository >> call_target_ids() >> Invalid line_frontage_id]: {line_frontage_id}")
+    #         else:
+    #             logging.error(f"[DepalletAreaRepository >> call_target_ids() >> Invalid line_frontage_id]: {line_frontage_id}")
+    #             raise ValueError(f"[DepalletAreaRepository >> call_target_ids() >> Invalid line_frontage_id]: {line_frontage_id}")
 
-            placeholders = ','.join(['%s'] * len(signal_ids))
-            sql = f"UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id IN ({placeholders})"
-            cur.execute(sql, signal_ids)
+    #         placeholders = ','.join(['%s'] * len(signal_ids))
+    #         sql = f"UPDATE `eip_signal`.word_input SET value = 1 WHERE signal_id IN ({placeholders})"
+    #         cur.execute(sql, signal_ids)
 
-            logging.info(f"[DepalletAreaRepository >> call_target_ids() >> Updated IDs]: {signal_ids}")
+    #         logging.info(f"[DepalletAreaRepository >> call_target_ids() >> Updated IDs]: {signal_ids}")
 
-            conn.commit()
-        except Exception as e:
-            if conn:
-                conn.rollback()
-                logging.error(f"[DepalletAreaRepository >> call_target_ids() >> エラー]: {line_frontage_id}")
-            raise Exception(f"[DepalletAreaRepository >> call_target_ids() >> エラー]: {e}")
-        finally:
-            if cur:
-                cur.close()
-            if conn:
-                conn.close()
+    #         conn.commit()
+    #     except Exception as e:
+    #         if conn:
+    #             conn.rollback()
+    #             logging.error(f"[DepalletAreaRepository >> call_target_ids() >> エラー]: {line_frontage_id}")
+    #         raise Exception(f"[DepalletAreaRepository >> call_target_ids() >> エラー]: {e}")
+    #     finally:
+    #         if cur:
+    #             cur.close()
+    #         if conn:
+    #             conn.close()
 
-    
     # TODO➞リン: call AMR return
     # def call_AMR_return(self, line_frontage_id):
     #     # Mapping for signal IDs
@@ -742,65 +753,65 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 # Bライン
                 1: (8062, 8046, 8031, 8016), # R1 間口 5,4,3,2 => button_id 1
                 2: (8062, 8046, 8031, 8016), # R2 間口 5,4,3,2 => button_id 2
-                3: (8046, 8031), # R3 間口 4,3 => button_id 3
+                3: (8046, 8031),             # R3 間口 4,3 => button_id 3
                 4: (8246, 8231, 8216, 8201), # L1 間口 4,3,2,1 => button_id 4
                 5: (8246, 8231, 8216, 8201), # L2 間口 4,3,2,1 => button_id 5
-                6: (8231, 8216), # L3 間口 3,2 => button_id 6
+                6: (8231, 8216),             # L3 間口 3,2 => button_id 6
                 # Aライン
                 7: (8062, 8046, 8031, 8016), # R1 間口 5,4,3,2 => button_id 7
                 8: (8062, 8046, 8031, 8016), # R2 間口 5,4,3,2 => button_id 8
-                9: (8046, 8031), # R3 間口 4,3 => button_id 9
-                10: (8246, 8231, 8216, 8201), # L1 間口 4,3,2,1 => button_id 10
-                11: (8246, 8231, 8216, 8201), # L2 間口 4,3,2,1 => button_id 11
-                12: (8231, 8216), # L3 間口 3,2 => button_id 12
+                9: (8046, 8031),             # R3 間口 4,3 => button_id 9
+                10:(8246, 8231, 8216, 8201), # L1 間口 4,3,2,1 => button_id 10
+                11:(8246, 8231, 8216, 8201), # L2 間口 4,3,2,1 => button_id 11
+                12:(8231, 8216), # L3 間口 3,2 => button_id 12
             },
             "ni_herasu": {  # ②ニ: 搬送対象の取出し信号 / 間口()部品1取出し数量
                 # Bライン
                 1: (8063, 8048, 8033, 8018), # R1 間口 5,4,3,2 => button_id 1
                 2: (8063, 8048, 8033, 8018), # R2 間口 5,4,3,2 => button_id 2
-                3: (8048, 8033), # R3 間口 4,3 => button_id 3
+                3: (8048, 8033),             # R3 間口 4,3 => button_id 3
                 4: (8248, 8233, 8218, 8203), # L1 間口 4,3,2,1 => button_id 4
                 5: (8248, 8233, 8218, 8203), # L2 間口 4,3,2,1 => button_id 5
-                6: (8233, 8218), # L3 間口 3,2 => button_id 6
+                6: (8233, 8218),             # L3 間口 3,2 => button_id 6
                 # Aライン
                 7: (8063, 8048, 8033, 8018), # R1 間口 5,4,3,2 => button_id 7
                 8: (8063, 8048, 8033, 8018), # R2 間口 5,4,3,2 => button_id 8
-                9: (8048, 8033), # R3 間口 4,3 => button_id 9
-                10: (8248, 8233, 8218, 8203), # L1 間口 4,3,2,1 => button_id 10
-                11: (8248, 8233, 8218, 8203), # L2 間口 4,3,2,1 => button_id 11
-                12: (8233, 8218), # L3 間口 3,2 => button_id 12
+                9: (8048, 8033),             # R3 間口 4,3 => button_id 9
+                10:(8248, 8233, 8218, 8203), # L1 間口 4,3,2,1 => button_id 10
+                11:(8248, 8233, 8218, 8203), # L2 間口 4,3,2,1 => button_id 11
+                12:(8233, 8218),             # L3 間口 3,2 => button_id 12
             },
             "kaeru_ichi": { # ①一b # 搬送対象idをリセット / デパレ間口()実TP の 呼出
                 # Bライン
                 1: (8404, 8403, 8402, 8401), # R1 間口 5,4,3,2 => button_id 1
                 2: (8404, 8403, 8402, 8401), # R2 間口 5,4,3,2 => button_id 2
-                3: (8403, 8402), # R3 間口 4,3 => button_id 3
+                3: (8403, 8402),             # R3 間口 4,3 => button_id 3
                 4: (8503, 8502, 8501, 8500), # L1 間口 4,3,2,1 => button_id 4
                 5: (8503, 8502, 8501, 8500), # L2 間口 4,3,2,1 => button_id 5
-                6: (8502, 8501), # L3 間口 3,2 => button_id 6
+                6: (8502, 8501),             # L3 間口 3,2 => button_id 6
                 # Aライン
                 7: (8404, 8403, 8402, 8401), # R1 間口 5,4,3,2 => button_id 7
                 8: (8404, 8403, 8402, 8401), # R2 間口 5,4,3,2 => button_id 8 
-                9: (8403, 8402), # R3 間口 4,3 => button_id 9
-                10: (8503, 8502, 8501, 8500), # L1 間口 4,3,2,1 => button_id 10 
-                11: (8503, 8502, 8501, 8500), # L2 間口 4,3,2,1 => button_id 11 
-                12: (8502, 8501), # L3 間口 3,2 => button_id 12
+                9: (8403, 8402),             # R3 間口 4,3 => button_id 9
+                10:(8503, 8502, 8501, 8500), # L1 間口 4,3,2,1 => button_id 10 
+                11:(8503, 8502, 8501, 8500), # L2 間口 4,3,2,1 => button_id 11 
+                12:(8502, 8501),             # L3 間口 3,2 => button_id 12
             },
             "hashiru_ni": { # ③三 # 搬送指示 間口からストアに搬送 / デパレ間口()発進
                 # Bライン
                 1: (8061, 8047, 8032, 8017), # R1 間口 5,4,3,2 => button_id 1
                 2: (8061, 8047, 8032, 8017), # R2 間口 5,4,3,2 => button_id 2
-                3: (8047, 8032), # R3 間口 4,3 => button_id 3
+                3: (8047, 8032),             # R3 間口 4,3 => button_id 3
                 4: (8247, 8232, 8217, 8202), # L1 間口 4,3,2,1 => button_id 4
                 5: (8247, 8232, 8217, 8202), # L2 間口 4,3,2,1 => button_id 5
-                6: (8232, 8217), # L3 間口 3,2 => button_id 6
+                6: (8232, 8217),             # L3 間口 3,2 => button_id 6
                 # Aライン
                 7: (8061, 8047, 8032, 8017), # R1 間口 5,4,3,2 => button_id 7
                 8: (8061, 8047, 8032, 8017), # R2 間口 5,4,3,2 => button_id 8
-                9: (8047, 8032), # R3 間口 4,3 => button_id 9
-                10: (8247, 8232, 8217, 8202), # L1 間口 4,3,2,1 => button_id 10
-                11: (8247, 8232, 8217, 8202), # L2 間口 4,3,2,1 => button_id 11
-                12: (8232, 8217), # L3 間口 3,2 => button_id 12
+                9: (8047, 8032),             # R3 間口 4,3 => button_id 9
+                10:(8247, 8232, 8217, 8202), # L1 間口 4,3,2,1 => button_id 10
+                11:(8247, 8232, 8217, 8202), # L2 間口 4,3,2,1 => button_id 11
+                12:(8232, 8217),             # L3 間口 3,2 => button_id 12
             },
         }
 

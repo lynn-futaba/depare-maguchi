@@ -21,6 +21,14 @@ class IWCSRepository(ABC):
     def dispatch(self, frontage: DepalletFrontage):
         pass
 
+    @abstractmethod  # TODO➞リン
+    def insert_target_ids(self, button_id: int):
+        pass
+
+    @abstractmethod  # TODO➞リン
+    def call_target_ids(self, button_id: int):
+        pass
+
     # ���o
     @abstractmethod  # TODO modified
     def dispallet(self, depallet_area):

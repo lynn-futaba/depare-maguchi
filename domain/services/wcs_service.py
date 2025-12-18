@@ -14,6 +14,24 @@ class WCSService:
 
     def __init__(self, wcs_repo: IWCSRepository):
         self.wcs_repo = wcs_repo
+
+    # update maguchi signal 1
+    def insert_target_ids(self, button_id):
+        try:
+            logging.info("[WCSService >> insert_target_ids() >> 成功]")
+            self.wcs_repo.insert_target_ids(button_id)
+        except Exception as e:
+            logging.error(f"[WCSService >> insert_target_ids() >> エラー]: {e}")
+            raise Exception(f"[WCSService >> insert_target_ids >> エラー]: {e}")
+        
+    # update maguchi signal 2
+    def call_target_ids(self, button_id):
+        try:
+            logging.info("[WCSService >> call_target_ids() >> 成功]")
+            self.wcs_repo.call_target_ids(button_id)
+        except Exception as e:
+            logging.error(f"[WCSService >> call_target_ids() >> エラー]: {e}")
+            raise Exception(f"[WCSService >> call_target_ids() >> エラー]: {e}")
     
     def dispallet(self, depallet_area):
        try:
@@ -23,6 +41,8 @@ class WCSService:
            logging.info("[WCSService >> dispallet() >> 成功]")
        except Exception as e:
            raise Exception(f"WCSService >> Error Dispallet: {e}")
+       
+    
 
 
        

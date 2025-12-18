@@ -141,18 +141,18 @@ class DepalletApplication():
         except Exception as e:
             raise Exception(f"Error depalletizing: {e}")
 
-    def insert_target_ids(self, line_frontage_id):
+    def insert_target_ids(self, button_id):
         try:
-            self.depallet_service.insert_target_ids(line_frontage_id)
+            self.wcs_service.insert_target_ids(button_id)
             logging.info("[DepalletApplication >> insert_target_ids() >> 成功]")
         except Exception as e:
             logging.error(f"[DepalletApplication >> insert_target_ids() >> エラー]: {e}")
             raise Exception(f"DepalletApplication >> insert_target_ids >> エラー]: {e}")
 
-    def call_target_ids(self, line_frontage_id):
+    def call_target_ids(self, button_id):
         try:
             logging.info("[DepalletApplication >> call_target_ids() >> 成功]")
-            self.depallet_service.call_target_ids(line_frontage_id)
+            self.wcs_service.call_target_ids(button_id)
         except Exception as e:
             logging.error(f"[DepalletApplication >> call_target_ids() >> エラー] : {e}")
             raise Exception(f"DepalletApplication >> call_target_ids() >> エラー]: {e}")

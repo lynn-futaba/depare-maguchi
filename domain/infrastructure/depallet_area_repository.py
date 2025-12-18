@@ -30,13 +30,13 @@ class IDepalletAreaRepository(ABC):
     def get_flow_rack(self, frontage: LineFrontage) -> FlowRack:
         pass
 
-    @abstractmethod  # TODO➞リン
-    def insert_target_ids(self, line_frontage_id: int):
-        pass
+    # @abstractmethod  # TODO➞リン
+    # def insert_target_ids(self, line_frontage_id: int):
+    #     pass
 
-    @abstractmethod  # TODO➞リン
-    def call_target_ids(self, line_frontage_id: int):
-        pass
+    # @abstractmethod  # TODO➞リン
+    # def call_target_ids(self, line_frontage_id: int):
+    #     pass
 
     @abstractmethod  # TODO➞リン: added
     def get_depallet_area_by_plat(self, plat_list) -> DepalletArea:
