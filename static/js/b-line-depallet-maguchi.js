@@ -605,8 +605,8 @@ function callAMRReturn() {
         }),
         success: function(response) {
             if (response.status === "success") {
-                confirm("✅ Bライン >> AMR return updated successfully!");
-                console.log("Bライン >> AMR return updated successfully! Sent IDs:", buttonId);
+                confirm("✅ Bライン >> AMRの呼び出しに成功しました！");
+                console.log("Bライン >> AMRの呼び出しに成功しました！ Sent IDs:", buttonId);
             } else {
                 alert(response.message || "更新に失敗しました (Update failed).");
                 console.warn("Bライン >> AMR return Update failed:", response.message);

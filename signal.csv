@@ -1,0 +1,76 @@
+
+=====
+概要
+=====
+作業完了を押したら
+②ニON
+①一b OFF + ③三 ON
+②ニ OFF + ③三 OFF
+
+==========
+Aライン側 
+==========
+①一a デパレ間口()車種ID
+8400,Operation,a_Depallet_w,word_input,0,word,デパレ間口1車種ID
+8401,Operation,a_Depallet_w,word_input,1,word,デパレ間口2車種ID
+8402,Operation,a_Depallet_w,word_input,2,word,デパレ間口3車種ID
+8403,Operation,a_Depallet_w,word_input,3,word,デパレ間口4車種ID
+8404,Operation,a_Depallet_w,word_input,4,word,デパレ間口5車種ID
+
+①一b デパレ間口()実TP の 呼出 
+signal_id,controller_name,tag,table,address,data type, comment
+8001,Operation,a_Depallet,word_input,1,bool,デパレ間口1実TPの呼出 
+8016,Operation,a_Depallet,word_input,16,bool,デパレ間口2実TPの呼出
+8031,Operation,a_Depallet,word_input,31,bool デパレ間口3実TPの呼出
+8046,Operation,a_Depallet,word_input,46,bool,デパレ間口4実TPの呼出
+8062,Operation,a_Depallet,word_input,62,bool,デパレ間口5実TPの呼出
+
+②
+Number (Save take-count in value col of word_input table)                   Flag (Set value ON➞1/OFF➞0 in word_input table)
+8405,Operation,a_Depallet_w,word_input,5,word,Aライン間口1部品1取出し数量     8003,Operation,a_Depallet,word_input,3,bool,デパレ間口1TP箱取出
+8411,Operation,a_Depallet_w,word_input,11,word,Aライン間口2部品1取出し数量    8018,Operation,a_Depallet,word_input,18,bool,デパレ間口2TP箱取出
+8417,Operation,a_Depallet_w,word_input,17,word,Aライン間口3部品1取出し数量    8033,Operation,a_Depallet,word_input,33,bool,デパレ間口3TP箱取出
+8423,Operation,a_Depallet_w,word_input,23,word,Aライン間口4部品1取出し数量    8048,Operation,a_Depallet,word_input,48,bool,デパレ間口4TP箱取出
+8429,Operation,a_Depallet_w,word_input,29,word,Aライン間口5部品1取出し数量    8063,Operation,a_Depallet,word_input,63,bool,デパレ間口5TP箱取出
+wait Timer 1s then OFF
+③
+8002,Operation,a_Depallet word_input,2,bool,デパレ間口1発進
+8017,Operation,a_Depallet word_input,17,bool,デパレ間口2発進
+8032,Operation,a_Depallet word_input,32,bool,デパレ間口3発進
+8047,Operation,a_Depallet word_input,47,bool,デパレ間口4発進
+8061,Operation,a_Depallet word_input,61,bool,デパレ間口5発進
+wait Timer 1s then OFF
+
+==========
+Bライン側 
+==========
+① デパレ間口()実TP の 呼出 
+signal_id,controller_name,tag,table,address,data type, comment
+8201,Operation,b_Depallet,word_input,1,bool,デパレ間口1実TPの呼出 
+8216,Operation,b_Depallet,word_input,16,bool,デパレ間口2実TPの呼出
+8231,Operation,b_Depallet,word_input,31,bool デパレ間口3実TPの呼出
+8246,Operation,b_Depallet,word_input,46,bool,デパレ間口4実TPの呼出
+8261,Operation,b_Depallet,word_input,61,bool,デパレ間口5発進
+
+デパレ間口()車種ID
+8500,Operation,b_Depallet_w,word_input,0,word,デパレ間口1車種ID
+8501,Operation,b_Depallet_w,word_input,1,word,デパレ間口2車種ID
+8502,Operation,b_Depallet_w,word_input,2,word,デパレ間口3車種ID
+8503,Operation,b_Depallet_w,word_input,3,word,デパレ間口4車種ID
+8504,Operation,b_Depallet_w,word_input,4,word,デパレ間口5車種ID
+
+②
+Number (Save take-count in value col of word_input table)                   Flag (Set value ON➞1/OFF➞0 in word_input table)
+8505,Operation,b_Depallet_w,word_input,5,word,Aライン間口1部品1取出し数量     8003,Operation,a_Depallet,word_input,3,bool,デパレ間口1TP箱取出
+8511,Operation,b_Depallet_w,word_input,11,word,Aライン間口2部品1取出し数量    8018,Operation,a_Depallet,word_input,18,bool,デパレ間口2TP箱取出
+8517,Operation,b_Depallet_w,word_input,17,word,Aライン間口3部品1取出し数量    8033,Operation,a_Depallet,word_input,33,bool,デパレ間口3TP箱取出
+8523,Operation,b_Depallet_w,word_input,23,word,Aライン間口4部品1取出し数量    8048,Operation,a_Depallet,word_input,48,bool,デパレ間口4TP箱取出
+8529,Operation,b_Depallet_w,word_input,29,word,Aライン間口5部品1取出し数量    8063,Operation,a_Depallet,word_input,63,bool,デパレ間口5TP箱取出
+wait Timer 1s then OFF
+③
+8202,Operation,a_Depallet word_input,2,bool,デパレ間口1発進
+8217,Operation,a_Depallet word_input,17,bool,デパレ間口2発進
+8232,Operation,a_Depallet word_input,32,bool,デパレ間口3発進
+8247,Operation,a_Depallet word_input,47,bool,デパレ間口4発進
+8262,Operation,a_Depallet word_input,62,bool,デパレ間口5発進
+wait Timer 1s then OFF

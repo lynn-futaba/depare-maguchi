@@ -1,0 +1,43 @@
+/* Make content fill available height */
+.content-area {
+    min-height: calc(100vh - 140px); /* header + footer */
+  }
+  
+  /* Bigger buttons for tablet */
+  .btn {
+    padding-top: 16px;
+    padding-bottom: 16px;
+    font-size: 1.15rem;
+  }
+  
+  /* Bigger tables */
+  .table th,
+  .table td {
+    padding: 16px 12px;
+    font-size: 1.1rem;
+  }
+  
+  /* More vertical spacing between sections */
+  .line-status {
+    margin-bottom: 24px;
+  }
+  
+  .frontage-status {
+    margin-bottom: 32px;
+  }
+  
+  /* Tablet / Windows screen tuning */
+  @media (min-height: 900px) {
+    .btn {
+      padding-top: 18px;
+      padding-bottom: 18px;
+      font-size: 1.2rem;
+    }
+  
+    .table th,
+    .table td {
+      padding: 18px 14px;
+      font-size: 1.15rem;
+    }
+  }
+  

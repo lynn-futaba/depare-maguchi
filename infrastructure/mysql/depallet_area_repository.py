@@ -738,120 +738,129 @@ class DepalletAreaRepository(IDepalletAreaRepository):
     def call_AMR_return(self, line_frontage_id):
         # Mapping for signal IDs
         signal_map = {
-            "ni_herasu": {  # Step 4: # 搬送対象の取出し信号
-                # Bライン, 間口 4,3,2,1
-                1: (8063, 8048, 8033, 8018), # R1 => button_id 1
-                2: (8063, 8048, 8033, 8018), # R2 => button_id 2
-                3: (8048, 8033), # R3 => button_id 3
-                4: (8248, 8233, 8218, 8203), # L1 => button_id 4
-                5: (8248, 8233, 8218, 8203), # L2 => button_id 5
-                6: (8233, 8218), # L3 => button_id 6
-                # Aライン, 間口 4,3,2,1
-                7: (8063, 8048, 8033, 8018), # R1 => button_id 7
-                8: (8063, 8048, 8033, 8018), # R2 => button_id 8
-                9: (8048, 8033), # R3 => button_id 9
-                10: (8248, 8233, 8218, 8203), # L1 => button_id 10
-                11: (8248, 8233, 8218, 8203), # L2 => button_id 11
-                12: (8233, 8218), # L3 => button_id 12
+            "hashiru_ichi": { # ①一a # 呼び出し信号をリセット / デパレ間口()実TP の 呼出
+                # Bライン
+                1: (8062, 8046, 8031, 8016), # R1 間口 5,4,3,2 => button_id 1
+                2: (8062, 8046, 8031, 8016), # R2 間口 5,4,3,2 => button_id 2
+                3: (8046, 8031), # R3 間口 4,3 => button_id 3
+                4: (8246, 8231, 8216, 8201), # L1 間口 4,3,2,1 => button_id 4
+                5: (8246, 8231, 8216, 8201), # L2 間口 4,3,2,1 => button_id 5
+                6: (8231, 8216), # L3 間口 3,2 => button_id 6
+                # Aライン
+                7: (8062, 8046, 8031, 8016), # R1 間口 5,4,3,2 => button_id 7
+                8: (8062, 8046, 8031, 8016), # R2 間口 5,4,3,2 => button_id 8
+                9: (8046, 8031), # R3 間口 4,3 => button_id 9
+                10: (8246, 8231, 8216, 8201), # L1 間口 4,3,2,1 => button_id 10
+                11: (8246, 8231, 8216, 8201), # L2 間口 4,3,2,1 => button_id 11
+                12: (8231, 8216), # L3 間口 3,2 => button_id 12
             },
-            "hashiru_ichi": { # Step 1 # 呼び出し信号をリセット
-                # Bライン, 間口 4,3,2,1
-                1: (8061, 8046, 8031, 8016), # R1 => button_id 1
-                2: (8061, 8046, 8031, 8016), # R2 => button_id 2
-                3: (8046, 8031), # R3 => button_id 3
-                4: (8246, 8231, 8216, 8201), # L1 => button_id 4
-                5: (8246, 8231, 8216, 8201), # L2 => button_id 5
-                6: (8231, 8216), # L3 => button_id 6
-                # Aライン, 間口 4,3,2,1
-                7: (8061, 8046, 8031, 8016), # R1 => button_id 7
-                8: (8061, 8046, 8031, 8016), # R2 => button_id 8
-                9: (8046, 8031), # R3 => button_id 9
-                10: (8246, 8231, 8216, 8201), # L1 => button_id 10
-                11: (8246, 8231, 8216, 8201), # L2 => button_id 11
-                12: (8231, 8216), # L3 => button_id 12
+            "ni_herasu": {  # ②ニ: 搬送対象の取出し信号 / 間口()部品1取出し数量
+                # Bライン
+                1: (8063, 8048, 8033, 8018), # R1 間口 5,4,3,2 => button_id 1
+                2: (8063, 8048, 8033, 8018), # R2 間口 5,4,3,2 => button_id 2
+                3: (8048, 8033), # R3 間口 4,3 => button_id 3
+                4: (8248, 8233, 8218, 8203), # L1 間口 4,3,2,1 => button_id 4
+                5: (8248, 8233, 8218, 8203), # L2 間口 4,3,2,1 => button_id 5
+                6: (8233, 8218), # L3 間口 3,2 => button_id 6
+                # Aライン
+                7: (8063, 8048, 8033, 8018), # R1 間口 5,4,3,2 => button_id 7
+                8: (8063, 8048, 8033, 8018), # R2 間口 5,4,3,2 => button_id 8
+                9: (8048, 8033), # R3 間口 4,3 => button_id 9
+                10: (8248, 8233, 8218, 8203), # L1 間口 4,3,2,1 => button_id 10
+                11: (8248, 8233, 8218, 8203), # L2 間口 4,3,2,1 => button_id 11
+                12: (8233, 8218), # L3 間口 3,2 => button_id 12
             },
-            "hashiru_ni": { # Step 2 # 搬送指示 間口からストアに搬送
-                # Bライン, 間口 4,3,2,1
-                1: (8062, 8047, 8032, 8017), # R1 => button_id 1
-                2: (8062, 8047, 8032, 8017), # R2 => button_id 2
-                3: (8047, 8032), # R3 => button_id 3
-                4: (8247, 8232, 8217, 8202), # L1 => button_id 4
-                5: (8247, 8232, 8217, 8202), # L2 => button_id 5
-                6: (8232, 8217), # L3 => button_id 6
-                # Aライン, 間口 4,3,2,1
-                7: (8062, 8047, 8032, 8017), # R1 => button_id 7
-                8: (8062, 8047, 8032, 8017), # R2 => button_id 8
-                9: (8047, 8032), # R3 => button_id 9
-                10: (8247, 8232, 8217, 8202), # L1 => button_id 10
-                11: (8247, 8232, 8217, 8202), # L2 => button_id 11
-                12: (8232, 8217), # L3 => button_id 12
+            "kaeru_ichi": { # ①一b # 搬送対象idをリセット / デパレ間口()実TP の 呼出
+                # Bライン
+                1: (8404, 8403, 8402, 8401), # R1 間口 5,4,3,2 => button_id 1
+                2: (8404, 8403, 8402, 8401), # R2 間口 5,4,3,2 => button_id 2
+                3: (8403, 8402), # R3 間口 4,3 => button_id 3
+                4: (8503, 8502, 8501, 8500), # L1 間口 4,3,2,1 => button_id 4
+                5: (8503, 8502, 8501, 8500), # L2 間口 4,3,2,1 => button_id 5
+                6: (8502, 8501), # L3 間口 3,2 => button_id 6
+                # Aライン
+                7: (8404, 8403, 8402, 8401), # R1 間口 5,4,3,2 => button_id 7
+                8: (8404, 8403, 8402, 8401), # R2 間口 5,4,3,2 => button_id 8 
+                9: (8403, 8402), # R3 間口 4,3 => button_id 9
+                10: (8503, 8502, 8501, 8500), # L1 間口 4,3,2,1 => button_id 10 
+                11: (8503, 8502, 8501, 8500), # L2 間口 4,3,2,1 => button_id 11 
+                12: (8502, 8501), # L3 間口 3,2 => button_id 12
             },
-            "kaeru_ichi": { # Step 3 # 搬送対象idをリセット
-                # Bライン, 間口 4,3,2,1
-                1: (8404, 8403, 8402, 8401), # R1 => button_id 1
-                2: (8404, 8403, 8402, 8401), # R2 => button_id 2
-                3: (8403, 8402), # R3 => button_id 3
-                4: (8503, 8502, 8501, 8500), # L1 => button_id 4
-                5: (8503, 8502, 8501, 8500), # L2 => button_id 5
-                6: (8502, 8501), # L3 => button_id 6
-                # Aライン, 間口 4,3,2,1
-                7: (8404, 8403, 8402, 8401), # R1 => button_id 7
-                8: (8404, 8403, 8402, 8401), # R2 => button_id 8 
-                9: (8403, 8402), # R3 => button_id 9
-                10: (8503, 8502, 8501, 8500), # L1 => button_id 10 
-                11: (8503, 8502, 8501, 8500), # L2 => button_id 11 
-                12: (8502, 8501), # L3 => button_id 12
+            "hashiru_ni": { # ③三 # 搬送指示 間口からストアに搬送 / デパレ間口()発進
+                # Bライン
+                1: (8061, 8047, 8032, 8017), # R1 間口 5,4,3,2 => button_id 1
+                2: (8061, 8047, 8032, 8017), # R2 間口 5,4,3,2 => button_id 2
+                3: (8047, 8032), # R3 間口 4,3 => button_id 3
+                4: (8247, 8232, 8217, 8202), # L1 間口 4,3,2,1 => button_id 4
+                5: (8247, 8232, 8217, 8202), # L2 間口 4,3,2,1 => button_id 5
+                6: (8232, 8217), # L3 間口 3,2 => button_id 6
+                # Aライン
+                7: (8061, 8047, 8032, 8017), # R1 間口 5,4,3,2 => button_id 7
+                8: (8061, 8047, 8032, 8017), # R2 間口 5,4,3,2 => button_id 8
+                9: (8047, 8032), # R3 間口 4,3 => button_id 9
+                10: (8247, 8232, 8217, 8202), # L1 間口 4,3,2,1 => button_id 10
+                11: (8247, 8232, 8217, 8202), # L2 間口 4,3,2,1 => button_id 11
+                12: (8232, 8217), # L3 間口 3,2 => button_id 12
             },
         }
 
         if line_frontage_id not in range(1, 13):
-            raise ValueError(f"Invalid line_frontage_id: {line_frontage_id}")
+            raise ValueError(f"Invalid 供給間口ID: {line_frontage_id}")
        
         try:
             conn = self.db.wcs_pool.get_connection()
-            conn.start_transaction()
             cur = conn.cursor()
 
-            # --- ORIGINAL STEPS (1, 2, 3) ---
-            ids_s1 = signal_map["hashiru_ichi"].get(line_frontage_id, [])
-            ids_s2 = signal_map["hashiru_ni"].get(line_frontage_id, [])
-            ids_s3 = signal_map["kaeru_ichi"].get(line_frontage_id, [])
+            # Pre-fetch IDs
+            ids_1a = signal_map["hashiru_ichi"].get(line_frontage_id, [])
+            ids_2 = signal_map["ni_herasu"].get(line_frontage_id, [])
+            ids_1b = signal_map["kaeru_ichi"].get(line_frontage_id, [])
+            ids_3 = signal_map["hashiru_ni"].get(line_frontage_id, [])
 
-            # Reset Step 1 and 3 to 0
-            for ids in [ids_s1, ids_s3]:
-                if ids:
-                    placeholders = ','.join(['%s'] * len(ids))
-                    cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders})", ids)
+            # --- EXECUTION SEQUENCE START ---
 
-            # Set Step 2 to 1, then reset after a delay
-            if ids_s2:
-                placeholders = ','.join(['%s'] * len(ids_s2))
-                cur.execute(f"UPDATE eip_signal.word_input SET value = 1 WHERE signal_id IN ({placeholders})", ids_s2)
+            # STEP 1: SET ①一a to OFF (value 0)
+            if ids_1a:
+                placeholders1 = ','.join(['%s'] * len(ids_1a))
+                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders1})", ids_1a)
+                conn.commit() # Ensure PLC sees Step 1a reset before next step
+                logging.info(f"SET ①一a to OFF for 供給間口ID: {line_frontage_id}")
+
+            # STEP 2: SET ②ニ to ON (value 1)
+            if ids_2:
+                placeholders4 = ','.join(['%s'] * len(ids_2))
+                cur.execute(f"UPDATE eip_signal.word_input SET value = 1 WHERE signal_id IN ({placeholders4})", ids_2)
+                conn.commit() 
+                logging.info(f"SET ②ニ to ON for 供給間口ID: {line_frontage_id}")
+                time.sleep(1) # Handshake delay
+
+            # STEP 3: SET ①一b to OFF (value 0)
+            if ids_1b:
+                placeholders1b = ','.join(['%s'] * len(ids_1b))
+                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders1b})", ids_1b)
                 conn.commit()
+                logging.info(f"SET ①一b to OFF for 供給間口ID: {line_frontage_id}")
                 time.sleep(1)
-                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders})", ids_s2)
-                conn.commit()
 
-            # --- NEW STEP 4 (ni_herasu) ---
-            # Handling Step 4 independently to ensure it works
-            ids_s4 = signal_map["ni_herasu"].get(line_frontage_id, [])
-            if ids_s4:
-                logging.info(f"Executing Step 4 (ni_herasu) for ID: {line_frontage_id}")
-                placeholders4 = ','.join(['%s'] * len(ids_s4))
-                
-                # Set value to 1
-                cur.execute(f"UPDATE eip_signal.word_input SET value = 1 WHERE signal_id IN ({placeholders4})", ids_s4)
+            # STEP 4: SET ③三 to ON (value 1)
+            if ids_3:
+                placeholders3 = ','.join(['%s'] * len(ids_3))
+                cur.execute(f"UPDATE eip_signal.word_input SET value = 1 WHERE signal_id IN ({placeholders3})", ids_3)
                 conn.commit()
-                
-                # Wait for the system to read the trigger
+                logging.info(f"SET ③三 to ON for 供給間口ID: {line_frontage_id}")
                 time.sleep(1)
-                
-                # Reset value back to 0
-                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders4})", ids_s4)
-                conn.commit()
-                logging.info(f"Step 4 reset completed.")
 
-            logging.info(f"All steps completed for line_frontage_id: {line_frontage_id}")
+            # STEP 5: FINAL RESET - Set ②ニ and ③三 to OFF (value 0)
+            # Resetting these ensures the system is ready for the next call.
+            if ids_2 and ids_3:
+                # Reset ②ニ
+                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({','.join(['%s']*len(ids_2))})", ids_2)
+                # Reset ③三
+                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({','.join(['%s']*len(ids_3))})", ids_3)
+                conn.commit()
+                logging.info(f"SET ②ニ and ③三 to OFF for 供給間口ID: {line_frontage_id}")
+                
+            logging.info(f"All steps completed successfully for ID: {line_frontage_id}")
 
         except Exception as e:
             if conn: conn.rollback()

@@ -621,8 +621,8 @@ function callAMRReturn() { // You can define it like this to ensure it's global
         }),
         success: function(response) {
             if (response.status === "success") {
-                alert("✅ Aライン >> AMR return updated successfully!");
-                console.log("Aライン >> AMR return updated successfully! Sent IDs:", buttonId);
+                alert("✅ Aライン >> AMRの呼び出しに成功しました！");
+                console.log("Aライン >> AMRの呼び出しに成功しました！ Sent IDs:", buttonId);
             } else {
                 alert(response.message || "更新に失敗しました (Update failed).");
                 console.warn("Aライン >> AMR return Update failed:", response.message);
