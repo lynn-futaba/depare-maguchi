@@ -7,13 +7,11 @@ import asyncio
 
 from flask import Flask, render_template, request, jsonify, abort
 from common.setup_logger import setup_log  # ログ用
-from config.config import BACKUP_DAYS  # ログ用
+from config.config import BACKUP_DAYS, LOG_FOLDER, LOG_FILE   # ログ用
 from datetime import datetime
 from application.depallet_app import DepalletApplication
 
 # ログ出力開始
-LOG_FOLDER = "../log"
-LOG_FILE = "debug_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "./config/app_config.json")
@@ -217,13 +215,14 @@ class DepalletWebServer:
         def get_depallet_area_by_plat():
             try:
                 # button_id = request.json.get("button_id")
-                new_depallet_area = self._depallet_app.get_depallet_area_by_plat_json()
-                logging.info(f"[app.py >> get_depallet_area_by_plat() >> new_depallet_area] : {new_depallet_area}")
-                return new_depallet_area
+                fetch_depallet_area = self._depallet_app.get_depallet_area_by_plat_json()
+                logging.info(f"[app.py >> get_depallet_area_by_plat() >> fetch_depallet_area] : {fetch_depallet_area}")
+                return fetch_depallet_area
             except Exception as e:
                 logging.error(f"[app.py >> get_depallet_area_by_plat() >> エラー]: {e}")
                 return abort(400, str(e))
 
+        # 取出数量 更新
         @app.route('/api/update_take_count', methods=['POST'])
         def update_take_count():
             kanban_no = str(request.json.get('kanban_no'))
@@ -236,9 +235,6 @@ class DepalletWebServer:
                 if not kanban_no or new_take_count is None:
                     response = jsonify({"status": "error", "message": "kanban_no and new_take_count are required"}), 400
                     return response
-
-                # Normalize to string (your JSON stores strings)
-                new_take_count = str(new_take_count)
 
                 with file_lock:
                     # Load current config
@@ -269,15 +265,14 @@ class DepalletWebServer:
                         json.dump(config, f, ensure_ascii=False, indent=2)
                     os.replace(tmp_path, CONFIG_PATH)
 
-                    # ✅ Now run DB logic to trigger the flag
-                    self._depallet_app.dispallet()
-                    logging.info(f"[app.py >> update_take_count() >> DB >> success]")
+                    # ✅ Refresh one time
+                    get_depallet_area_by_plat()
 
                     response = jsonify({"status": "success", "message": f"背番号 '{kanban_no}' を '{new_take_count}' に更新しました。", "updated": {kanban_no: new_take_count}})
                     return response
                
 
-                return jsonify({"status": "success", "message": "DB saved successfully"})
+                # return jsonify({"status": "success", "message": "DB saved successfully"})
                 
             except Exception as e:
                 logging.error(f"[app.py >> update_take_count() >> ERROR] : {e}", exc_info=True)
@@ -287,6 +282,8 @@ class DepalletWebServer:
         @app.route("/api/call_AMR_return", methods=["POST"])
         def call_AMR_return():
             try:
+                # ✅ Refresh one time
+                get_depallet_area_by_plat()
                 button_id = request.json.get('button_id') 
                 self._depallet_app.call_AMR_return(button_id) 
                 logging.info(f"[app.py >> call_AMR_return() >> success]")

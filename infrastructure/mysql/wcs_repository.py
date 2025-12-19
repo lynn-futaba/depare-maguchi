@@ -1,23 +1,29 @@
 ﻿import time
-
-from domain.infrastructure.wcs_repository import IWCSRepository
-from domain.models.depallet import DepalletFrontage
-from domain.models.line import LineFrontage
-from domain.models.part import Part
-
-from common.setup_logger import setup_log  # ログ用
-from config.config import BACKUP_DAYS  # ログ用
 import logging
 
+from typing import Any, Dict, List, Optional
+
+from domain.models.part import Part
+from domain.models.line import LineFrontage
+from domain.models.depallet import DepalletFrontage
+from domain.infrastructure.wcs_repository import IWCSRepository
+
+from common.setup_logger import setup_log  # ログ用
+from config.config_loader import AppConfig
+from config.config import BACKUP_DAYS, LOG_FOLDER, LOG_FILE   # ログ用
+
+
 # ログ出力開始
-LOG_FOLDER = "../log"
-LOG_FILE = "debug_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 class WCSRepository(IWCSRepository):
 
-    def __init__(self, db):
+    def __init__(self, db, app_config: Optional[AppConfig] = None):
         self.db = db
+
+        # Load app_config.json once (allow DI for tests)
+        self.cfg = app_config or AppConfig()
+
 
     # 部品要求
     def request_kotatsu(self, frontage: DepalletFrontage, part: Part):
@@ -118,30 +124,42 @@ class WCSRepository(IWCSRepository):
     
     # TODO➞リン: 間口に搬送対象idを入力
     def insert_target_ids(self, button_id):
+        """
+        Updates the signal_id in word_input table of eip_signal database based on the mapping in app_config.json.
+        """
         conn = None
         cur = None
         try:
-            creates_map = {
-                # Bライン
-                1: [(107, 8404), (103, 8403), (105, 8402), (106, 8401)],  # R1 間口 5,4,3,2 => button_id 1
-                2: [(102, 8404), (108, 8403), (101, 8402), (104, 8401)],  # R2 間口 5,4,3,2 => button_id 2
-                3: [(100, 8403), (300, 8402)],                            # R3 間口 4,3 => button_id 3
-                4: [(206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 間口 4,3,2,1 => button_id 4
-                5: [(204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 間口 4,3,2,1 => button_id 5
-                6: [(300, 8502), (200, 8501)],                            # L3 間口 3,2 => button_id 6
-                # Aライン
-                7: [(107, 8404), (103, 8403), (105, 8402), (106, 8401)],  # R1 間口 5,4,3,2 => button_id 7
-                8: [(102, 8404), (108, 8403), (101, 8402), (104, 8401)],  # R2 間口 5,4,3,2 => button_id 8
-                9: [(100, 8403), (301, 8402)],                            # R3 間口 4,3 => button_id 9
-                10: [(206, 8503), (205, 8502), (203, 8501), (208, 8500)], # L1 間口 4,3,2,1 => button_id 10
-                11: [(204, 8503), (201, 8502), (207, 8501), (202, 8500)], # L2 間口 4,3,2,1 => button_id 11
-                12: [(300, 8502), (200, 8501)],                           # L3 間口 3,2 => button_id 12
-            }
+            # Fetch mapping from the config loader internally checks if the JSON file was updated
+            # 1. This now returns the LIST of tuples/lists directly
 
-            creates = creates_map.get(button_id)
+            creates_raw = self.cfg.get_insert_target_ids_by_button(button_id)
+    
+            # Convert list of lists to list of tuples manually
+            creates = [tuple(x) for x in creates_raw]
+            
+            logging.info(f"[WCSRepository >> insert_target_ids() >> creates_map.]: {creates}")
+
+            # creates_map = {
+            #     # Bライン
+            #     1: [(107, 8404), (103, 8403), (105, 8402), (106, 8401)],  # R1 間口 5,4,3,2 => button_id 1
+            #     2: [(102, 8404), (108, 8403), (101, 8402), (104, 8401)],  # R2 間口 5,4,3,2 => button_id 2
+            #     3: [(100, 8403), (300, 8402)],                            # R3 間口 4,3 => button_id 3
+            #     4: [(206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 間口 4,3,2,1 => button_id 4
+            #     5: [(204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 間口 4,3,2,1 => button_id 5
+            #     6: [(300, 8502), (200, 8501)],                            # L3 間口 3,2 => button_id 6
+            #     # Aライン
+            #     7: [(107, 8404), (103, 8403), (105, 8402), (106, 8401)],  # R1 間口 5,4,3,2 => button_id 7
+            #     8: [(102, 8404), (108, 8403), (101, 8402), (104, 8401)],  # R2 間口 5,4,3,2 => button_id 8
+            #     9: [(100, 8403), (301, 8402)],                            # R3 間口 4,3 => button_id 9
+            #     10: [(206, 8503), (205, 8502), (203, 8501), (208, 8500)], # L1 間口 4,3,2,1 => button_id 10
+            #     11: [(204, 8503), (201, 8502), (207, 8501), (202, 8500)], # L2 間口 4,3,2,1 => button_id 11
+            #     12: [(300, 8502), (200, 8501)],                           # L3 間口 3,2 => button_id 12
+            # }
+
 
             if not creates:
-                logging.info(f"[WCSRepository >> insert_target_ids() >> No mappings found for given button_id.]")
+                logging.info(f"[WCSRepository >> insert_target_ids() >> No mappings found for given button_id]: {creates}")
                 return
 
             # kanban_map = {
@@ -155,10 +173,10 @@ class WCSRepository(IWCSRepository):
 
             # step_kanban_no = kanban_map.get(button_id)
 
-            # # Connect for flowrack update
-            # conn = self.db.wcs_pool.get_connection()
-            # conn.start_transaction()
-            # cur = conn.cursor(dictionary=True)
+            # Connect for flowrack update
+            conn = self.db.wcs_pool.get_connection()
+            conn.start_transaction()
+            cur = conn.cursor(dictionary=True)
 
             # # ✅ Fetch shelf status for specific shelf_codes
             # if button_id in (3, 6, 9, 12): # Bライン➞R3,L3  / Aライン➞R3,L3  
@@ -198,7 +216,7 @@ class WCSRepository(IWCSRepository):
             # cur.execute(update_sql, (step_kanban_no, empty_rows[0]["shelf_code"]))
             # logging.info(f"[WCSRepository >> insert_target_ids() >> Updated t_shelf_status]: shelf_code={empty_rows[0]['shelf_code']} -> step_kanban_no={step_kanban_no}")
 
-            # ✅ Update signals once
+            # ✅ Execute the update
             cur.executemany(
                 "UPDATE `eip_signal`.word_input SET value = %s WHERE signal_id = %s",
                 creates

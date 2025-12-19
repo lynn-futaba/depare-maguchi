@@ -18,14 +18,12 @@ from infrastructure.mysql.mysql_db import MysqlDb
 from .depallet_frontage_watcher import DepalletFrontegeWatcher, WatcherManager
 from .new_depallet_frontage_watcher import NewDepalletFrontegeWatcher, NewWatcherManager # TODO➞リン:
 from common.setup_logger import setup_log  # ログ用
-from config.config import BACKUP_DAYS  # ログ用
+from config.config import BACKUP_DAYS, LOG_FOLDER, LOG_FILE  # ログ用
 
 import logging
 import application.utility as util
 
 # ログ出力開始
-LOG_FOLDER = "../log"
-LOG_FILE = "depallet_app.py_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 
@@ -180,15 +178,6 @@ class DepalletApplication():
         except Exception as e:
             logging.error(f"[DepalletApplication >> insert_kanban_sashi() >> エラー] : {e}")
             raise Exception(f"DepalletApplication >> insert_kanban_sashi >> エラー]: {e}")
-        
-    def dispallet(self):
-        try:
-            logging.info("[DepalletApplication >> dispallet() >> 成功]")
-            self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST)  # TODO➞リン: added
-            self.wcs_service.dispallet(self.new_depallet_area)
-        except Exception as e:
-            logging.error(f"[DepalletApplication >> dispallet() >> エラー] : {e}")
-            raise Exception(f"DepalletApplication >> dispallet >> エラー]: {e}")
 
     # コタツに部品を戻す
     def return_part(self, frontage_id: int, part_id: int):
@@ -270,10 +259,9 @@ class DepalletApplication():
     def get_depallet_area_by_plat_json(self):
         logging.info(f"[DepalletApplication >> get_depallet_area_by_plat_json >> self.new_depallet_area] : {self.new_depallet_area}")
         self.new_depallet_area = self.depallet_service.get_depallet_area_by_plat(self.PLAT_ID_LIST)  # TODO➞リン: added
-        # add sugiura
-        # self.depallet_support.dispallet(self.new_depallet_area)
+        self.wcs_service.dispallet(self.new_depallet_area)
+        logging.info(f"[app.py >> get_depallet_area_by_plat_json() >> Take Count saved to DB successfully]")
         return util.to_json(self.new_depallet_area)
-
 
 if __name__ == "__main__":
 

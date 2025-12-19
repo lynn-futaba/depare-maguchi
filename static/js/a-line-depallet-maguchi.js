@@ -444,15 +444,17 @@ $(document).ready(function () {
 
                     // 1. Update UI
                     takeCountCell.text(newTakeCount);
+
+                    // UPDATE value for 行き先
+                    refreshPage();
                     
                     // 2. ⭐ UPDATE GLOBAL STORAGE HERE! ⭐
                     updateAMRDataStorage(maguchiId, stepKanbanNo, newTakeCount);
                     
-                    showInfo("✅ Take count updated successfully!");
-                    console.log("Take count updated successfully:", newTakeCount);
+                    showInfo("✅ 取出数量を更新しました!");
+                    console.log("取出数量を更新しました！:", newTakeCount);
                 } 
-                // UPDATE value for 行き先
-                refreshPage();
+                
                 // ⏱️ RESTART THE AUTOMATIC REFRESH TIMER
                 pageRefreshIntervalId = setInterval(refreshPage, 5000);
                 console.log("Update success. Automatic refresh restarted.");

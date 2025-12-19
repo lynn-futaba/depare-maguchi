@@ -1,4 +1,26 @@
+{
+"28": [{"step_kanban_no": "オ071", "load_num": "34", "shelf_code": "30006", "take_count": "-4", "flow_rack_no": "", "maguchi_no": "Bライン間口4"}], 
+"27": [{"step_kanban_no": "T622", "load_num": "40", "shelf_code": "30052", "take_count": "0", "flow_rack_no": "", "maguchi_no": "Bライン間口3"}], 
+"26": [{"step_kanban_no": "T436", "load_num": "6", "shelf_code": "30009", "take_count": "-3", "flow_rack_no": "", "maguchi_no": "Bライン間口2"}], 
+"25": [{"step_kanban_no": "T632", "load_num": "16", "shelf_code": "30045", "take_count": "-3", "flow_rack_no": "", "maguchi_no": "Bライン間口1"}], 
+"21": [{"step_kanban_no": "None", "load_num": "0", "shelf_code": "30034", "take_count": "-0", "flow_rack_no": "", "maguchi_no": "Aライン間口2"}]
+}
 
+ {
+  "21": [{"step_kanban_no": "None", "load_num": "0", "shelf_code": "30034", 
+ "take_count": "-0", "flow_rack_no": "", "maguchi_no": "Aライン間口2"}]}
+
+    "20": 8405, 
+    "21": 8411, 
+    "22": 8417, 
+    "23": 8423, 
+    "24": 8429,
+    "25": 8505, // ア618
+    "26": 8511, // 背番号 3238
+    "27": 8517, // 背番号 タ033
+    "28": 8523, 
+    "29": 8529
+    
 =====
 概要
 =====

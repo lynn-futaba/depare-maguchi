@@ -9,7 +9,7 @@ from domain.models.line import LineFrontage
 
 from domain.infrastructure.depallet_area_repository import IDepalletAreaRepository
 from common.setup_logger import setup_log  # ログ用
-from config.config import BACKUP_DAYS  # ログ用
+from config.config import BACKUP_DAYS, LOG_FOLDER, LOG_FILE  # ログ用
 
 from typing import Optional
 from config.config_loader import AppConfig
@@ -21,8 +21,6 @@ import logging
 import threading
 
 # ログ出力開始
-LOG_FOLDER = "../log"
-LOG_FILE = "debug_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 #mysql実装
@@ -36,78 +34,27 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
         # Load app_config.json once (allow DI for tests)
         self.cfg = app_config or AppConfig()
-
-        
-    #     # TODO➞リン : Load take_count config dynamically
-    #     TAKE_COUNT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../../config/take_count_config.json")
-    #     with open(TAKE_COUNT_CONFIG_PATH, "r", encoding="utf-8") as f:
-    #         self.take_count_map = json.load(f)
-
-    #     # TODO➞リン : Load flowrack_no config dynamically
-    #     FLOWRACK_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../../config/flowrack_no_config.json")
-    #     with open(FLOWRACK_CONFIG_PATH, "r", encoding="utf-8") as f:
-    #         self.flowrack_no_map = json.load(f)
-
-    #     # TODO➞リン : Load maguchi_no_map config dynamically
-    #     MAGUCHI_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../../config/maguchi_no_config.json")
-    #     with open(MAGUCHI_CONFIG_PATH, "r", encoding="utf-8") as f:
-    #         self.maguchi_no_map = json.load(f)
-
-        
-    #     # TODO➞リン : Load shelf_code config
-    #     SHELF_FLOWRACKS_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../../config/shelf_code_flowracks_config.json")
-    #     with open(SHELF_FLOWRACKS_CONFIG_PATH, "r", encoding="utf-8") as f:
-    #         config = json.load(f)
-    #         self.shelf_codes_L3_R3 = config.get("shelf_codes_L3_R3", [])
-    #         self.shelf_codes_R1_R2_L1_L2 = config.get("shelf_codes_R1_R2_L1_L2", [])
-
-
-    # # TODO➞リン: Get take_count
-    # def get_take_count(self, kanban_no: str) -> str:
-    #         """Return take_count for given kanban_no from config."""
-    #         return self.take_count_map.get(kanban_no, "-0")
     
-    # # TODO➞リン: Get flowrack_no
-    # def get_flowrack_no(self, kanban_no: str) -> str:
-    #         """Return flowrack_no for given kanban_no from config."""
-    #         return self.flowrack_no_map.get(kanban_no, "")
-    
-    # # TODO➞リン: Get flowrack_no
-    # def get_maguchi_no(self, plat: int) -> int:
-    #         """Return maguchi_no for given plat from config."""
-    #         return self.maguchi_no_map.get(plat, "")
-
-    
-# --- Replaced functions using the unified loader
+    #--- Replaced functions using the unified loader
     def get_take_count(self, kanban_no: str) -> str:
-        """Return take_count for given kanban_no from unified config."""
-        self.cfg.reload()
         return self.cfg.get_take_count(kanban_no)
 
     def get_flowrack_no(self, kanban_no: str) -> str:
-        """Return flowrack_no for given kanban_no from unified config."""
-        self.cfg.reload()
         return self.cfg.get_flowrack_no(kanban_no)
 
     def get_maguchi_no(self, plat: int) -> str:
-        """Return maguchi_no for given plat from unified config."""
-        self.cfg.reload()
         return self.cfg.get_maguchi_no(plat)
 
     # If you previously needed shelf_codes groups:
     def get_shelf_codes_L3_R3(self) -> list[str]:
-        self.cfg.reload()
         return self.cfg.get_shelf_codes_group("L3_R3")
 
     def get_shelf_codes_R1_R2_L1_L2(self) -> list[str]:
-        self.cfg.reload()
         return self.cfg.get_shelf_codes_group("R1_R2_L1_L2")
 
     # If you need flowrack_no -> shelf_code mapping:
     def get_shelf_code_by_flowrack_no(self, flowrack_no: str) -> str:
-        self.cfg.reload()
         return self.cfg.get_shelf_code_by_flowrack_no(flowrack_no)
-
 
     def get_depallet_area(self, line_id_list:list)->DepalletArea:
         area = DepalletArea("A")
@@ -890,7 +837,6 @@ class DepalletAreaRepository(IDepalletAreaRepository):
         cur = None
         
         try:
-            self.cfg.reload()
             conn = self.db.depal_pool.get_connection()
             cur = conn.cursor(dictionary=True)
 
@@ -921,7 +867,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
                 if plat_value not in update_frontages:
                     update_frontages[plat_value] = []
 
-                    # ---- Use the unified config loader (self.cfg) ----
+                    # # These getters now automatically fetch fresh data if the JSON file was changed
                     update_frontages[plat_value].append({
                     "step_kanban_no": row["step_kanban_no"],
                     "load_num": row["load_num"],
