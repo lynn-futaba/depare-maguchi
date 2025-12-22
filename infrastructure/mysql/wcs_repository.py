@@ -140,81 +140,67 @@ class WCSRepository(IWCSRepository):
             
             logging.info(f"[WCSRepository >> insert_target_ids() >> creates_map.]: {creates}")
 
-            # creates_map = {
-            #     # Bライン
-            #     1: [(107, 8404), (103, 8403), (105, 8402), (106, 8401)],  # R1 間口 5,4,3,2 => button_id 1
-            #     2: [(102, 8404), (108, 8403), (101, 8402), (104, 8401)],  # R2 間口 5,4,3,2 => button_id 2
-            #     3: [(100, 8403), (300, 8402)],                            # R3 間口 4,3 => button_id 3
-            #     4: [(206, 8503), (205, 8502), (203, 8501), (208, 8500)],  # L1 間口 4,3,2,1 => button_id 4
-            #     5: [(204, 8503), (201, 8502), (207, 8501), (202, 8500)],  # L2 間口 4,3,2,1 => button_id 5
-            #     6: [(300, 8502), (200, 8501)],                            # L3 間口 3,2 => button_id 6
-            #     # Aライン
-            #     7: [(107, 8404), (103, 8403), (105, 8402), (106, 8401)],  # R1 間口 5,4,3,2 => button_id 7
-            #     8: [(102, 8404), (108, 8403), (101, 8402), (104, 8401)],  # R2 間口 5,4,3,2 => button_id 8
-            #     9: [(100, 8403), (301, 8402)],                            # R3 間口 4,3 => button_id 9
-            #     10: [(206, 8503), (205, 8502), (203, 8501), (208, 8500)], # L1 間口 4,3,2,1 => button_id 10
-            #     11: [(204, 8503), (201, 8502), (207, 8501), (202, 8500)], # L2 間口 4,3,2,1 => button_id 11
-            #     12: [(300, 8502), (200, 8501)],                           # L3 間口 3,2 => button_id 12
-            # }
-
-
             if not creates:
                 logging.info(f"[WCSRepository >> insert_target_ids() >> No mappings found for given button_id]: {creates}")
                 return
 
-            # kanban_map = {
-            #     # Bライン (button_id 1～6 R1,R2,R3,L1,L2,L3)
-            #     1: 2001, 2: 2002, 3: 2003, 
-            #     4: 2004, 5: 2005, 6: 2006, 
-            #     # Aライン (button_id 7～12 R1,R2,R3,L1,L2,L3)
-            #     7: 1001, 8: 1002, 9: 1003, 
-            #     10: 1004, 11: 1005, 12: 1006
-            # } 
+            kanban_map = {
+                # Bライン (button_id 1～6 R1,R2,R3,L1,L2,L3)
+                1: 2001, 2: 2002, 3: 2003, 
+                4: 2004, 5: 2005, 6: 2006, 
+                # Aライン (button_id 7～12 R1,R2,R3,L1,L2,L3)
+                7: 1001, 8: 1002, 9: 1003, 
+                10: 1004, 11: 1005, 12: 1006
+            } 
 
-            # step_kanban_no = kanban_map.get(button_id)
+            step_kanban_no = kanban_map.get(button_id)
 
             # Connect for flowrack update
             conn = self.db.wcs_pool.get_connection()
             conn.start_transaction()
             cur = conn.cursor(dictionary=True)
 
-            # # ✅ Fetch shelf status for specific shelf_codes
-            # if button_id in (3, 6, 9, 12): # Bライン➞R3,L3  / Aライン➞R3,L3  
-            #     shelf_codes = self.get_shelf_codes_L3_R3()
-            #     logging.info(f"[WCSRepository >> insert_target_ids() self.get_shelf_codes_L3_R3()] {self.get_shelf_codes_L3_R3()}.")
-            # else: # Bライン➞R1,R2,L1,L2  / Aライン➞R1,R2,L1,L2
-            #     shelf_codes = self.get_shelf_codes_R1_R2_L1_L2()
-            #     logging.info(f"[WCSRepository >> insert_target_ids() self.get_shelf_codes_R1_R2_L1_L2()] {self.get_shelf_codes_R1_R2_L1_L2()}.")
+            # ✅ Fetch shelf status for specific shelf_codes
+            if button_id in (3, 6, 9, 12): # Bライン➞R3,L3  / Aライン➞R3,L3  
+                group_key = "L3_R3"
+            else: # Bライン➞R1,R2,L1,L2  / Aライン➞R1,R2,L1,L2
+                group_key = "R1_R2_L1_L2"
 
-            # if not shelf_codes:
-            #     return []
+            # Fetch from config loader
+            shelf_codes = self.cfg.get_shelf_codes_group(group_key)
 
-            # sql = f"""
-            #     SELECT shelf_code, kotatsu_status, update_datetime, step_kanban_no
-            #     FROM `futaba-chiryu-3building`.t_shelf_status
-            #     WHERE shelf_code IN ({','.join(['%s'] * len(shelf_codes))})
-            # """
-            # cur.execute(sql, shelf_codes)
-            # result = cur.fetchall()
+            # Logging the result
+            logging.info(f"[WCSRepository >> insert_target_ids()] Group: {group_key}, Codes: {shelf_codes}")
 
-            # # Filter EMPTY rows and sort by earliest update_datetime
-            # empty_rows = [row for row in result if row["kotatsu_status"] == "EMPTY"]
-            # empty_rows.sort(key=lambda r: r["update_datetime"])
-            # logging.info(f"[WCSRepository >> insert_target_ids() >> Found {len(empty_rows)} EMPTY shelves.]")
+            if not shelf_codes:
+                return []
 
-            # if not empty_rows:
-            #     logging.error("[WCSRepository >> insert_target_ids() >> No EMPTY shelves found for given shelf_codes.]")
-            #     conn.rollback()
-            #     return
+            sql = f"""
+                SELECT shelf_code, kotatsu_status, update_datetime, step_kanban_no
+                FROM `futaba-chiryu-3building`.t_shelf_status
+                WHERE shelf_code IN ({','.join(['%s'] * len(shelf_codes))})
+            """
+            cur.execute(sql, shelf_codes)
+            result = cur.fetchall()
 
-            # # ✅ Update t_shelf_status with new step_kanban_no for the first EMPTY shelf
-            # update_sql = """
-            #     UPDATE `futaba-chiryu-3building`.t_shelf_status
-            #     SET step_kanban_no = %s
-            #     WHERE shelf_code = %s
-            # """
-            # cur.execute(update_sql, (step_kanban_no, empty_rows[0]["shelf_code"]))
-            # logging.info(f"[WCSRepository >> insert_target_ids() >> Updated t_shelf_status]: shelf_code={empty_rows[0]['shelf_code']} -> step_kanban_no={step_kanban_no}")
+            # Filter EMPTY rows and sort by earliest update_datetime
+            empty_rows = [row for row in result if row["kotatsu_status"] == "EMPTY"]
+            empty_rows.sort(key=lambda r: r["update_datetime"])
+            logging.info(f"[WCSRepository >> insert_target_ids() >> Found {len(empty_rows)} EMPTY shelves.]")
+
+            if not empty_rows:
+                logging.error("[WCSRepository >> insert_target_ids() >> No EMPTY shelves found for given shelf_codes.]")
+                conn.rollback()
+                return
+
+            # ✅ Update t_shelf_status with new step_kanban_no for the first EMPTY shelf
+            update_sql = """
+                UPDATE `futaba-chiryu-3building`.t_shelf_status
+                SET step_kanban_no = %s
+                WHERE shelf_code = %s
+            """
+            cur.execute(update_sql, (step_kanban_no, empty_rows[0]["shelf_code"]))
+            logging.info(f"[WCSRepository >> insert_target_ids() >> Updated t_shelf_status]: shelf_code={empty_rows[0]['shelf_code']} -> step_kanban_no={step_kanban_no}")
 
             # ✅ Execute the update
             cur.executemany(
@@ -388,6 +374,9 @@ class WCSRepository(IWCSRepository):
                     continue
 
                 data = area_value[0]
+                # RECOMMENDED: Use the config loader directly for the most up-to-date value
+                kanban_no = area_value[0].get("kanban_no") 
+                num_str = self.cfg.get_take_count(kanban_no) # This triggers reload_if_changed()
 
                 if "take_count" not in data:
                     logging.error(f"[WCSRepository >> dispallet] Missing take_count for area {area_key}: {data}")

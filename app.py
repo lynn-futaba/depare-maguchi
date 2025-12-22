@@ -14,8 +14,7 @@ from application.depallet_app import DepalletApplication
 # ログ出力開始
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
-CONFIG_PATH = os.path.join(os.path.dirname(__file__), "./config/app_config.json")
-
+CONFIG_PATH = "/app/config/app_config.json" if os.path.exists("/app/config/app_config.json") else "config/app_config.json"
 
 class DepalletWebServer:
     def __init__(self, depallet_app):
@@ -264,6 +263,13 @@ class DepalletWebServer:
                     with open(tmp_path, 'w', encoding='utf-8') as f:
                         json.dump(config, f, ensure_ascii=False, indent=2)
                     os.replace(tmp_path, CONFIG_PATH)
+
+                    # === ADDED LOGIC FOR LIVE UPDATE ===
+                    # Trigger the reload in the config object owned by depallet_app
+                    # This ensures the memory is updated immediately after the file write
+                    # if hasattr(self._depallet_app, 'config'):
+                    #     self._depallet_app.config.reload()
+                    # ===================================
 
                     # ✅ Refresh one time
                     get_depallet_area_by_plat()

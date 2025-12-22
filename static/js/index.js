@@ -142,8 +142,23 @@ function callToBLineDepalletMaguchi(id) {
                                     success: function (data) {
                                         console.log("call_target_ids >> data >>", data);
                                         showInfo("✅ Bライン ➞ 間口に搬送対象を呼び出ました!");
+                                        // const nextPageUrl = `/b_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
+                                        // window.open(nextPageUrl, "_blank"); // Opens new tab
+
+                                        // Combine id and name to create a unique reference for the window
+                                        const windowIdentifier = `maguchi_${id}_${kyokuuMaguchi}`;
+
                                         const nextPageUrl = `/b_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
-                                        window.open(nextPageUrl, "_blank"); // Opens new tab
+
+                                        // Providing 'windowIdentifier' instead of '_blank' tells the browser 
+                                        // to reuse the tab if it is already open.
+                                        const openedWindow = window.open(nextPageUrl, windowIdentifier);
+
+                                        // This ensures the existing tab is brought to the front (focused) if it was already open
+                                        if (openedWindow) {
+                                            openedWindow.focus();
+                                        }
+
                                     },
                                     error: function (error) {
                                         showInfo("❌ Bライン ➞ 間口に搬送対象を呼び出せません");

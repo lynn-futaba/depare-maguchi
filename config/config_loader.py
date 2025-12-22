@@ -127,10 +127,16 @@ class AppConfig:
     from app_config.json with an automatic file watcher.
     """
     def __init__(self, config_path: Optional[str] = None):
-        base_dir = os.path.dirname(__file__)
-        # Set the default path to app_config.json
-        self.CONFIG_PATH = config_path or os.path.join(base_dir, "app_config.json")
+
+        docker_path = "/app/config/app_config.json"
         
+        # This finds the absolute path to your project root even on Windows/Local
+        # It looks for 'config/app_config.json' relative to THIS file's location
+        local_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        local_path = os.path.join(local_root, "config", "app_config.json")
+
+        self.CONFIG_PATH = config_path or (docker_path if os.path.exists(docker_path) else local_path)
+
         # Initialize internal state variables
         self._config: Dict[str, Any] = {}
         self._last_mtime: float = 0  # Track last modification time for the watcher

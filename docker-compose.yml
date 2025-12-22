@@ -12,7 +12,7 @@ services:
       - ./app.py:/app/app.py # ホストディレクトリの設定ファイルをコンテナにマウント（必要であれば変更）
       - ./application:/app/application
       - ./common:/app/common
-      - ./config:/app/src/config # vcsリポジトリを使うときはこっち
+      - ./config:/app/config # vcsリポジトリを使うときはこっち
       - ./domain:/app/domain
       - ./infrastructure:/app/infrastructure
       - ./static:/app/static

@@ -34,6 +34,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
         # Load app_config.json once (allow DI for tests)
         self.cfg = app_config or AppConfig()
+
     
     #--- Replaced functions using the unified loader
     def get_take_count(self, kanban_no: str) -> str:
@@ -830,7 +831,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
     def get_depallet_area_by_plat(self, plat_id_list: list):
         """
-        Build update_frontages for plats 20-29 (or custom plat_id_list).
+        Build update_frontages for plats 29-20 (or custom plat_id_list).
         Each plat key contains a list of shelf details.
         """
         conn = None

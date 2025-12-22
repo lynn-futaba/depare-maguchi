@@ -32,7 +32,7 @@ class DepalletApplication():
 
     def __init__(self):
         self.LINE_ID = (1, 2, 3, 4)  # TODO: added 3,4
-        self.PLAT_ID_LIST = (20, 21, 22, 23, 24, 25, 26, 27, 28, 29)  # TODO➞リン: plat of maguchi 5,4,3,2,1 for both LINE A and B
+        self.PLAT_ID_LIST = (29, 28, 27, 26, 25, 24, 23, 22, 21, 20)  # TODO➞リン: plat of maguchi 5,4,3,2,1 for both LINE A and B
         self.button_id = 0  # TODO➞リン: button id from R1, R2, R3, L1, L2, L3 for both A and B Line from frontend
 
         self._running = True
