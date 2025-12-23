@@ -49,7 +49,14 @@ class DepalletWebServer:
         def index():
             return render_template('index.html')
         
-        # Add the NEW route at the bottom of your other routes
+        @app.route("/ui/bline/maguchi_r1", methods=["GET"])
+        def ui_bline_maguchi_r1():
+            return render_template('bline-maguchi-r1.html')
+        
+        @app.route("/ui/bline/maguchi_r2", methods=["GET"])
+        def ui_bline_maguchi_r2():
+            return render_template('bline-maguchi-r2.html')
+        
         @app.route("/api/get_b_ui_config", methods=["GET"])
         def get_b_ui_config():
             # Use a try-except block so that even if this fails, 
@@ -63,7 +70,6 @@ class DepalletWebServer:
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
             
-         # Add the NEW route at the bottom of your other routes
         @app.route("/api/get_a_ui_config", methods=["GET"])
         def get_a_ui_config():
             # Use a try-except block so that even if this fails, 

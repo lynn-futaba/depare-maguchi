@@ -5,11 +5,9 @@
     <title>フタバ知立_B R1ライン</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
-    <!-- Your custom CSS -->
     <link href="../../static/css/depallet/maguchi.css" rel="stylesheet" />
     <!-- Your custom CSS -->
     <link href="../../static/css/depallet/header.css" rel="stylesheet" />
-    <link href="../../static/css/depallet/flowrack.css" rel="stylesheet" />
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../static/css/bootstrap.min.css" />
 </head>
@@ -31,11 +29,11 @@
         <div class="row h-100">
           <div class="col-7 h-100">
 
-            <div id="maguchiCards">
+            <!-- <div id="maguchiCards">
 
               <div class="row text-center mb-2">
                 <div class="col-12">
-                    <h5>コタツ部品</h5>
+                    <h5>コタツ部品 + フローラック</h5>
                 </div>
               </div>
 
@@ -53,15 +51,12 @@
                 </div>
               </div>
 
-              
-
               <div class="card mb-3">
                 <div class="card-header text-white text-center bg-primary">
                   <b>間口4</b>
                 </div>
                 <div class="card-body text-center bg-light">
                   <table class="table table-bordered" id="shelf-4">
-                    <!-- <label>取出部品を選択してください</label> -->
                     <thead></thead>
                     <tbody></tbody>
                   </table>
@@ -74,7 +69,6 @@
                 </div>
                 <div class="card-body text-center bg-light">
                   <table class="table table-bordered" id="shelf-3">
-                    <!-- <label>取出部品を選択してください</label> -->
                     <thead></thead>
                     <tbody></tbody>
                   </table>
@@ -87,7 +81,6 @@
                 </div>
                 <div class="card-body text-center bg-light">
                   <table class="table table-bordered" id="shelf-2">
-                    <!-- <label>取出部品を選択してください</label> -->
                     <thead></thead>
                     <tbody></tbody>
                   </table>
@@ -105,16 +98,12 @@
                   </table>
                 </div>
               </div>
-
-              <!-- <div class="row text-end text-danger mb-2">
-                <label>部品取出完了後に押してください</label>
-              </div>
-
-              <div class="col-11 text-end">
-                  <button class="btn btn-primary" onclick="callAMRReturn()">作業完了</button>
-              </div> -->
-
+            </div> -->
+          
+            <div id="maguchiCards" data-current-view="">
+              <div id="maguchiDynamicContainer"></div>
             </div>
+
           </div>
 
           <div class="col-5 h-100">       
@@ -126,11 +115,11 @@
                 </div>
             </div>
 
-            <!-- <div class="row text-end">
+            <div class="row text-end">
               <div class="col-12">
                 <p id="flow-rack-no">対象フローラックNo:</p>
               </div>
-            </div> -->
+            </div>
 
               <div class="row g-3">
                 <!-- Cards ② and ③ -->
@@ -208,7 +197,7 @@
 <!-- jQuery -->
 <script src="../../static/js/jquery-3.7.0.min.js"></script>
 <!-- Your custom JS -->
-<script src="../../static/js/depallet/b-R1.js"></script>
+<script src="../../static/js/bline-maguchi-r1.js"></script>
 <script src="../../static/js/common.js"></script>
 <!-- Bootstrap JS Bundle (Popper + Bootstrap) -->
 <script src="../../static/js/bootstrap.bundle.min.js"></script>

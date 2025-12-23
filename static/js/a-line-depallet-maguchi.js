@@ -11,10 +11,66 @@ $(document).ready(function () {
         const idValue = parseInt(params.get("id"));
         const nameValue = params.get("name");
 
-        if (nameValue.includes("L")) {
-            document.getElementById("layout-L").style.display = "block";
-        } else {
-            document.getElementById("layout-normal").style.display = "block";
+        if (nameValue.includes("R1")) {
+            document.getElementById("layout-R1").style.display = "block";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
+            
+        } 
+        else if (nameValue.includes("R2")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "block";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
+        }
+        else if (nameValue.includes("R3")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "block";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
+        }
+
+        else if (nameValue.includes("L1")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "block";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
+        }
+
+        else if (nameValue.includes("L2")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "block";
+            document.getElementById("layout-L3").style.display = "none";
+        }
+
+        else if (nameValue.includes("L3")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "block";
+        }
+        
+        else {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
         }
 
         $.ajax({

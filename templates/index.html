@@ -21,7 +21,7 @@
           310D デパレ作業画面 〈安全 . 品質 . 生産〉
         </span>
         <!-- <button id="refreshButton" class="btn btn-light text-right my-2">更新</button> -->
-        <span class="badge bg-danger rounded-pill fs-6"> v1.0 (12月22日)</span>
+        <span class="badge bg-danger rounded-pill fs-6"> v1.0 (12月23日)</span>
       </h3>
     </div>
   </header>
@@ -33,22 +33,22 @@
             <button type="button" class="btn btn-warning text-white w-100" onclick="submitKanbanNuki()">かんばん抜き<br>①発信</button>
           </div>
           <div class="col-2">
-            <button type="button" class="btn btn-success text-white w-100" onclick="submitKanbanSashi()">かんばん差し<br>②発信</button>
+            <button type="button" class="btn btn-primary text-white w-100" onclick="submitKanbanSashi()">かんばん差し<br>②発信</button>
           </div>
         </div>
         <div class="row">
           <!-- Left Side: Line B -->
           <div class="col-12 col-lg-6 border-end">
-            <h2 class="bg-light text-center text-danger border border-dark fw-bold my-2">
-              * Lライン
-            </h2>
+            <h1 class="bg-light text-center text-white border border-dark fw-bold my-2" style="background-color: #fb8b4a !important;">
+              * LH
+            </h1>
 
             <!-- BL Table -->
             <div class="line-status mb-3">
               <table class="table table-bordered production-table text-center align-middle border-dark">
                   <thead class="table-secondary border-dark">
                       <tr>
-                          <th colspan="6" class="bg-warning text-white" style="background-color: #fb8b4a !important;">379ライン</th>
+                          <th colspan="6" class="bg-warning text-dark" style="background-color: #ffb3de !important;">B ライン</th>
                       </tr>
                       <tr>
                           <th>生産品番</th>
@@ -68,7 +68,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning text-white w-100" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(4)">供給間口<br>B-L1</button>
+                          <button type="button" class="btn btn-warning text-white w-100" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(4)">供給間口<br>L1</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -86,7 +86,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning text-white w-100" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(5)">供給間口<br>B-L2</button>
+                          <button type="button" class="btn btn-warning text-white w-100" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(5)">供給間口<br>L2</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -104,7 +104,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning text-white w-100" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(6)">供給間口<br>B-L3</button>
+                          <button type="button" class="btn btn-warning text-white w-100" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(6)">供給間口<br>L3</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -124,7 +124,7 @@
               <table class="table table-bordered production-table text-center align-middle border-dark">
                   <thead class="table-secondary border-dark">
                       <tr>
-                          <th colspan="6" class="bg-warning text-white" style="background-color: #fb8b4a !important;">377ライン</th>
+                          <th colspan="6" class="bg-warning text-dark" style="background-color: #98fb98 !important;">A ライン</th>
                       </tr>
                       <tr>
                           <th>生産品番</th>
@@ -144,7 +144,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning text-white w-100" style="background-color: #fb8b4a !important;" onclick="callToALineDepalletMaguchi(10)">供給間口<br>A-L1</button>
+                          <button type="button" class="btn btn-warning text-white w-100" style="background-color: #fb8b4a !important;" onclick="callToALineDepalletMaguchi(10)">供給間口<br>L1</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -162,7 +162,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning text-white w-100" style="background-color: #fb8b4a !important;" onclick="callToALineDepalletMaguchi(11)">供給間口<br>A-L2</button>
+                          <button type="button" class="btn btn-warning text-white w-100" style="background-color: #fb8b4a !important;" onclick="callToALineDepalletMaguchi(11)">供給間口<br>L2</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -180,7 +180,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning text-white w-100" style="background-color: #fb8b4a !important;" onclick="callToALineDepalletMaguchi(12)">供給間口<br>A-L3</button>
+                          <button type="button" class="btn btn-warning text-white w-100" style="background-color: #fb8b4a !important;" onclick="callToALineDepalletMaguchi(12)">供給間口<br>L3</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -210,16 +210,16 @@
           
           <!-- Right Side: Line A -->
           <div class="col-12 col-lg-6 border-end">
-            <h2 class="bg-light text-center text-danger border border-dark fw-bold my-2">
-              * Rライン
-            </h2>
+            <h1 class="bg-success text-center text-white border border-dark fw-bold my-2">
+              * RH
+            </h1>
 
             <!-- BR Table -->
             <div class="line-status mb-3">
               <table class="table table-bordered production-table text-center align-middle border-dark">
                   <thead class="table-secondary border-dark">
                       <tr>
-                          <th colspan="6" class="bg-primary text-white">378ライン</th>
+                          <th colspan="6" class="bg-primary text-dark" style="background-color: #ffb3de !important;">B ライン</th>
                       </tr>
                       <tr>
                           <th>生産品番</th>
@@ -239,7 +239,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-primary w-100" onclick="callToBLineDepalletMaguchi(1)">供給間口<br>B-R1</button>
+                          <button type="button" class="btn btn-success w-100" onclick="callToBLineDepalletMaguchi(1)">供給間口<br>R1</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -257,7 +257,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-primary w-100" onclick="callToBLineDepalletMaguchi(2)">供給間口<br>B-R2</button>
+                          <button type="button" class="btn btn-success w-100" onclick="callToBLineDepalletMaguchi(2)">供給間口<br>R2</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -275,7 +275,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-primary w-100" onclick="callToBLineDepalletMaguchi(3)">供給間口<br>B-R3</button>
+                          <button type="button" class="btn btn-success w-100" onclick="callToBLineDepalletMaguchi(3)">供給間口<br>R3</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -295,7 +295,7 @@
               <table class="table table-bordered production-table text-center align-middle border-dark">
                   <thead class="table-secondary border-dark">
                       <tr>
-                          <th colspan="6" class="bg-primary text-white">376ライン</th>
+                          <th colspan="6" class="bg-primary text-dark" style="background-color: #98fb98 !important;">A ライン</th>
                       </tr>
                       <tr>
                           <th>生産品番</th>
@@ -316,7 +316,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-primary w-100" onclick="callToALineDepalletMaguchi(7)">供給間口<br>A-R1</button>
+                          <button type="button" class="btn btn-success w-100" onclick="callToALineDepalletMaguchi(7)">供給間口<br>R1</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -334,7 +334,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-primary w-100" onclick="callToALineDepalletMaguchi(8)">供給間口<br>A-R2</button>
+                          <button type="button" class="btn btn-success w-100" onclick="callToALineDepalletMaguchi(8)">供給間口<br>R2</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -352,7 +352,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-primary w-100" onclick="callToALineDepalletMaguchi(9)">供給間口<br>A-R3</button>
+                          <button type="button" class="btn btn-success w-100" onclick="callToALineDepalletMaguchi(9)">供給間口<br>R3</button>
                         </th>
                       </tr>
                       <!-- <tr>

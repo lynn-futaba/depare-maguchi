@@ -231,10 +231,10 @@ class WCSRepository(IWCSRepository):
             cur = conn.cursor()
 
             if button_id in (1, 7): # ( Bライン=> R1 button_id 1, Aライン=> R1 button_id 7)
-                signal_ids = (8062, 8046, 8031, 8016, 8000) # ( Bライン/ Aライン, R1 => 5,4,3,2,1)
+                signal_ids = (8061, 8046, 8031, 8016, 8000) # ( Bライン/ Aライン, R1 => 5,4,3,2,1)
 
             elif button_id in (2, 8): # ( Bライン=> R2 button_id 2, Aライン=> R2 button_id 8)
-                signal_ids = (8062, 8046, 8031, 8016, 8000) # ( Bライン/ Aライン, R2 => 5,4,3,2,1)
+                signal_ids = (8061, 8046, 8031, 8016, 8000) # ( Bライン/ Aライン, R2 => 5,4,3,2,1)
 
             elif button_id in (3, 9): # ( Bライン=> R3 button_id 3, Aライン=> R3 button_id 9)
                 signal_ids = (8060, 8046, 8031) # ( Bライン/ Aライン, R3 => 5,4,3)

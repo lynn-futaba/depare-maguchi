@@ -14,9 +14,9 @@ $(document).ready(function () {
             url: "/api/get_depallet_area_by_plat",
             type: "POST",
             contentType: 'application/json',
-            // data: JSON.stringify({
-            //     button_id: idValue 
-            // }),
+            data: JSON.stringify({
+                button_id: idValue 
+            }),
             success: function (data) {
                 // console.log('get_depallet_area_by_plat >>', data); // TODO: testing
                 // updateTable(data);
@@ -36,7 +36,6 @@ $(document).ready(function () {
 
         // --- GLOBAL CONFIGURATION (Safe Fallbacks) ---
         let globalButtonIdMap = { };
-
         let globalShelfMap = { };
 
         // --- SYNC FUNCTION ---
@@ -60,128 +59,106 @@ $(document).ready(function () {
 
         function getDepalletAreaByPlat(data, idValue, nameValue) {
             const result = JSON.parse(data);
-
-            // // 1. Button → Plat (Data Source) mapping
-            // const buttonIdMap = { 
-            //     1: [29, 28, 27, 26, 25], // R1, Bライン, 間口[5,4,3,2,1] , フローラック➞1
-            //     2: [29, 28, 27, 26, 25], // R2, Bライン, 間口[5,4,3,2,1], フローラック➞1
-            //     3: [29, 28, 27],         // R3, Bライン, 間口[5,4,3], フローラック➞5
-            //     4: [29, 28, 27, 26, 25],// L1, Bライン, 間口[5,4,3,2,1] フローラック➞5
-            //     5: [29, 28, 27, 26, 25],// L2, Bライン, 間口[5,4,3,2,1] フローラック➞5
-            //     6: [27, 26, 25]         // L3, Bライン, 間口[3,2,1] フローラック➞1
-            // };
-
-            // // 2. Button → Shelf IDs (Display UI) mapping
-            // const shelfMap = {
-            //     1:  [5, 4, 3, 2, 1], 
-            //     2:  [5, 4, 3, 2, 1],
-            //     3:  [5, 4, 3],
-            //     4: [5, 4, 3, 2, 1],
-            //     5: [5, 4, 3, 2, 1],
-            //     6: [3, 2, 1]
-            // };
-
             const targetPlats = globalButtonIdMap[idValue] || [];
             const targetShelves = globalShelfMap[idValue] || [];
+            
+            // Use the inner container for cards
+            const container = document.getElementById("maguchiDynamicContainer");
+            const mainWrapper = document.getElementById("maguchiCards");
         
-            document.getElementById("frontageName").textContent = 'デパレ間口 <' + nameValue + '>';
+            // 1. SAFE UPDATE HEADER
+            const titleElem = document.getElementById("frontageName");
+            if (titleElem) {
+                titleElem.textContent = 'デパレ間口 <' + nameValue + '>';
+            }
         
+            // 2. CHECK VIEW STATE (Prevents Flashing)
+            const currentViewId = mainWrapper.getAttribute("data-current-view");
+            
+            if (currentViewId !== String(idValue)) {
+                // Rebuild structure only if ID changed
+                renderStructure(container, targetShelves);
+                mainWrapper.setAttribute("data-current-view", idValue);
+            }
+        
+            // 3. UPDATE VALUES WITHOUT RE-RENDERING
             targetShelves.forEach((shelfNum, shelfIndex) => {
                 const platId = targetPlats[shelfIndex];
                 const items = result[platId] || [];
-                const shelfId = `#shelf-${shelfNum}`;
-                const tbody = $(`${shelfId} tbody`);
-                const thead = $(`${shelfId} thead`);
-                const cardNo = $(`#card${shelfNum} tbody`);
+                const tbody = document.querySelector(`#shelf-${shelfNum} tbody`);
+                
+                if (!tbody) return; // Safety check if DOM isn't ready
         
-                // --- FLASH PREVENTION ---
-                // If the table header already exists, don't clear everything. 
-                // Just update the specific values.
-                if (thead.children().length > 0 && items.length > 0) {
-                    items.forEach((item) => {
-                        const stepKanbanNo = item.step_kanban_no ?? '-';
-                        const rowId = `row-${platId}-${stepKanbanNo}`;
-                        
-                        // Only update the numbers, don't re-draw the whole row
-                        $(`#take-count-${rowId}`).text(item.take_count ?? 0);
-                        // Update stock/load num
-                        $(`#${rowId} td:nth-child(3)`).text(item.load_num ?? 0); 
-                    });
-                    return; // Skip the rest of the function (no flashing!)
+                if (items.length === 0) {
+                    const noDataMsg = `間口${shelfNum}: データなし`;
+                    if (!tbody.innerText.includes(noDataMsg)) {
+                        tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-danger text-center">${noDataMsg}</td></tr>`;
+                    }
+                    return;
                 }
         
-                // --- INITIAL DRAW (Only happens once or when button changes) ---
-                thead.empty();
-                tbody.empty();
-                cardNo.empty();
-
-                if (items && items.length > 0) {
-                    // ✅ Add table header
-                    thead.append(`
-                        <tr>
-                            <th>対象 : 間口${shelfNum}</th>
-                            <th colspan="2">コタツ No : ${items[0]?.shelf_code ?? 'N/A'}</th>
-                            <th colspan="2">かんばん No : ${items[0]?.step_kanban_no ?? 'N/A'}</th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th>背番号</th>
-                            <th>在庫数</th>
-                            <th>取出数量</th>
-                            <th></th>
-                        </tr>
-                    `);
-
-                    // ✅ Populate rows
-                    items.forEach((item, idx) => {
-                        const stepKanbanNo = item.step_kanban_no ?? '-';
-                        const loadNum = item.load_num ?? 0;
-                        const takeCount = item.take_count ?? 0;
-                        const rowId = `row-${platId}-${stepKanbanNo}`;
-
-                        // Update flow rack info
-                        const flowRackNo = item.flow_rack_no ?? '-';
-                        $("#flow-rack-no").text(`対象フローラック No:${flowRackNo}`);
-
-                        // Add row to shelf table
-                        tbody.append(`
-                            <tr id="${rowId}">
-                                <td><button class="btn btn-success btn-sm submit-pallet" data-plat="${platId}" data-kanban="${stepKanbanNo}">＋</button></td>
-                                <td>${stepKanbanNo}</td>
-                                <td>${loadNum}</td>
-                                <td id="take-count-${rowId}">${takeCount}</td>
-                                <td><button class="btn btn-danger btn-sm submit-depallet" data-plat="${platId}" data-kanban="${stepKanbanNo}">ー</button></td>
-                            </tr>
-                        `);
-                        
-                        cardNo.append(`
-                            <tr id="${rowId}">
-                                <td>${stepKanbanNo}</td>
-                                <td id="take-count-${rowId}">${takeCount}</td>
-                            </tr>
-                        `);  
-                    });
-                } else {
-                    // ✅ Show "No data" message specifically for this shelf-id
-                    tbody.append(`
-                        <tr>
-                            <td colspan="5" class="p-3 text-danger text-center">
-                                間口${shelfNum}: データが見つかりません
-                            </td>
-                        </tr>
-                    `);
-                    cardNo.append(`
-                        <tr>
-                            <td colspan="2" class="text-danger text-center">
-                                データなし
-                            </td>
-                        </tr>
-                    `); 
-                }
+                items.forEach((item) => {
+                    const stepKanbanNo = item.step_kanban_no ?? '-';
+                    const rowId = `row-${platId}-${stepKanbanNo}`;
+                    let row = document.getElementById(rowId);
+        
+                    if (row) {
+                        // UPDATE ONLY IF DIFFERENT (Zero Flashing)
+                        const stockCell = row.cells[2];
+                        const takeCell = document.getElementById(`take-count-${rowId}`);
+        
+                        if (stockCell && stockCell.textContent !== String(item.load_num)) {
+                            stockCell.textContent = item.load_num ?? 0;
+                        }
+                        if (takeCell && takeCell.textContent !== String(item.take_count)) {
+                            takeCell.textContent = item.take_count ?? 0;
+                        }
+                    } else {
+                        // Create row if it doesn't exist (e.g. first load)
+                        if (tbody.innerText.includes("データなし")) tbody.innerHTML = "";
+                        $(tbody).append(createRowHtml(rowId, platId, stepKanbanNo, item));
+                    }
+                });
             });
         }
+        
+        function renderStructure(targetDiv, shelves) {
+            if (!targetDiv) return;
+            
+            // Clear only the dynamic cards, not the header
+            targetDiv.innerHTML = ''; 
+        
+            shelves.forEach(num => {
+                const cardHtml = `
+                    <div class="card mb-3">
+                        <div class="card-header text-center text-white bg-primary"><b>間口${num}</b></div>
+                        <div class="card-body text-center bg-light">
+                            <table class="table table-bordered" id="shelf-${num}">
+                                <thead>
+                                    <tr class="table-secondary">
+                                        <th></th><th>背番号</th><th>在庫数</th><th>取出数量</th><th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>`;
+                targetDiv.insertAdjacentHTML('beforeend', cardHtml);
+            });
+        }
+        
+        function createRowHtml(rowId, platId, stepKanbanNo, item) {
+            return `
+                <tr id="${rowId}">
+                    <td><button class="btn btn-success btn-sm submit-pallet" data-plat="${platId}" data-kanban="${stepKanbanNo}">＋</button></td>
+                    <td>${stepKanbanNo}</td>
+                    <td class="fw-bold">${item.load_num ?? 0}</td>
+                    <td id="take-count-${rowId}" class="fw-bold">${item.take_count ?? 0}</td>
+                    <td><button class="btn btn-danger btn-sm submit-depallet" data-plat="${platId}" data-kanban="${stepKanbanNo}">ー</button></td>
+                </tr>`;
+        }
 
-    }
+}
 
     // Attach event handler for '+' button clicks (submitPallet logic)
     $(document).on('click', '.submit-pallet', function() {
@@ -243,28 +220,9 @@ $(document).ready(function () {
         }
     
         console.log("Final Data for Submission:", finalData);
-    
-    // TODO: Implement your actual AJAX/Fetch call to the backend API here
-    // Example:
-    /*
-    $.ajax({
-        url: '/api/complete_work',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(finalData),
-        success: function(response) {
-            alert('作業完了しました！');
-            // Reload or refresh the UI as needed
-        },
-        error: function(error) {
-            console.error('Submission failed:', error);
-            alert('作業完了に失敗しました。');
-        }
-    });
-    */
     }
 
-// Attach the function to the button click event
+    // Attach the function to the button click event
     $('#completeWorkButton').on('click', submitWorkCompletion);
 
 
@@ -431,79 +389,6 @@ $(document).ready(function () {
         } else {
             console.warn(`Maguchi ID not found in getAMRDataStorage: ${maguchiIdStr}`);
         }
-    }
-
-   
-
-
-    //パレットおろし
-    // function depallet(frontage_id,part_id) {
-    //     $.ajax({
-    //         url: "/api/to_flow_rack",
-    //         type: "POST",
-    //         contentType: "application/json",
-    //         data: JSON.stringify({ "frontage_id": frontage_id,"part_id" :part_id }),
-    //         success: function (data) {
-    //             if (data["status"] === "success") {
-    //                 console.log('depallet >> to_flow_rack API', "OK");
-    //             } else {
-    //                 alert("depalletizing error");
-    //             }
-    //         },
-    //         error: function (error) {
-    //             console.log('depallet >> to_flow_rack API >> Error', error.status + ": " + error.responseText);
-    //             alert(error.status + ": " + error.responseText)
-    //         }
-    //     });
-    // }
-
-    //パレット戻し, + plus
-    // function pallet(frontage_id, part_id) {
-    //     $.ajax({
-    //         url: "/api/to_kotatsu",
-    //         type: "POST",
-    //         contentType: "application/json",
-    //         data: JSON.stringify({ "frontage_id": frontage_id, "part_id": part_id }),
-    //         success: function (data) {
-    //             if (data["status"] === "success") {
-    //                 console.log('pallet >> to_kotatsu API', "OK");
-    //             } else {
-    //                 alert("palletizing error");
-    //             }
-    //         },
-    //         error: function (error) {
-    //             console.log('pallet >> to_kotatsu API >> Error', error.status + ">> " + error.responseText);
-    //             alert(error.status + ": " + error.responseText)
-    //         }
-    //     });
-    // }
-
-    // コタツ返却. - minus
-    function returnKotatsu(id) {
-        // const frontage_id = element.getAttribute("data-id"); TODO: comment out
-        console.log('returnKotatsu >>', id);
-        const frontage_id = id;
-        const result = confirm(`間口 ${frontage_id}のコタツを返却します`);
-
-        if (result) {
-            $.ajax({
-                url: "/api/return_kotatsu",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({ "frontage_id": frontage_id}),
-                success: function (data) {
-                    if (data["status"] === "success") {
-                        console.log('returnKotatsu API >>', "OK");
-                    } else {
-                        alert("error");
-                    }
-                },
-                error: function (error) {
-                    console.log('returnKotatsu API >> Error', error);
-                    alert(error.status + ": " + error.responseText)
-                }
-            });
-        }     
     }
 });
 
