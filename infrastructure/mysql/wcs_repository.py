@@ -243,10 +243,10 @@ class WCSRepository(IWCSRepository):
                 signal_ids = (8260, 8246, 8231, 8216, 8201) # ( Bライン/ Aライン, L1 => 5,4,3,2,1)
 
             elif button_id in (5, 11): # ( Bライン=> L2 button_id 5, Aライン=> L2 button_id 11)
-                signal_ids = (8260, 8246, 8231, 8216, 8201) # ( Bライン/ Aライン, L2 => 4,3,2,1)
+                signal_ids = (8260, 8246, 8231, 8216, 8201) # ( Bライン/ Aライン, L2 => 5,4,3,2,1)
 
             elif button_id in (6, 12): # ( Bライン=> L3 button_id 6, Aライン=> L3 button_id 12)
-                signal_ids = (8231, 8216, 8200) # ( Bライン/ Aライン, L3 => 3,2)
+                signal_ids = (8231, 8216, 8200) # ( Bライン/ Aライン, L3 => 3,2,1)
 
             else:
                 logging.error(f"[WCSRepository >> call_target_ids() >> Invalid button_id]: {button_id}")

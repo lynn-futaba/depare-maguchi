@@ -6,6 +6,7 @@ import threading
 import asyncio
 
 from flask import Flask, render_template, request, jsonify, abort
+from config.config_loader import AppConfig
 from common.setup_logger import setup_log  # ログ用
 from config.config import BACKUP_DAYS, LOG_FOLDER, LOG_FILE   # ログ用
 from datetime import datetime
@@ -23,6 +24,7 @@ class DepalletWebServer:
         self.setup_routes()
         self.server_thread = None
         self.app.secret_key = 'secret_key'
+        self.config_loader = AppConfig()
 
     def start(self, host='0.0.0.0', port=5000):
 
@@ -42,14 +44,42 @@ class DepalletWebServer:
     def setup_routes(self):
         """ルート設定"""
         app = self.app
-
+        
         @app.route("/", methods=["GET"])
         def index():
             return render_template('index.html')
+        
+        # Add the NEW route at the bottom of your other routes
+        @app.route("/api/get_b_ui_config", methods=["GET"])
+        def get_b_ui_config():
+            # Use a try-except block so that even if this fails, 
+            # the rest of the server stays alive.
+            try:
+                data = self.config_loader.data
+                return jsonify({
+                    "buttonIdMap": data.get("b_button_id_map", {}),
+                    "shelfMap": data.get("b_shelf_map", {})
+                })
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
+            
+         # Add the NEW route at the bottom of your other routes
+        @app.route("/api/get_a_ui_config", methods=["GET"])
+        def get_a_ui_config():
+            # Use a try-except block so that even if this fails, 
+            # the rest of the server stays alive.
+            try:
+                data = self.config_loader.data
+                return jsonify({
+                    "buttonIdMap": data.get("a_button_id_map", {}),
+                    "shelfMap": data.get("a_shelf_map", {})
+                })
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
 
-        @app.route("/return_index")
-        def returns():
-            return render_template('index.html')
+        # @app.route("/return_index")
+        # def returns():
+        #     return render_template('index.html')
 
         # @app.route("/maguchi")
         # def maguchi_page():
@@ -264,21 +294,11 @@ class DepalletWebServer:
                         json.dump(config, f, ensure_ascii=False, indent=2)
                     os.replace(tmp_path, CONFIG_PATH)
 
-                    # === ADDED LOGIC FOR LIVE UPDATE ===
-                    # Trigger the reload in the config object owned by depallet_app
-                    # This ensures the memory is updated immediately after the file write
-                    # if hasattr(self._depallet_app, 'config'):
-                    #     self._depallet_app.config.reload()
-                    # ===================================
-
                     # ✅ Refresh one time
                     get_depallet_area_by_plat()
 
                     response = jsonify({"status": "success", "message": f"背番号 '{kanban_no}' を '{new_take_count}' に更新しました。", "updated": {kanban_no: new_take_count}})
                     return response
-               
-
-                # return jsonify({"status": "success", "message": "DB saved successfully"})
                 
             except Exception as e:
                 logging.error(f"[app.py >> update_take_count() >> ERROR] : {e}", exc_info=True)
