@@ -10,10 +10,69 @@ $(document).ready(function () {
         const idValue = parseInt(params.get("id"));
         const nameValue = params.get("name");
 
-        if (nameValue.includes("L")) {
-            document.getElementById("layout-L").style.display = "block";
-        } else {
-            document.getElementById("layout-normal").style.display = "block";
+        console.log("nameValue >>>.", nameValue);
+
+
+        if (nameValue.includes("R1")) {
+            document.getElementById("layout-R1").style.display = "block";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
+            
+        } 
+        else if (nameValue.includes("R2")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "block";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
+        }
+        else if (nameValue.includes("R3")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "block";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
+        }
+
+        else if (nameValue.includes("L1")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "block";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
+        }
+
+        else if (nameValue.includes("L2")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "block";
+            document.getElementById("layout-L3").style.display = "none";
+        }
+
+        else if (nameValue.includes("L3")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "block";
+        }
+        
+        else {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
         }
 
         $.ajax({
@@ -98,23 +157,24 @@ $(document).ready(function () {
                 const shelfId = `#shelf-${shelfNum}`;
                 const tbody = $(`${shelfId} tbody`);
                 const thead = $(`${shelfId} thead`);
-                const cardNo = $(`#card${shelfNum} tbody`);
+                let cardId = `#card${shelfNum}`;
+                let cardNo = $(`${cardId} tbody`);
         
                 // --- FLASH PREVENTION ---
                 // If the table header already exists, don't clear everything. 
                 // Just update the specific values.
-                if (thead.children().length > 0 && items.length > 0) {
-                    items.forEach((item) => {
-                        const stepKanbanNo = item.step_kanban_no ?? '-';
-                        const rowId = `row-${platId}-${stepKanbanNo}`;
+                // if (thead.children().length > 0 && items.length > 0) {
+                //     items.forEach((item) => {
+                //         const stepKanbanNo = item.step_kanban_no ?? '-';
+                //         const rowId = `row-${platId}-${stepKanbanNo}`;
                         
-                        // Only update the numbers, don't re-draw the whole row
-                        $(`#take-count-${rowId}`).text(item.take_count ?? 0);
-                        // Update stock/load num
-                        $(`#${rowId} td:nth-child(3)`).text(item.load_num ?? 0); 
-                    });
-                    return; // Skip the rest of the function (no flashing!)
-                }
+                //         // Only update the numbers, don't re-draw the whole row
+                //         $(`#take-count-${rowId}`).text(item.take_count ?? 0);
+                //         // Update stock/load num
+                //         $(`#${rowId} td:nth-child(3)`).text(item.load_num ?? 0); 
+                //     });
+                //     return; // Skip the rest of the function (no flashing!)
+                // }
         
                 // --- INITIAL DRAW (Only happens once or when button changes) ---
                 thead.empty();

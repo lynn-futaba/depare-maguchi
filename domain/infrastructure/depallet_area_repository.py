@@ -54,6 +54,10 @@ class IDepalletAreaRepository(ABC):
     def insert_kanban_sashi(self):
         pass
 
+    @abstractmethod  # TODO➞リン: added
+    def insert_kanban_yobi_dashi(self):
+        pass
+
     
 
     

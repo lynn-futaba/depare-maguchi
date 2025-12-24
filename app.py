@@ -49,7 +49,14 @@ class DepalletWebServer:
         def index():
             return render_template('index.html')
         
-        # Add the NEW route at the bottom of your other routes
+        @app.route("/ui/b_line/maguchi_r1", methods=["GET"])
+        def ui_b_line_maguchi_r1():
+            return render_template('b-line-maguchi-r1.html')
+        
+        @app.route("/ui/b_line/maguchi_r2", methods=["GET"])
+        def ui_b_line_maguchi_r2():
+            return render_template('b-line-maguchi-r2.html')
+        
         @app.route("/api/get_b_ui_config", methods=["GET"])
         def get_b_ui_config():
             # Use a try-except block so that even if this fails, 
@@ -63,7 +70,6 @@ class DepalletWebServer:
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
             
-         # Add the NEW route at the bottom of your other routes
         @app.route("/api/get_a_ui_config", methods=["GET"])
         def get_a_ui_config():
             # Use a try-except block so that even if this fails, 
@@ -139,6 +145,16 @@ class DepalletWebServer:
                 return jsonify({"status": "success"})
             except Exception as e:
                 logging.info(f"[app.py >> insert_kanban_sashi() >> エラー] : {e}")
+                return abort(400, str(e))
+            
+        @app.route("/api/insert_kanban_yobi_dashi", methods=["GET"])
+        def insert_kanban_yobi_dashi():
+            try:
+                logging.info("[app.py >> insert_kanban_yobi_dashi() >> 成功]")
+                self._depallet_app.insert_kanban_yobi_dashi()
+                return jsonify({"status": "success"})
+            except Exception as e:
+                logging.info(f"[app.py >> insert_kanban_yobi_dashi() >> エラー] : {e}")
                 return abort(400, str(e))
 
         @app.route("/api/line_frontage_click", methods=["POST"])
