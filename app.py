@@ -49,13 +49,13 @@ class DepalletWebServer:
         def index():
             return render_template('index.html')
         
-        @app.route("/ui/bline/maguchi_r1", methods=["GET"])
-        def ui_bline_maguchi_r1():
-            return render_template('bline-maguchi-r1.html')
+        @app.route("/ui/b_line/maguchi_r1", methods=["GET"])
+        def ui_b_line_maguchi_r1():
+            return render_template('b-line-maguchi-r1.html')
         
-        @app.route("/ui/bline/maguchi_r2", methods=["GET"])
-        def ui_bline_maguchi_r2():
-            return render_template('bline-maguchi-r2.html')
+        @app.route("/ui/b_line/maguchi_r2", methods=["GET"])
+        def ui_b_line_maguchi_r2():
+            return render_template('b-line-maguchi-r2.html')
         
         @app.route("/api/get_b_ui_config", methods=["GET"])
         def get_b_ui_config():

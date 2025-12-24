@@ -157,23 +157,24 @@ $(document).ready(function () {
                 const shelfId = `#shelf-${shelfNum}`;
                 const tbody = $(`${shelfId} tbody`);
                 const thead = $(`${shelfId} thead`);
-                const cardNo = $(`#card${shelfNum} tbody`);
+                let cardId = `#card${shelfNum}`;
+                let cardNo = $(`${cardId} tbody`);
         
                 // --- FLASH PREVENTION ---
                 // If the table header already exists, don't clear everything. 
                 // Just update the specific values.
-                if (thead.children().length > 0 && items.length > 0) {
-                    items.forEach((item) => {
-                        const stepKanbanNo = item.step_kanban_no ?? '-';
-                        const rowId = `row-${platId}-${stepKanbanNo}`;
+                // if (thead.children().length > 0 && items.length > 0) {
+                //     items.forEach((item) => {
+                //         const stepKanbanNo = item.step_kanban_no ?? '-';
+                //         const rowId = `row-${platId}-${stepKanbanNo}`;
                         
-                        // Only update the numbers, don't re-draw the whole row
-                        $(`#take-count-${rowId}`).text(item.take_count ?? 0);
-                        // Update stock/load num
-                        $(`#${rowId} td:nth-child(3)`).text(item.load_num ?? 0); 
-                    });
-                    return; // Skip the rest of the function (no flashing!)
-                }
+                //         // Only update the numbers, don't re-draw the whole row
+                //         $(`#take-count-${rowId}`).text(item.take_count ?? 0);
+                //         // Update stock/load num
+                //         $(`#${rowId} td:nth-child(3)`).text(item.load_num ?? 0); 
+                //     });
+                //     return; // Skip the rest of the function (no flashing!)
+                // }
         
                 // --- INITIAL DRAW (Only happens once or when button changes) ---
                 thead.empty();

@@ -57,106 +57,166 @@ $(document).ready(function () {
         // Run sync immediately on load
         syncUIConfig();
 
-        function getDepalletAreaByPlat(data, idValue, nameValue) {
-            const result = JSON.parse(data);
-            const targetPlats = globalButtonIdMap[idValue] || [];
-            const targetShelves = globalShelfMap[idValue] || [];
-            
-            // Use the inner container for cards
-            const container = document.getElementById("maguchiDynamicContainer");
-            const mainWrapper = document.getElementById("maguchiCards");
+        /**
+ * Updates the UI based on incoming JSON data.
+ * Prevents flashing by only updating text nodes if values have changed.
+ */
+function getDepalletAreaByPlat(data, idValue, nameValue) {
+    const result = JSON.parse(data);
+    const targetPlats = globalButtonIdMap[idValue] || [];
+    const targetShelves = globalShelfMap[idValue] || [];
+    
+    // Select main wrappers
+    const maguchiWrapper = document.getElementById("maguchiCards");
+    const flowWrapper = document.getElementById("flowRackWrapper");
+    
+    // Select inner containers where cards are injected
+    const maguchiContainer = document.getElementById("maguchiDynamicContainer");
+    const flowContainer = document.getElementById("flowRackDynamicContainer");
+
+    // 2. Structural Check: Rebuild UI only if the button ID changed
+    const currentViewId = maguchiWrapper.getAttribute("data-current-view");
+    const isNewView = currentViewId !== String(idValue);
+
+    if (isNewView) {
+        // Build Main Cards (Left Side)
+        renderMaguchiStructure(maguchiContainer, targetShelves);
+        // Build Flow Rack Cards (Right Side - ②③④⑤)
+        renderFlowRackStructure(flowContainer, targetShelves);
         
-            // 1. SAFE UPDATE HEADER
-            const titleElem = document.getElementById("frontageName");
-            if (titleElem) {
-                titleElem.textContent = 'デパレ間口 <' + nameValue + '>';
-            }
+        // Mark current view state
+        maguchiWrapper.setAttribute("data-current-view", idValue);
+        if (flowWrapper) flowWrapper.setAttribute("data-current-view", idValue);
+    }
+
+    // 3. Update Values (No-Flash Logic)
+    targetShelves.forEach((shelfNum, shelfIndex) => {
+        const platId = targetPlats[shelfIndex];
+        const items = result[platId] || [];
         
-            // 2. CHECK VIEW STATE (Prevents Flashing)
-            const currentViewId = mainWrapper.getAttribute("data-current-view");
-            
-            if (currentViewId !== String(idValue)) {
-                // Rebuild structure only if ID changed
-                renderStructure(container, targetShelves);
-                mainWrapper.setAttribute("data-current-view", idValue);
-            }
-        
-            // 3. UPDATE VALUES WITHOUT RE-RENDERING
-            targetShelves.forEach((shelfNum, shelfIndex) => {
-                const platId = targetPlats[shelfIndex];
-                const items = result[platId] || [];
-                const tbody = document.querySelector(`#shelf-${shelfNum} tbody`);
-                
-                if (!tbody) return; // Safety check if DOM isn't ready
-        
-                if (items.length === 0) {
-                    const noDataMsg = `間口${shelfNum}: データなし`;
-                    if (!tbody.innerText.includes(noDataMsg)) {
-                        tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-danger text-center">${noDataMsg}</td></tr>`;
-                    }
-                    return;
-                }
-        
-                items.forEach((item) => {
-                    const stepKanbanNo = item.step_kanban_no ?? '-';
-                    const rowId = `row-${platId}-${stepKanbanNo}`;
-                    let row = document.getElementById(rowId);
-        
-                    if (row) {
-                        // UPDATE ONLY IF DIFFERENT (Zero Flashing)
-                        const stockCell = row.cells[2];
-                        const takeCell = document.getElementById(`take-count-${rowId}`);
-        
-                        if (stockCell && stockCell.textContent !== String(item.load_num)) {
-                            stockCell.textContent = item.load_num ?? 0;
-                        }
-                        if (takeCell && takeCell.textContent !== String(item.take_count)) {
-                            takeCell.textContent = item.take_count ?? 0;
-                        }
-                    } else {
-                        // Create row if it doesn't exist (e.g. first load)
-                        if (tbody.innerText.includes("データなし")) tbody.innerHTML = "";
-                        $(tbody).append(createRowHtml(rowId, platId, stepKanbanNo, item));
-                    }
-                });
-            });
+        // Get Table Body references
+        const tbodyMaguchi = document.querySelector(`#shelf-${shelfNum} tbody`);
+        const tbodyFlow = document.querySelector(`#flow-tbody-${shelfNum}`);
+
+        // Handle "No Data" state
+        if (items.length === 0) {
+            handleNoData(tbodyMaguchi, `間口${shelfNum}: データなし`, 5);
+            handleNoData(tbodyFlow, `データなし`, 2);
+            return;
         }
+
+        // Iterate through items and update rows
+        items.forEach((item) => {
+            const stepKanbanNo = item.step_kanban_no ?? '-';
+            const loadNum = String(item.load_num ?? 0);
+            const takeCount = String(item.take_count ?? 0);
+
+            // --- Update Maguchi Table ---
+            updateOrCreateRow(tbodyMaguchi, `row-${platId}-${stepKanbanNo}`, platId, stepKanbanNo, loadNum, takeCount, "maguchi");
+
+            // --- Update Flow Rack Table ---
+            updateOrCreateRow(tbodyFlow, `flow-row-${platId}-${stepKanbanNo}`, platId, stepKanbanNo, loadNum, takeCount, "flow");
+        });
+    });
+}
+
+/**
+ * Logic to update existing text or append new rows if missing
+ */
+function updateOrCreateRow(tbody, rowId, platId, kanban, load, take, type) {
+    let row = document.getElementById(rowId);
+
+    if (row) {
+        // UPDATE: Only change text if it's different to prevent flashing
+        if (type === "maguchi") {
+            if (row.cells[2].textContent !== load) row.cells[2].textContent = load;
+            const takeCell = document.getElementById(`take-count-${rowId}`);
+            if (takeCell && takeCell.textContent !== take) takeCell.textContent = take;
+        } else {
+            if (row.cells[1].textContent !== take) row.cells[1].textContent = take;
+        }
+    } else {
+        // CREATE: Append if not found
+        if (tbody.innerText.includes("データなし")) tbody.innerHTML = "";
         
-        function renderStructure(targetDiv, shelves) {
-            if (!targetDiv) return;
+        const html = (type === "maguchi") 
+            ? `<tr id="${rowId}">
+                <td><button class="btn btn-success btn-sm submit-pallet" data-plat="${platId}" data-kanban="${kanban}">＋</button></td>
+                <td>${kanban}</td>
+                <td class="fw-bold">${load}</td>
+                <td id="take-count-${rowId}" class="fw-bold">${take}</td>
+                <td><button class="btn btn-danger btn-sm submit-depallet" data-plat="${platId}" data-kanban="${kanban}">ー</button></td>
+               </tr>`
+            : `<tr id="${rowId}"><td>${kanban}</td><td class="fw-bold">${take}</td></tr>`;
             
-            // Clear only the dynamic cards, not the header
-            targetDiv.innerHTML = ''; 
-        
-            shelves.forEach(num => {
-                const cardHtml = `
-                    <div class="card mb-3">
-                        <div class="card-header text-center text-white bg-primary"><b>間口${num}</b></div>
-                        <div class="card-body text-center bg-light">
-                            <table class="table table-bordered" id="shelf-${num}">
-                                <thead>
-                                    <tr class="table-secondary">
-                                        <th></th><th>背番号</th><th>在庫数</th><th>取出数量</th><th></th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    </div>`;
-                targetDiv.insertAdjacentHTML('beforeend', cardHtml);
-            });
+        $(tbody).append(html);
+    }
+}
+
+/**
+ * Re-renders the Main Card column (1 column layout)
+ */
+function renderMaguchiStructure(container, shelves) {
+    container.innerHTML = ''; 
+    shelves.forEach(num => {
+        container.insertAdjacentHTML('beforeend', `
+            <div class="card mb-3">
+                <div class="card-header text-center text-white bg-primary"><b>間口${num}</b></div>
+                <div class="card-body p-0">
+                    <table class="table table-bordered mb-0 text-center" id="shelf-${num}">
+                        <thead class="table-secondary">
+                            <tr><th></th><th>背番号</th><th>在庫数</th><th>取出数量</th><th></th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>`);
+    });
+}
+
+/**
+ * Re-renders the Flow Rack column (2 column grid: ②③ / ④⑤)
+ */
+function renderFlowRackStructure(container, shelves) {
+    container.innerHTML = '';
+    const circleMap = { 1: "①", 2: "②", 3: "③", 4: "④", 5: "⑤" };
+    
+    // Filter out the shelf with value 1
+    const filteredShelves = shelves.filter(num => num !== 1);
+
+    let gridHtml = '<div class="row g-3">';
+
+    filteredShelves.forEach((num, index) => {
+        // Create a new row after every 2 items
+        if (index > 0 && index % 2 === 0) {
+            gridHtml += '</div><div class="row g-3 mt-1">';
         }
-        
-        function createRowHtml(rowId, platId, stepKanbanNo, item) {
-            return `
-                <tr id="${rowId}">
-                    <td><button class="btn btn-success btn-sm submit-pallet" data-plat="${platId}" data-kanban="${stepKanbanNo}">＋</button></td>
-                    <td>${stepKanbanNo}</td>
-                    <td class="fw-bold">${item.load_num ?? 0}</td>
-                    <td id="take-count-${rowId}" class="fw-bold">${item.take_count ?? 0}</td>
-                    <td><button class="btn btn-danger btn-sm submit-depallet" data-plat="${platId}" data-kanban="${stepKanbanNo}">ー</button></td>
-                </tr>`;
-        }
+
+        gridHtml += `
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header text-white text-center fw-bold bg-primary">${circleMap[num] || num}</div>
+                    <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center">
+                            <thead class="table-light"><tr><th>背番号</th><th>取出数量</th></tr></thead>
+                            <tbody id="flow-tbody-${num}"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>`;
+    });
+
+    container.innerHTML = gridHtml + '</div>';
+}
+
+/**
+ * Simple helper for No Data messages
+ */
+function handleNoData(tbody, msg, colspan) {
+    if (tbody && !tbody.innerHTML.includes(msg)) {
+        tbody.innerHTML = `<tr><td colspan="${colspan}" class="p-3 text-danger text-center">${msg}</td></tr>`;
+    }
+}
 
 }
 

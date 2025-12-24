@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>フタバ知立_B R1ライン</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <link href="../../static/css/depallet/maguchi.css" rel="stylesheet" />
+    <!-- Your custom CSS -->
+    <link href="../../static/css/depallet/header.css" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" />
+</head>
+<body>
+
+  <div class="depallet" style="height: 100vh;">
+    <div>
+      <div class="depallet-header container d-flex justify-content-between align-items-center my-3">
+        <h1 class="title m-2">デパレ間口 <Bライン(R1)> </h1>
+        <div class="">
+            <form method="get" action="/" class="m-0">
+                <button type="button" class="btn btn-danger" onclick="window.top.location.href='/'">戻る</button>
+            </form>
+        </div>
+    </div>
+    </div>
+    <div class="full-height d-flex justify-content-center align-items-center">
+      <div class="container" style="height: 90vh;">
+        <div class="row w-100">
+          <div class="col-7" id="maguchiCards" data-current-view="">
+              <h5 class="text-center">コタツ部品</h5>
+              <div id="maguchiDynamicContainer"></div>
+          </div>
+      
+          <div class="col-5" id="flowRackWrapper" data-current-view="">
+            <h5 class="text-center">フローラック部品</h5>
+              <div id="flowRackDynamicContainer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+<!-- jQuery -->
+<script src="../../static/js/jquery-3.7.0.min.js"></script>
+<!-- Your custom JS -->
+<script src="../../static/js/b-line-maguchi-r1.js"></script>
+<script src="../../static/js/common.js"></script>
+<!-- Bootstrap JS Bundle (Popper + Bootstrap) -->
+<script src="../../static/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
