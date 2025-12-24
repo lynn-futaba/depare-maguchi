@@ -335,7 +335,8 @@ class WCSRepository(IWCSRepository):
     #         cur.close()
     #         conn.close()
     #     return
-    
+
+    # デパレ箱数登録
     def dispallet(self, depallet_area):
         logging.info("[WCSRepository >> dispallet] Function called")
 

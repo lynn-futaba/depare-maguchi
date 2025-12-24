@@ -146,6 +146,16 @@ class DepalletWebServer:
             except Exception as e:
                 logging.info(f"[app.py >> insert_kanban_sashi() >> エラー] : {e}")
                 return abort(400, str(e))
+            
+        @app.route("/api/insert_kanban_yobi_dashi", methods=["GET"])
+        def insert_kanban_yobi_dashi():
+            try:
+                logging.info("[app.py >> insert_kanban_yobi_dashi() >> 成功]")
+                self._depallet_app.insert_kanban_yobi_dashi()
+                return jsonify({"status": "success"})
+            except Exception as e:
+                logging.info(f"[app.py >> insert_kanban_yobi_dashi() >> エラー] : {e}")
+                return abort(400, str(e))
 
         @app.route("/api/line_frontage_click", methods=["POST"])
         def line_frontage_click():

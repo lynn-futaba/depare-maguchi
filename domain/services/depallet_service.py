@@ -185,6 +185,15 @@ class DepalletService:
         except Exception as e:
             logging.error(f"[DepalletService >> insert_kanban_sashi() >> エラー]: {e}")
             raise Exception(f"[DepalletService >> insert_kanban_sashi() >> エラー]: {e}")
+        
+    # insert kanban yobi dashi
+    def insert_kanban_yobi_dashi(self):
+        try:
+            logging.info("[DepalletService >> insert_kanban_yobi_dashi() >> 成功]")
+            self.depallet_area_repo.insert_kanban_yobi_dashi()
+        except Exception as e:
+            logging.error(f"[DepalletService >> insert_kanban_yobi_dashi() >> エラー]: {e}")
+            raise Exception(f"[DepalletService >> insert_kanban_yobi_dashi() >> エラー]: {e}")
 
 
 if __name__ == "__main__":

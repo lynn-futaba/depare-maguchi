@@ -178,6 +178,14 @@ class DepalletApplication():
         except Exception as e:
             logging.error(f"[DepalletApplication >> insert_kanban_sashi() >> エラー] : {e}")
             raise Exception(f"DepalletApplication >> insert_kanban_sashi >> エラー]: {e}")
+    
+    def insert_kanban_yobi_dashi(self):
+        try:
+            logging.info("[DepalletApplication >> insert_kanban_yobi_dashi() >> 成功]")
+            self.depallet_service.insert_kanban_yobi_dashi()
+        except Exception as e:
+            logging.error(f"[DepalletApplication >> insert_kanban_yobi_dashi() >> エラー] : {e}")
+            raise Exception(f"DepalletApplication >> insert_kanban_yobi_dashi >> エラー]: {e}")
 
     # コタツに部品を戻す
     def return_part(self, frontage_id: int, part_id: int):

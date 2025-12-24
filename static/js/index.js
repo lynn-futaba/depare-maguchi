@@ -99,11 +99,11 @@ $(document).ready(function () {
         }  
     };
 
-    // 定期実行 
-    setInterval(refreshPage, 5000); // TODO
-    $('#refreshButton').on('click', function () {
-        refreshPage();
-    });
+    // 定期実行 TODO: comment out
+    // setInterval(refreshPage, 5000); // TODO
+    // $('#refreshButton').on('click', function () {
+    //     refreshPage();
+    // });
 });
 
 // TODO: call to B LINE Depallet Maguchi
@@ -240,7 +240,7 @@ function callToALineDepalletMaguchi(id) {
     } 
 }
 
-// TODO: かんばん抜きの発信を呼び出し
+// TODO: かんばん抜きの発進を呼び出し
 function submitKanbanNuki() {
     $.ajax({
         url: "/api/insert_kanban_nuki",
@@ -248,15 +248,15 @@ function submitKanbanNuki() {
         contentType: "application/json",
         success: function (data) {
             console.log("insert_kanban_nuki >> data >>", data);
-            alert("✅ かんばん抜きの発信を呼び出ました!");
+            alert("✅ かんばん抜きの発進を呼び出ました!");
         },
         error: function (error) {
-            alert("❌ かんばん抜きの発信を呼び出せません", error);
+            alert("❌ かんばん抜きの発進を呼び出せません", error);
         }
     });
 }
 
-// TODO: かんばん差しの発信を呼び出し
+// TODO: かんばん差しの発進を呼び出し
 function submitKanbanSashi() {
     $.ajax({
         url: "/api/insert_kanban_sashi",
@@ -264,10 +264,26 @@ function submitKanbanSashi() {
         contentType: "application/json",
         success: function (data) {
             console.log("insert_kanban_sashi >> data >>", data);
-            alert("✅ かんばん差しの発信を呼び出ました!");
+            alert("✅ かんばん差しの発進を呼び出ました!");
         },
         error: function (error) {
-            alert("❌ かんばん差しの発信を呼び出せません", error);
+            alert("❌ かんばん差しの発進を呼び出せません", error);
+        }
+    });
+}
+
+// TODO: かんばん呼び出しの発進を呼び出し
+function submitKanbanYobiDashi() {
+    $.ajax({
+        url: "/api/insert_kanban_yobi_dashi",
+        type: "GET",
+        contentType: "application/json",
+        success: function (data) {
+            console.log("insert_kanban_yobi_dashi >> data >>", data);
+            alert("✅ かんばん呼び出しの発進を呼び出ました!");
+        },
+        error: function (error) {
+            alert("❌ かんばん呼び出しの発進を呼び出せません", error);
         }
     });
 }
