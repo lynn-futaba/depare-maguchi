@@ -589,6 +589,8 @@ function callAMRReturn() {
             if (response.status === "success") {
                 confirm("✅ Bライン >> AMRの呼び出しに成功しました！");
                 console.log("Bライン >> AMRの呼び出しに成功しました！ Sent IDs:", buttonId);
+                // 3. Try to close it anyway (works if opened via script)
+                window.close();
             } else {
                 alert(response.message || "更新に失敗しました (Update failed).");
                 console.warn("Bライン >> AMR return Update failed:", response.message);
@@ -597,6 +599,34 @@ function callAMRReturn() {
         error: function(xhr, status, error) {
             console.error("Error updating Bライン >> AMR return:", error);
             alert("Bライン AMR return>> サーバーエラーが発生しました.");
+        }
+    }); 
+}
+
+function callAMRFlowrackOnly() { 
+
+    const params = new URLSearchParams(window.location.search);
+    const buttonId = parseInt(params.get("id"));
+    
+    $.ajax({
+        url: "/api/call_AMR_flowrack_only",
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            button_id: buttonId 
+        }),
+        success: function(response) {
+            if (response.status === "success") {
+                confirm("✅ Bライン >> AMRフローラックの呼び出しに成功しました！");
+                console.log("Bライン >> AMRフローラックの呼び出しに成功しました！ Sent IDs:", buttonId);
+            } else {
+                alert(response.message || "更新に失敗しました (Update failed).");
+                console.warn("Bライン >> AMRフローラック return Update failed:", response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error updating Bライン >> AMRフローラック return:", error);
+            alert("Bライン AMRフローラック return>> サーバーエラーが発生しました.");
         }
     }); 
 }

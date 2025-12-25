@@ -47,6 +47,10 @@ class IDepalletAreaRepository(ABC):
         pass
 
     @abstractmethod  # TODO➞リン: added
+    def call_AMR_flowrack_only(self, line_frontage_id: int):
+        pass
+
+    @abstractmethod  # TODO➞リン: added
     def insert_kanban_nuki(self):
         pass
 

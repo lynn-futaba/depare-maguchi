@@ -10,13 +10,6 @@
   font-size: 1.15rem;
 }
 
-/* Bigger tables */
-.table th,
-.table td {
-  padding: 16px 12px;
-  font-size: 1.1rem;
-}
-
 /* More vertical spacing between sections */
 .line-status {
   margin-bottom: 24px;
@@ -36,7 +29,6 @@
 
   .table th,
   .table td {
-    padding: 18px 14px;
     font-size: 1.15rem;
   }
 }

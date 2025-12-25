@@ -403,6 +403,66 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             if cur: cur.close()
             if conn: conn.close()
 
+    # TODO➞リン: AMRフローラック発進
+    def call_AMR_flowrack_only(self, line_frontage_id):
+        signal_map = {
+            "hashiru_ni": {
+                1: 8002, # R1 間口 1 => button_id 1
+                2: 8002, # R2 間口 1 => button_id 2
+                3: 8062, # R3 間口 5 => button_id 3
+                4: 8262, # L1 間口 5=> button_id 4
+                5: 8262, # L2 間口 5=> button_id 5
+                6: 8202, # L3 間口 1 => button_id 6
+                # Aライン
+                7: 8002, # R1 間口 5=> button_id 7
+                8: 8002, # R2 間口 5=> button_id 8
+                9: 8062, # R3 間口 5=> button_id 9
+                10:8262, # L1 間口 4,3,2,1 => button_id 10
+                11:8262, # L2 間口 4,3,2,1 => button_id 11
+                12:8202, # L3 間口 1 => button_id 12
+            },
+        }
+
+        if line_frontage_id not in range(1, 13):
+            raise ValueError(f"Invalid 供給間口ID: {line_frontage_id}")
+        
+        conn = None
+        cur = None
+        try:
+            conn = self.db.wcs_pool.get_connection()
+            cur = conn.cursor()
+
+            # Ensure ids_3 is a list
+            raw_val = signal_map["hashiru_ni"].get(line_frontage_id)
+            ids_3 = [raw_val] if raw_val is not None else []
+
+            if ids_3:
+                placeholders = ','.join(['%s'] * len(ids_3))
+                
+                # Pulse ON
+                sql_on = f"UPDATE eip_signal.word_input SET value = 1 WHERE signal_id IN ({placeholders})"
+                cur.execute(sql_on, ids_3)
+                conn.commit()
+                logging.info(f"[DepalletAreaRepository >> call_AMR_flowrack_only()] SET ON for ID: {line_frontage_id}")
+
+                time.sleep(5)
+
+                # Pulse OFF
+                sql_off = f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders})"
+                cur.execute(sql_off, ids_3)
+                conn.commit()
+                logging.info(f"[DepalletAreaRepository >> call_AMR_flowrack_only()] SET OFF for ID: {line_frontage_id}")
+                
+        except Exception as e:
+            if conn:
+                conn.rollback()
+            logging.error(f"[DepalletAreaRepository >> call_AMR_flowrack_only() >> エラー]: {e}")
+            raise e
+        finally:
+            if cur: cur.close()
+            if conn: conn.close()
+
+
     def get_depallet_area_by_plat(self, plat_id_list: list):
         """
         Build update_frontages for plats 29-20 (or custom plat_id_list).
@@ -586,34 +646,19 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             conn = self.db.wcs_pool.get_connection()
             cur = conn.cursor()
 
-            # 1. Get the current value
-            sql_select = "SELECT value FROM `eip_signal`.word_input WHERE signal_id = 4501"
-            cur.execute(sql_select)
-            row = cur.fetchone()
-            
-            if row is None:
-                logging.error("[DepalletAreaRepository >> insert_kanban_yobi_dashi() >> Signal ID 4501 not found.]")
-                return
-
-            current_value = int(row[0])
-            
-            # 2. Determine the first flip (0 -> 1 or 1 -> 0)
-            first_new_value = 1 if current_value == 0 else 0
-
-            # 3. Apply the first update
-            sql_update = "UPDATE `eip_signal`.word_input SET value = %s WHERE signal_id = 4501"
-            cur.execute(sql_update, (first_new_value,))
+            # Pulse ON
+            sql_on = f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id = 4501"
+            cur.execute(sql_on)
             conn.commit()
-            logging.info(f"[DepalletAreaRepository >> insert_kanban_yobi_dashi() >> Kanban Yobi Dashi: Value toggled to]: {first_new_value}")
+            logging.info(f"[DepalletAreaRepository >> insert_kanban_yobi_dashi()] SET ON (value 1) for ID")
 
-            # 4. Wait for 5 seconds
             time.sleep(5)
 
-            # 5. Flip it back to the original value
-            # (If it was 0, it became 1, now it goes back to 0)
-            cur.execute(sql_update, (current_value,))
+            # Pulse OFF
+            sql_off = f"UPDATE eip_signal.word_input SET value = 1 WHERE signal_id = 4501"
+            cur.execute(sql_off)
             conn.commit()
-            logging.info(f"[DepalletAreaRepository >> insert_kanban_yobi_dashi() >> Kanban Yobi Dashi: Value restored to]: {current_value}")
+            logging.info(f"[DepalletAreaRepository >> insert_kanban_yobi_dashi()] SET OFF (value 0) for ID")
 
         except Exception as e:
             if conn:
