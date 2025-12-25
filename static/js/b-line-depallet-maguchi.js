@@ -180,7 +180,6 @@ $(document).ready(function () {
                 thead.empty();
                 tbody.empty();
                 cardNo.empty();
-
                 if (items && items.length > 0) {
                     // ✅ Add table header
                     thead.append(`

@@ -123,7 +123,6 @@ $(document).ready(function () {
 
         function getDepalletAreaByPlat(data, idValue, nameValue) {
             const result = JSON.parse(data);
-
              // 1. Button → Plat (Data Source) mapping
             // const buttonIdMap = { 
             //     7: [24, 23, 22, 21, 20], // R1, Aライン, 間口[5,4,3,2,1] , フローラック➞1
@@ -178,7 +177,6 @@ $(document).ready(function () {
                 thead.empty();
                 tbody.empty();
                 cardNo.empty();
-
                 if (items && items.length > 0) {
                     // ✅ Add table header
                     thead.append(`
