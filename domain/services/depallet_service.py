@@ -157,7 +157,15 @@ class DepalletService:
         except Exception as e:
             logging.error(f"[DepalletService >> call_AMR_return() >> エラー]: {e}")
             raise Exception(f"[DepalletService >> call_AMR_return() >> エラー]: {e}")
-
+        
+    def call_AMR_flowrack_only(self, line_frontage_id):
+        try:
+            logging.info("[DepalletService >> call_AMR_flowrack_only() >> 成功]")
+            self.depallet_area_repo.call_AMR_flowrack_only(line_frontage_id)
+        except Exception as e:
+            logging.error(f"[DepalletService >> call_AMR_flowrack_only() >> エラー]: {e}")
+            raise Exception(f"[DepalletService >> call_AMR_flowrack_only() >> エラー]: {e}")
+        
     # update new depallet area
     def get_depallet_area_by_plat(self, plat_id_list: list):
         try:

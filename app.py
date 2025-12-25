@@ -40,6 +40,8 @@ class DepalletWebServer:
             self.server_thread.start()
             logging.info(f"Web server started at http://{host}:{port}")
             return self
+    
+    
 
     def setup_routes(self):
         """ルート設定"""
@@ -267,7 +269,10 @@ class DepalletWebServer:
                 logging.error(f"[app.py >> get_depallet_area_by_plat() >> エラー]: {e}")
                 return abort(400, str(e))
 
+
         # 取出数量 更新
+        file_lock = threading.Lock()
+        
         @app.route('/api/update_take_count', methods=['POST'])
         def update_take_count():
             kanban_no = str(request.json.get('kanban_no'))
@@ -333,8 +338,20 @@ class DepalletWebServer:
             except Exception as e:
                 logging.error(f"[app.py >> call_AMR_return() >> エラー] : {e}")
                 return abort(400, str(e))
+            
+        
+        @app.route("/api/call_AMR_flowrack_only", methods=["POST"])
+        def call_AMR_flowrack_only():
+            try:
+                button_id = request.json.get('button_id') 
+                self._depallet_app.call_AMR_flowrack_only(button_id) 
+                logging.info(f"[app.py >> call_AMR_flowrack_only() >> success]")
+                return jsonify({"status": "success", "message": "call AMR flowrack only return successfully"})
+            except Exception as e:
+                logging.error(f"[app.py >> call_AMR_flowrack_only() >> エラー] : {e}")
+                return abort(400, str(e))
 
-        file_lock = threading.Lock()
+        
 
 
 if __name__ == "__main__":

@@ -162,7 +162,15 @@ class DepalletApplication():
         except Exception as e:
             logging.error(f"[DepalletApplication >> call_AMR_return() >> エラー] : {e}")
             raise Exception(f"DepalletApplication >> call_AMR_return() >> エラー]: {e}")
-
+        
+    def call_AMR_flowrack_only(self, line_frontage_id):
+        try:
+            logging.info("[DepalletApplication >> call_AMR_flowrack_only() >> 成功]")
+            self.depallet_service.call_AMR_flowrack_only(line_frontage_id)
+        except Exception as e:
+            logging.error(f"[DepalletApplication >> call_AMR_flowrack_only() >> エラー] : {e}")
+            raise Exception(f"DepalletApplication >> call_AMR_flowrack_only() >> エラー]: {e}")
+        
     def insert_kanban_nuki(self):
         try:
             logging.info("[DepalletApplication >> insert_kanban_nuki() >> 成功]")
