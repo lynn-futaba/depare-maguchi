@@ -34,16 +34,18 @@
 <body>
 
   <div class="depallet" style="height: 100vh;">
-    <div>
-      <div class="depallet-header container d-flex justify-content-between align-items-center my-3">
-        <h1 class="title m-2" id="frontageName"></h1>
-        <div class="">
-            <form method="get" action="/" class="m-0">
-                <button type="button" class="btn btn-danger" onclick="window.top.location.href='/'">戻る</button>
-            </form>
-        </div>
-    </div>
-    </div>
+    <div class="row my-2">
+      <div class="col-2 text-center text-success fw-bold fs-1"> 
+          FUTABA
+      </div>
+      <div class="col-8"> 
+        <p class="m-2 text-center text-success fw-bold fs-1" id="frontageName"></p>
+      </div>
+      <div class="col-2 text-center mt-2">
+        <button type="button" class="btn btn-danger btn-lg" onclick="window.top.location.href='/'">← 戻る</button>
+      </div>
+    </div><hr>
+
     <div class="full-height d-flex justify-content-center align-items-center">
       <div class="container" style="height: 90vh;">
         <div class="row h-100">
@@ -54,15 +56,14 @@
               </button>
             </div> -->
 
-            <div id="maguchiCards">
-
+            <div id="maguchiCards" class="fs-4">
               <div class="row text-center mb-2">
                 <div class="col-12">
                     <h5>コタツ部品</h5>
                 </div>
               </div>
               <div class="card mb-3">
-                <div class="card-header text-center text-white bg-primary">
+                <div class="card-header text-white text-center bg-success">
                   <b>間口5</b>
                 </div>
                 <div class="card-body text-center bg-light">
@@ -76,7 +77,7 @@
               </div>
 
               <div class="card mb-3">
-                <div class="card-header text-white text-center bg-primary">
+                <div class="card-header text-white text-center bg-success">
                   <b>間口4</b>
                 </div>
                 <div class="card-body text-center bg-light">
@@ -89,7 +90,7 @@
               </div>
 
               <div class="card mb-3">
-                <div class="card-header text-white text-center bg-primary">
+                <div class="card-header text-white text-center bg-success">
                   <b>間口3</b>
                 </div>
                 <div class="card-body text-center bg-light">
@@ -102,7 +103,7 @@
               </div>
 
               <div class="card mb-3">
-                <div class="card-header text-white text-center bg-primary">
+                <div class="card-header text-white text-center bg-success">
                   <b>間口2</b>
                 </div>
                 <div class="card-body text-center bg-light">
@@ -115,7 +116,7 @@
               </div>
 
               <div class="card mb-3">
-                <div class="card-header text-white text-center bg-primary">
+                <div class="card-header text-white text-center bg-success">
                   <b>間口1</b>
                 </div>
                 <div class="card-body text-center bg-light">
@@ -129,443 +130,450 @@
           </div>
 
           <div class="col-5 h-100">
-            
-<div class="container mb-4">
+            <div class="container mb-4 fs-4">
 
-  <div class="row text-center">
-    <div class="col-12">
-        <h5>フローラック部品</h5> <!-- 投入部品画面 -->
-    </div>
-  </div>
+              <div class="row text-center">
+                <div class="col-12">
+                    <h5>フローラック部品</h5> <!-- 投入部品画面 -->
+                </div>
+              </div>
 
-<!-- <div class="row text-end">
-  <div class="col-12">
-    <p id="flow-rack-no">対象フローラックNo:</p>
-  </div>
-</div> -->
-  
-<!-- Layout for R1 -->
-<div id="layout-R1" style="display:none;">
-  <div class="row g-3">
-    <!-- Cards ② and ③ -->
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">②</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card2">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">③</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card3">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+              <!-- <div class="row text-end">
+                <div class="col-12">
+                  <p id="flow-rack-no">対象フローラックNo:</p>
+                </div>
+              </div> -->
+              
+              <!-- Layout for R1 -->
+              <div id="layout-R1" style="display:none;">
+                <div class="row g-3">
+                  <!-- Cards ② and ③ -->
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">②</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card2">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">③</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card3">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-  <div class="row g-3 mt-3">
-    <!-- Cards ④ and ⑤ -->
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">④</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card4">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">⑤</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card5">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+                <div class="row g-3 mt-3">
+                  <!-- Cards ④ and ⑤ -->
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">④</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card4">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">⑤</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card5">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-  <div class="row g-3 mt-2">
-    <img src="../../static/images/R1.png" class="img-fluid" alt="AMR View">              
-  </div>
-</div>
+                <div class="row g-3 mt-2">
+                  <img src="../../static/images/R1.png" class="img-fluid" alt="AMR View">              
+                </div>
+              </div>
 
-<!-- Layout for R2 -->
-<div id="layout-R2" style="display:none;">
-  <div class="row g-3">
-    <!-- Cards ② and ③ -->
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">②</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card2">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">③</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card3">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+              <!-- Layout for R2 -->
+              <div id="layout-R2" style="display:none;">
+                <div class="row g-3">
+                  <!-- Cards ② and ③ -->
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">②</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card2">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">③</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card3">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-  <div class="row g-3 mt-3">
-    <!-- Cards ④ and ⑤ -->
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">④</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card4">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">⑤</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card5">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+                <div class="row g-3 mt-3">
+                  <!-- Cards ④ and ⑤ -->
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">④</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card4">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">⑤</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card5">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-  <div class="row g-3 mt-2">
-    <img src="../../static/images/R2.png" class="img-fluid" alt="AMR View">              
-  </div>
-</div>
+                <div class="row g-3 mt-2">
+                  <img src="../../static/images/R2.png" class="img-fluid" alt="AMR View">              
+                </div>
+              </div>
 
-<!-- Layout for R3 -->
-<div id="layout-R3" style="display:none;">
-  <div class="row g-3">
-    <!-- Cards ② and ③ -->
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">②</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card2">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">③</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card3">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+              <!-- Layout for R3 -->
+              <div id="layout-R3" style="display:none;">
+                <div class="row g-3">
+                  <!-- Cards ② and ③ -->
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">②</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card2">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">③</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card3">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-  <div class="row g-3 mt-3">
-    <!-- Cards ① and ④ -->
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">①</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card1">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">④</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card4">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+                <div class="row g-3 mt-3">
+                  <!-- Cards ① and ④ -->
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">①</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card1">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">④</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card4">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-  <div class="row g-3 mt-2">
-    <img src="../../static/images/R3.png" class="img-fluid" alt="AMR View">              
-  </div>
-</div>
-  
-<!-- Layout for L1 -->
-<div id="layout-L1" style="display:none;">
-  <div class="row g-3">
-    <!-- Cards ③ and ④ -->
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">③</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card3">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">④</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card4">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+                <div class="row g-3 mt-2">
+                  <img src="../../static/images/R3.png" class="img-fluid" alt="AMR View">              
+                </div>
+              </div>
+                
+              <!-- Layout for L1 -->
+              <div id="layout-L1" style="display:none;">
+                <div class="row g-3">
+                  <!-- Cards ③ and ④ -->
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">③</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card3">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">④</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card4">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-  <div class="row g-3 mt-3">
-    <!-- Cards ① and ② -->
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">①</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card1">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">②</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card2">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+                <div class="row g-3 mt-3">
+                  <!-- Cards ① and ② -->
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">①</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card1">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">②</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card2">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-  <div class="row g-3 mt-2">
-    <img src="../../static/images/L1.png" class="img-fluid" alt="AMR View">              
-  </div>
-</div>
+                <div class="row g-3 mt-2">
+                  <img src="../../static/images/L1.png" class="img-fluid" alt="AMR View">              
+                </div>
+              </div>
 
-<!-- Layout for L2 -->
-<div id="layout-L2" style="display:none;">
-  <div class="row g-3">
-    <!-- Cards ③ and ④ -->
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">③</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card3">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">④</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card4">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+              <!-- Layout for L2 -->
+              <div id="layout-L2" style="display:none;">
+                <div class="row g-3">
+                  <!-- Cards ③ and ④ -->
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">③</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card3">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">④</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card4">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-  <div class="row g-3 mt-3">
-    <!-- Cards ① and ② -->
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">①</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card1">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">②</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card2">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+                <div class="row g-3 mt-3">
+                  <!-- Cards ① and ② -->
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">①</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card1">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">②</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card2">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-  <div class="row g-3 mt-2">
-    <img src="../../static/images/L2.png" class="img-fluid" alt="AMR View">              
-  </div>
-</div>
+                <div class="row g-3 mt-2">
+                  <img src="../../static/images/L2.png" class="img-fluid" alt="AMR View">              
+                </div>
+              </div>
 
- <!-- Layout for L3 -->
-<div id="layout-L3" style="display:none;">
-  <div class="row g-3">
-    <!-- Cards ③ and ④ -->
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">③</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card3">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">④</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card4">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+              <!-- Layout for L3 -->
+              <div id="layout-L3" style="display:none;">
+                <div class="row g-3">
+                  <!-- Cards ③ and ④ -->
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">③</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card3">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">④</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card4">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-  <div class="row g-3 mt-3">
-    <!-- Cards ② and ⑤ -->
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">②</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card2">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header text-white text-center fw-bold bg-primary">⑤</div>
-        <div class="card-body p-0">
-          <table class="table table-bordered mb-0 text-center" id="card5">
-            <thead class="table-light">
-              <tr><th>背番号</th><th>取出数量</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+                <div class="row g-3 mt-3">
+                  <!-- Cards ② and ⑤ -->
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">②</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card2">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card shadow">
+                      <div class="card-header text-white text-center fw-bold bg-primary">⑤</div>
+                      <div class="card-body p-0">
+                        <table class="table table-bordered mb-0 text-center" id="card5">
+                          <thead class="table-light">
+                            <tr><th>背番号</th><th>取出数量</th></tr>
+                          </thead>
+                          <tbody></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-  <div class="row g-3 mt-2">
-    <img src="../../static/images/L3.png" class="img-fluid" alt="AMR View">              
-  </div>
+                <div class="row g-3 mt-2">
+                  <img src="../../static/images/L3.png" class="img-fluid" alt="AMR View">              
+                </div>
 
-</div>
+              </div>
 
-</div>
-          <div class="container text-danger mb-2">
-            <label>*部品取出完了後に押してください</label> <br><br>
-            <button class="btn btn-success mr-5 fs-4" onclick="callAMRReturn()">全作業完了</button>
-            <button class="btn btn-primary fs-4" onclick="callAMRFlowrackOnly()">フローラック単体発進</button>
+            </div>
+
+            <div class="container text-danger mb-2">
+              <label>*部品取出完了後に押してください</label> <br><br>
+              
+              <button id="btnAMRReturn" class="btn btn-success mr-5 fs-4" onclick="callAMRReturn()">
+                <span id="spinnerAMRReturn" class="spinner-grow spinner-grow-sm text-danger d-none" role="status" aria-hidden="true"></span>
+                <span>全作業完了</span>
+              </button>
+
+              <button id="btnAMRFlowrack" class="btn btn-primary fs-4" onclick="callAMRFlowrackOnly()">
+                <span id="spinnerAMRFlowrack" class="spinner-grow spinner-grow-sm text-danger d-none" role="status" aria-hidden="true"></span>
+                <span>フローラック単体発進</span>
+              </button>
+            </div>
           </div>
-
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- jQuery -->
-<script src="../../static/js/jquery-3.7.0.min.js"></script>
-<!-- Your custom JS -->
-<script src="../../static/js/a-line-depallet-maguchi.js"></script>
-<script src="../../static/js/common.js"></script>
-<!-- Bootstrap JS Bundle (Popper + Bootstrap) -->
-<script src="../../static/js/bootstrap.bundle.min.js"></script>
+  <!-- jQuery -->
+  <script src="../../static/js/jquery-3.7.0.min.js"></script>
+  <!-- Your custom JS -->
+  <script src="../../static/js/a-line-depallet-maguchi.js"></script>
+  <script src="../../static/js/common.js"></script>
+  <!-- Bootstrap JS Bundle (Popper + Bootstrap) -->
+  <script src="../../static/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

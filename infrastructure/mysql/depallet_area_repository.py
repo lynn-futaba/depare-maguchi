@@ -269,6 +269,13 @@ class DepalletAreaRepository(IDepalletAreaRepository):
     
     # TODO➞リン: AMR発進
     def call_AMR_return(self, line_frontage_id):
+
+        # --- MOCK MODE START ---
+        # logging.info(f"MOCK: Received call for ID {line_frontage_id}")
+        # time.sleep(3) # This makes the spinner spin for 3 seconds
+        # return {"status": "success", "message": "Mock response"}
+        # --- MOCK MODE END ---
+
         # Mapping for signal IDs
         signal_map = {
             "hashiru_ichi": { # ①一a # 呼び出し信号をリセット / デパレ間口()実TP の 呼出
@@ -405,6 +412,13 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
     # TODO➞リン: AMRフローラック発進
     def call_AMR_flowrack_only(self, line_frontage_id):
+
+        # --- MOCK MODE START ---
+        # logging.info(f"MOCK: Received call for ID {line_frontage_id}")
+        # time.sleep(3) # This makes the spinner spin for 3 seconds
+        # return {"status": "success", "message": "Flowrack Mock response"}
+        # --- MOCK MODE END ---
+
         signal_map = {
             "hashiru_ni": {
                 1: 8002, # R1 間口 1 => button_id 1

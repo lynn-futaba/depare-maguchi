@@ -574,6 +574,13 @@ function callAMRReturn() { // You can define it like this to ensure it's global
 
     const params = new URLSearchParams(window.location.search);
     const buttonId = parseInt(params.get("id"));
+
+    // --- 1. Start Loading State ---
+    const $btn = $("#btnAMRReturn");
+    const $spinner = $("#spinnerAMRReturn");
+    
+    $btn.prop("disabled", true);      // Disable button to prevent double-clicks
+    $spinner.removeClass("d-none");   // Show spinner
         
     $.ajax({
         url: "/api/call_AMR_return",
@@ -584,8 +591,8 @@ function callAMRReturn() { // You can define it like this to ensure it's global
         }),
         success: function(response) {
             if (response.status === "success") {
-                alert("✅ Aライン >> AMRの呼び出しに成功しました！");
-                console.log("Aライン >> AMRの呼び出しに成功しました！ Sent IDs:", buttonId);
+                alert("✅ Aライン >> 全作業完了しました！");
+                console.log("Aライン >> 全作業完了しました！ Sent IDs:", buttonId);
               
               // 2. Small timeout ensures the alert is dismissed before closing
                 setTimeout(function() {
@@ -593,13 +600,19 @@ function callAMRReturn() { // You can define it like this to ensure it's global
                 }, 100);
                         
             } else {
-                alert(response.message || "更新に失敗しました (Update failed).");
-                console.warn("Aライン >> AMR return Update failed:", response.message);
+                alert(response.message || "全作業失敗しました (Update failed).");
+                console.warn("Aライン >> 全作業失敗しました:", response.message);
             }
         },
         error: function(xhr, status, error) {
-            console.error("Aライン >> AMRError updating AMR return:", error);
-            alert("Aライン >> AMRサーバーエラーが発生しました (Server error occurred).");
+            console.error("Aライン >> 全作業失敗しました:", error);
+            alert("Aライン >> 全作業失敗しました (Server error occurred).");
+        },
+        complete: function() {
+            // --- 2. Stop Loading State ---
+            // This runs regardless of success or error
+            $btn.prop("disabled", false);
+            $spinner.addClass("d-none");
         }
     });
 }
@@ -608,6 +621,14 @@ function callAMRFlowrackOnly() {
 
     const params = new URLSearchParams(window.location.search);
     const buttonId = parseInt(params.get("id"));
+
+    // UI Elements
+    const $btn = $("#btnAMRFlowrack");
+    const $spinner = $("#spinnerAMRFlowrack");
+
+    // 1. Enter Loading State
+    $btn.prop("disabled", true);
+    $spinner.removeClass("d-none");
     
     $.ajax({
         url: "/api/call_AMR_flowrack_only",
@@ -618,16 +639,21 @@ function callAMRFlowrackOnly() {
         }),
         success: function(response) {
             if (response.status === "success") {
-                confirm("✅ Bライン >> AMRフローラックの呼び出しに成功しました!");
-                console.log("Bライン >> AMRフローラックの呼び出しに成功しました! Sent IDs:", buttonId);
+                confirm("✅ Aライン >> フローラック単体発進に成功しました!");
+                console.log("Aライン >> フローラック単体発進に成功しました! Sent IDs:", buttonId);
             } else {
                 alert(response.message || "更新に失敗しました (Update failed).");
-                console.warn("Bライン >> AMRフローラック return Update failed:", response.message);
+                console.warn("Aライン >> フローラック単体発進 return Update failed:", response.message);
             }
         },
         error: function(xhr, status, error) {
-            console.error("Error updating Bライン >> AMRフローラック return:", error);
-            alert("Bライン AMRフローラック return>> サーバーエラーが発生しました.");
+            console.error("Error updating Aライン >> フローラック単体発進 return:", error);
+            alert("Aライン フローラック単体発進 return>> サーバーエラーが発生しました.");
+        },
+        complete: function() {
+            // 2. Exit Loading State (always runs)
+            $btn.prop("disabled", false);
+            $spinner.addClass("d-none");
         }
     }); 
 }
