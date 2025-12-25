@@ -13,10 +13,11 @@ LOG_FOLDER = "../log"
 LOG_FILE = "debug_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
-#mysql実装
+
+# mysql実装
 class LineRepository(ILineRepository):
-    def __init__(self,db):
-         self.db =db
+    def __init__(self, db):
+        self.db = db
 
     # def get_lines(self, line_id_list: list) -> list[Line]:
     #     lines = []

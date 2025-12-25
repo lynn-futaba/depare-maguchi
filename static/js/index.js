@@ -99,11 +99,11 @@ $(document).ready(function () {
         }  
     };
 
-    // 定期実行 
-    setInterval(refreshPage, 5000); // TODO
-    $('#refreshButton').on('click', function () {
-        refreshPage();
-    });
+    // 定期実行 TODO: comment out
+    // setInterval(refreshPage, 5000); // TODO
+    // $('#refreshButton').on('click', function () {
+    //     refreshPage();
+    // });
 });
 
 // TODO: call to B LINE Depallet Maguchi
@@ -130,28 +130,43 @@ function callToBLineDepalletMaguchi(id) {
                             url: "/api/insert_target_ids",
                             type: "POST",
                             contentType: "application/json",
-                            data: JSON.stringify({ "line_frontage_id": id }),
+                            data: JSON.stringify({ "button_id": id }),
                             success: function (data) {
                                 console.log("insert_target_ids・間口に搬送対象idを入力 >> data >>", data);
-                                showInfo("✅ 間口に搬送対象idを入力 完了しました!");
+                                showInfo("✅ Bライン ➞ 間口に搬送対象idを入力 完了しました!");
                                 $.ajax({
                                     url: "/api/call_target_ids",
                                     type: "POST",
                                     contentType: "application/json",
-                                    data: JSON.stringify({ "line_frontage_id": id }),
+                                    data: JSON.stringify({ "button_id": id }),
                                     success: function (data) {
                                         console.log("call_target_ids >> data >>", data);
-                                        showInfo("✅ 間口に搬送対象を呼び出ました!");
+                                        showInfo("✅ Bライン ➞ 間口に搬送対象を呼び出ました!");
+                                        // const nextPageUrl = `/b_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
+                                        // window.open(nextPageUrl, "_blank"); // Opens new tab
+
+                                        // Combine id and name to create a unique reference for the window
+                                        const windowIdentifier = `maguchi_${id}_${kyokuuMaguchi}`;
+
                                         const nextPageUrl = `/b_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
-                                        window.open(nextPageUrl, "_blank"); // Opens new tab
+
+                                        // Providing 'windowIdentifier' instead of '_blank' tells the browser 
+                                        // to reuse the tab if it is already open.
+                                        const openedWindow = window.open(nextPageUrl, windowIdentifier);
+
+                                        // This ensures the existing tab is brought to the front (focused) if it was already open
+                                        if (openedWindow) {
+                                            openedWindow.focus();
+                                        }
+
                                     },
                                     error: function (error) {
-                                        alert("❌　間口に搬送対象を呼び出せません");
+                                        showInfo("❌ Bライン ➞ 間口に搬送対象を呼び出せません");
                                     }
                                 });
                             },
                             error: function (error) {
-                                alert("❌ 間口に搬送対象idを入力出来ません", error);
+                                showInfo("❌ Bライン ➞ 間口に搬送対象idを入力出来ません", error);
                             }
                         });
                 } else {
@@ -190,7 +205,7 @@ function callToALineDepalletMaguchi(id) {
                             url: "/api/insert_target_ids",
                             type: "POST",
                             contentType: "application/json",
-                            data: JSON.stringify({ "line_frontage_id": id }),
+                            data: JSON.stringify({ "button_id": id }),
                             success: function (data) {
                                 console.log("insert_target_ids・間口に搬送対象idを入力 >> data >>", data);
                                 showInfo("✅ 間口に搬送対象idを入力 完了しました!");
@@ -198,20 +213,20 @@ function callToALineDepalletMaguchi(id) {
                                     url: "/api/call_target_ids",
                                     type: "POST",
                                     contentType: "application/json",
-                                    data: JSON.stringify({ "line_frontage_id": id }),
+                                    data: JSON.stringify({ "button_id": id }),
                                     success: function (data) {
                                         console.log("call_target_ids >> data >>", data);
-                                        showInfo("✅ 間口に搬送対象を呼び出ました!");
+                                        showInfo("✅ Aライン ➞ 間口に搬送対象を呼び出ました!");
                                         const nextPageUrl = `/a_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
                                         window.open(nextPageUrl, "_blank"); // Opens new tab
                                     },
                                     error: function (error) {
-                                        alert("❌　間口に搬送対象を呼び出せません", error);
+                                        showInfo("❌Aライン ➞間口に搬送対象を呼び出せません", error);
                                     }
                                 });
                             },
                             error: function (error) {
-                                alert("❌ 間口に搬送対象idを入力出来ません");
+                                showInfo("❌ 間口に搬送対象idを入力出来ません");
                             }
                         });
                 } else {
@@ -225,7 +240,7 @@ function callToALineDepalletMaguchi(id) {
     } 
 }
 
-// TODO: かんばん抜きの発信を呼び出し
+// TODO: かんばん抜きの発進を呼び出し
 function submitKanbanNuki() {
     $.ajax({
         url: "/api/insert_kanban_nuki",
@@ -233,15 +248,15 @@ function submitKanbanNuki() {
         contentType: "application/json",
         success: function (data) {
             console.log("insert_kanban_nuki >> data >>", data);
-            alert("✅ かんばん抜きの発信を呼び出ました!");
+            alert("✅ かんばん抜きの発進を呼び出ました!");
         },
         error: function (error) {
-            alert("❌ かんばん抜きの発信を呼び出せません", error);
+            alert("❌ かんばん抜きの発進を呼び出せません", error);
         }
     });
 }
 
-// TODO: かんばん差しの発信を呼び出し
+// TODO: かんばん差しの発進を呼び出し
 function submitKanbanSashi() {
     $.ajax({
         url: "/api/insert_kanban_sashi",
@@ -249,10 +264,26 @@ function submitKanbanSashi() {
         contentType: "application/json",
         success: function (data) {
             console.log("insert_kanban_sashi >> data >>", data);
-            alert("✅ かんばん差しの発信を呼び出ました!");
+            alert("✅ かんばん差しの発進を呼び出ました!");
         },
         error: function (error) {
-            alert("❌ かんばん差しの発信を呼び出せません", error);
+            alert("❌ かんばん差しの発進を呼び出せません", error);
+        }
+    });
+}
+
+// TODO: かんばん呼び出しの発進を呼び出し
+function submitKanbanYobiDashi() {
+    $.ajax({
+        url: "/api/insert_kanban_yobi_dashi",
+        type: "GET",
+        contentType: "application/json",
+        success: function (data) {
+            console.log("insert_kanban_yobi_dashi >> data >>", data);
+            alert("✅ かんばん呼び出しの発進を呼び出ました!");
+        },
+        error: function (error) {
+            alert("❌ かんばん呼び出しの発進を呼び出せません", error);
         }
     });
 }

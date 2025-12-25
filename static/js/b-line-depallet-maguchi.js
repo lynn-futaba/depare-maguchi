@@ -10,19 +10,78 @@ $(document).ready(function () {
         const idValue = parseInt(params.get("id"));
         const nameValue = params.get("name");
 
-        if (nameValue.includes("L")) {
-            document.getElementById("layout-L").style.display = "block";
-        } else {
-            document.getElementById("layout-normal").style.display = "block";
+        console.log("nameValue >>>.", nameValue);
+
+
+        if (nameValue.includes("R1")) {
+            document.getElementById("layout-R1").style.display = "block";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
+            
+        } 
+        else if (nameValue.includes("R2")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "block";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
+        }
+        else if (nameValue.includes("R3")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "block";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
+        }
+
+        else if (nameValue.includes("L1")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "block";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
+        }
+
+        else if (nameValue.includes("L2")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "block";
+            document.getElementById("layout-L3").style.display = "none";
+        }
+
+        else if (nameValue.includes("L3")) {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "block";
+        }
+        
+        else {
+            document.getElementById("layout-R1").style.display = "none";
+            document.getElementById("layout-R2").style.display = "none";
+            document.getElementById("layout-R3").style.display = "none";
+            document.getElementById("layout-L1").style.display = "none";
+            document.getElementById("layout-L2").style.display = "none";
+            document.getElementById("layout-L3").style.display = "none";
         }
 
         $.ajax({
             url: "/api/get_depallet_area_by_plat",
             type: "POST",
             contentType: 'application/json',
-            data: JSON.stringify({
-                button_id: idValue 
-            }),
+            // data: JSON.stringify({
+            //     button_id: idValue 
+            // }),
             success: function (data) {
                 // console.log('get_depallet_area_by_plat >>', data); // TODO: testing
                 // updateTable(data);
@@ -40,62 +99,94 @@ $(document).ready(function () {
             }
         });
 
-    
-        function getDepalletAreaByPlat(data, idValue, nameValue) {
+        // --- GLOBAL CONFIGURATION (Safe Fallbacks) ---
+        let globalButtonIdMap = { };
 
+        let globalShelfMap = { };
+
+        // --- SYNC FUNCTION ---
+        async function syncUIConfig() {
+            try {
+                const response = await fetch('/api/get_b_ui_config');
+                const config = await response.json();
+                
+                if (config.buttonIdMap && config.shelfMap) {
+                    globalButtonIdMap = config.buttonIdMap;
+                    globalShelfMap = config.shelfMap;
+                    console.log("✅ UI Config synchronized with app_config.json");
+                }
+            } catch (error) {
+                console.warn("⚠️ Using hardcoded UI defaults (API unavailable)");
+            }
+        }
+
+        // Run sync immediately on load
+        syncUIConfig();
+
+        function getDepalletAreaByPlat(data, idValue, nameValue) {
             const result = JSON.parse(data);
 
-            // Button → Plat mapping
-            const buttonIdMap = { 
-                1: [24, 23, 22, 21, 20], // R1, Bライン
-                2: [24, 23, 22, 21, 20], // R2, Bライン
-                3: [24, 23, 22],         // R3, Aライン
-                4: [29, 28, 27, 26, 25], // L1, Bライン
-                5: [29, 28, 27, 26, 25], // L2, Bライン
-                6: [27, 26, 25],         // L3, Bライン
-                7: [24, 23, 22, 21, 20], // R1, Aライン
-                8: [24, 23, 22, 21, 20], // R2, Aライン
-                9: [24, 23, 22],         // R3, Aライン
-                10: [29, 28, 27, 26, 25],// L1, Aライン
-                11: [29, 28, 27, 26, 25],// L2, Aライン
-                12: [27, 26, 25]         // L3, Aライン
-            };
+            // // 1. Button → Plat (Data Source) mapping
+            // const buttonIdMap = { 
+            //     1: [29, 28, 27, 26, 25], // R1, Bライン, 間口[5,4,3,2,1] , フローラック➞1
+            //     2: [29, 28, 27, 26, 25], // R2, Bライン, 間口[5,4,3,2,1], フローラック➞1
+            //     3: [29, 28, 27],         // R3, Bライン, 間口[5,4,3], フローラック➞5
+            //     4: [29, 28, 27, 26, 25],// L1, Bライン, 間口[5,4,3,2,1] フローラック➞5
+            //     5: [29, 28, 27, 26, 25],// L2, Bライン, 間口[5,4,3,2,1] フローラック➞5
+            //     6: [27, 26, 25]         // L3, Bライン, 間口[3,2,1] フローラック➞1
+            // };
 
-            const targetPlats = buttonIdMap[idValue] || [];
+            // // 2. Button → Shelf IDs (Display UI) mapping
+            // const shelfMap = {
+            //     1:  [5, 4, 3, 2, 1], 
+            //     2:  [5, 4, 3, 2, 1],
+            //     3:  [5, 4, 3],
+            //     4: [5, 4, 3, 2, 1],
+            //     5: [5, 4, 3, 2, 1],
+            //     6: [3, 2, 1]
+            // };
+
+            const targetPlats = globalButtonIdMap[idValue] || [];
+            const targetShelves = globalShelfMap[idValue] || [];
+        
             document.getElementById("frontageName").textContent = 'デパレ間口 <' + nameValue + '>';
-
-            // TODO: v2
-            // ✅ Loop through shelves in reverse order (5 → 1)
-            //  for (let i = 5; i >= 1; i--) {
-            //     const shelfId = `#shelf-${i}`; // shelf-5, shelf-4, shelf-3, shelf-2, shelf-1
-
-            // ✅ Loop through shelves in reverse order (4 → 1)
-            for (let i = 4; i >= 1; i--) {
-                const shelfId = `#shelf-${i}`; // shelf-4, shelf-3, shelf-2, shelf-1
-                // const cardBody = $(shelfId).closest('.card-body');
+        
+            targetShelves.forEach((shelfNum, shelfIndex) => {
+                const platId = targetPlats[shelfIndex];
+                const items = result[platId] || [];
+                const shelfId = `#shelf-${shelfNum}`;
                 const tbody = $(`${shelfId} tbody`);
                 const thead = $(`${shelfId} thead`);
-
-                let cardId = `#card${i}`;
+                let cardId = `#card${shelfNum}`;
                 let cardNo = $(`${cardId} tbody`);
-
-                // cardBody.find('.dynamic-labels').remove();
+        
+                // --- FLASH PREVENTION ---
+                // If the table header already exists, don't clear everything. 
+                // Just update the specific values.
+                // if (thead.children().length > 0 && items.length > 0) {
+                //     items.forEach((item) => {
+                //         const stepKanbanNo = item.step_kanban_no ?? '-';
+                //         const rowId = `row-${platId}-${stepKanbanNo}`;
+                        
+                //         // Only update the numbers, don't re-draw the whole row
+                //         $(`#take-count-${rowId}`).text(item.take_count ?? 0);
+                //         // Update stock/load num
+                //         $(`#${rowId} td:nth-child(3)`).text(item.load_num ?? 0); 
+                //     });
+                //     return; // Skip the rest of the function (no flashing!)
+                // }
+        
+                // --- INITIAL DRAW (Only happens once or when button changes) ---
                 thead.empty();
                 tbody.empty();
                 cardNo.empty();
-                
-                // TODO: v2
-                // const platId = targetPlats[5 - i]; // Map correctly to buttonIdMap array
-                const platId = targetPlats[4 - i]; // Map correctly to buttonIdMap array
-                const items = result[platId] || [];
-
-                if (items.length > 0) {
+                if (items && items.length > 0) {
                     // ✅ Add table header
                     thead.append(`
                         <tr>
-                            <th>対象 : 間口${i}</th>
-                            <th colspan="2">コタツ No : ${items[0]?.shelf_code || 'N/A'}</th>
-                            <th colspan="2">かんばん No : ${items[0]?.step_kanban_no || 'N/A'}</th>
+                            <th>対象 : 間口${shelfNum}</th>
+                            <th colspan="2">コタツ No : ${items[0]?.shelf_code ?? 'N/A'}</th>
+                            <th colspan="2">かんばん No : ${items[0]?.step_kanban_no ?? 'N/A'}</th>
                         </tr>
                         <tr>
                             <th></th>
@@ -108,18 +199,15 @@ $(document).ready(function () {
 
                     // ✅ Populate rows
                     items.forEach((item, idx) => {
-                        const stepKanbanNo = item.step_kanban_no || '-';
-                        const loadNum = item.load_num || 0;
-                        const takeCount = item.take_count || 0;
-                        const rowId = `row-${platId}-${stepKanbanNo}` || '-';
+                        const stepKanbanNo = item.step_kanban_no ?? '-';
+                        const loadNum = item.load_num ?? 0;
+                        const takeCount = item.take_count ?? 0;
+                        const rowId = `row-${platId}-${stepKanbanNo}`;
 
                         // Update flow rack info
                         const flowRackNo = item.flow_rack_no ?? '-';
-                        $("#flow-rack-no").text(`対象フローラック No: ${flowRackNo}`);
+                        $("#flow-rack-no").text(`対象フローラック No:${flowRackNo}`);
 
-                        
-                        // <td><button class="btn btn-success btn-sm" onclick="submitPallet(${platId}, '${stepKanbanNo}')">＋</button></td>
-                        // <td><button class="btn btn-danger btn-sm" onclick="submitDepallet(${platId}, '${stepKanbanNo}')">ー</button></td>
                         // Add row to shelf table
                         tbody.append(`
                             <tr id="${rowId}">
@@ -139,23 +227,23 @@ $(document).ready(function () {
                         `);  
                     });
                 } else {
-                    // Add the "No data" row to the table body
+                    // ✅ Show "No data" message specifically for this shelf-id
                     tbody.append(`
                         <tr>
-                            <td colspan="5" class="p-3 text-danger">
-                                データが見つかりません
+                            <td colspan="5" class="p-3 text-danger text-center">
+                                間口${shelfNum}: データが見つかりません
                             </td>
                         </tr>
                     `);
                     cardNo.append(`
                         <tr>
-                            <td colspan="5" class="text-danger">
-                                データが見つかりません
+                            <td colspan="2" class="text-danger text-center">
+                                データなし
                             </td>
                         </tr>
-                    `);  
+                    `); 
                 }
-            }
+            });
         }
 
     }
@@ -320,15 +408,17 @@ $(document).ready(function () {
 
                     // 1. Update UI 
                     takeCountCell.text(newTakeCount);
+
+                    // UPDATE value for 行き先
+                    refreshPage();
                     
                     // 2. ⭐ UPDATE GLOBAL STORAGE HERE! ⭐
                     updateAMRDataStorage(maguchiId, stepKanbanNo, newTakeCount);
                     
-                    showInfo("✅ Take count updated successfully!");
-                    console.log("Take count updated successfully:", newTakeCount);
+                    showInfo("✅ 取出数量を更新しました！");
+                    console.log("取出数量を更新しました！:", newTakeCount);
                 } 
-                // UPDATE value for 行き先
-                refreshPage();
+                
                 // ⏱️ RESTART THE AUTOMATIC REFRESH TIMER
                 pageRefreshIntervalId = setInterval(refreshPage, 5000);
                 console.log("Update success. Automatic refresh restarted.");
@@ -496,8 +586,10 @@ function callAMRReturn() {
         }),
         success: function(response) {
             if (response.status === "success") {
-                confirm("✅ Bライン >> AMR return updated successfully!");
-                console.log("Bライン >> AMR return updated successfully! Sent IDs:", buttonId);
+                confirm("✅ Bライン >> AMRの呼び出しに成功しました！");
+                console.log("Bライン >> AMRの呼び出しに成功しました！ Sent IDs:", buttonId);
+                // 3. Try to close it anyway (works if opened via script)
+                window.close();
             } else {
                 alert(response.message || "更新に失敗しました (Update failed).");
                 console.warn("Bライン >> AMR return Update failed:", response.message);
@@ -506,6 +598,34 @@ function callAMRReturn() {
         error: function(xhr, status, error) {
             console.error("Error updating Bライン >> AMR return:", error);
             alert("Bライン AMR return>> サーバーエラーが発生しました.");
+        }
+    }); 
+}
+
+function callAMRFlowrackOnly() { 
+
+    const params = new URLSearchParams(window.location.search);
+    const buttonId = parseInt(params.get("id"));
+    
+    $.ajax({
+        url: "/api/call_AMR_flowrack_only",
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            button_id: buttonId 
+        }),
+        success: function(response) {
+            if (response.status === "success") {
+                confirm("✅ Bライン >> AMRフローラックの呼び出しに成功しました！");
+                console.log("Bライン >> AMRフローラックの呼び出しに成功しました！ Sent IDs:", buttonId);
+            } else {
+                alert(response.message || "更新に失敗しました (Update failed).");
+                console.warn("Bライン >> AMRフローラック return Update failed:", response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error updating Bライン >> AMRフローラック return:", error);
+            alert("Bライン AMRフローラック return>> サーバーエラーが発生しました.");
         }
     }); 
 }

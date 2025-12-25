@@ -6,17 +6,30 @@ from domain.models.line import LineFrontage
 
 class IWCSRepository(ABC):
     # ���i�v��
-    @abstractmethod #TODO modified 
-    def request_kotatsu(self, frontage:DepalletFrontage, part:Part):
+    @abstractmethod  # TODO modified
+    def request_kotatsu(self, frontage: DepalletFrontage, part: Part):
         pass
+
     # �t���[���b�N�v��
-
-    @abstractmethod #TODO modified
-    def request_flow_rack(self, frontage:DepalletFrontage, line_frontage:LineFrontage):
+    @abstractmethod  # TODO modified
+    def request_flow_rack(self, frontage: DepalletFrontage, line_frontage: LineFrontage):
         pass
-    #���o
 
-    @abstractmethod #TODO modified
-    def dispatch(self, frontage:DepalletFrontage):
+    # ���o
+    @abstractmethod  # TODO modified
+    def dispatch(self, frontage: DepalletFrontage):
+        pass
+
+    @abstractmethod  # TODO➞リン
+    def insert_target_ids(self, button_id: int):
+        pass
+
+    @abstractmethod  # TODO➞リン
+    def call_target_ids(self, button_id: int):
+        pass
+
+    # ���o
+    @abstractmethod  # TODO modified
+    def dispallet(self, depallet_area):
         pass
 

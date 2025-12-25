@@ -1,4 +1,4 @@
-﻿#部品
+﻿# 部品
 class Part():
     def __init__(self,part_id:str,kanban_id:str,name:str,car_model_id:int):
         self.id = part_id 
