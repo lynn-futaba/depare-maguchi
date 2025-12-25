@@ -1,4 +1,4 @@
-﻿import time
+import time
 import logging
 
 from typing import Any, Dict, List, Optional
@@ -34,7 +34,6 @@ class WCSRepository(IWCSRepository):
 
             if frontage.shelf is not None:
                 raise Exception("[WCSRepository] Shelf already exists")
-
             signal_id = frontage.signals["model_id"]
             cur.execute("UPDATE `eip_signal`.word_input SET value = %s WHERE signal_id = %s", (part.car_model_id, signal_id))
             signal_id = frontage.signals["kotatsu_request"]
@@ -76,7 +75,6 @@ class WCSRepository(IWCSRepository):
             conn.start_transaction()
             cur.execute("UPDATE `eip_signal`.word_input SET value = 0 WHERE signal_id = %s", (signal_id,))  
             conn.commit()
-
         except Exception as e:
             conn.rollback()
             raise Exception(f"[WCSRepository] Error: {e}")
@@ -442,14 +440,11 @@ if __name__ == "__main__":
     l_repo = LineRepository(db)
     area = d_repo.get_depallet_area((1,2))
     lines = l_repo.get_lines((1, 2, 3, 4))
-
     f=area.get_empty_frontage()
     w_repo.request_flow_rack(f,lines[0].get_by_id(1))
     flow_rack = FlowRack("1")
     f.set_shelf(flow_rack)
-
-
     f=area.get_empty_frontage()
-
     part = lines[0].get_by_id(1).inventories[0].part
     w_repo.request_kotatsu(f,part)
+

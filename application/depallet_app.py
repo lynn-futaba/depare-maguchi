@@ -49,6 +49,7 @@ class DepalletApplication():
         self.wcs_service = WCSService(WCSRepository(self.db))
 
         # self.depallet_support = WCSRepository(self.db)
+
         self.line_service = LineService(LineRepository(self.db), ProductInfoRepository(self.db))
 
         self.manager = WatcherManager()

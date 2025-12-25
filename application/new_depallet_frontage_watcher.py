@@ -5,11 +5,9 @@ import threading
 from domain.models.depallet import DepalletFrontage
 from domain.services.depallet_service import DepalletService
 from common.setup_logger import setup_log  # ログ用
-from config.config import BACKUP_DAYS  # ログ用
+from config.config import LOG_FOLDER, LOG_FILE, BACKUP_DAYS  # ログ用
 
 # ログ出力開始
-LOG_FOLDER = "../log"
-LOG_FILE = "debug_logging.log"
 setup_log(LOG_FOLDER, LOG_FILE, BACKUP_DAYS)
 
 

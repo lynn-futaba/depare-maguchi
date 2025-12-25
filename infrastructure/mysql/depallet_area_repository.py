@@ -11,6 +11,7 @@ from domain.infrastructure.depallet_area_repository import IDepalletAreaReposito
 from common.setup_logger import setup_log  # ログ用
 from config.config import BACKUP_DAYS, LOG_FOLDER, LOG_FILE  # ログ用
 
+
 from typing import Optional
 from config.config_loader import AppConfig
 
@@ -266,7 +267,7 @@ class DepalletAreaRepository(IDepalletAreaRepository):
             cur.close()
             conn.close()
         return  
-    
+   
     # TODO➞リン: AMR発進
     def call_AMR_return(self, line_frontage_id):
 
@@ -710,6 +711,7 @@ if __name__ == "__main__":
         #        inv.remove(2)
 
         #    repo.save_kotatsu(f)
+
    
 
            

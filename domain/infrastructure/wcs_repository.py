@@ -4,7 +4,6 @@ from domain.models.depallet import DepalletFrontage
 from domain.models.part import Part
 from domain.models.line import LineFrontage
 
-
 class IWCSRepository(ABC):
     # ���i�v��
     @abstractmethod  # TODO modified
