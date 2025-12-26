@@ -591,17 +591,34 @@ function callAMRReturn() { // You can define it like this to ensure it's global
         }),
         success: function(response) {
             if (response.status === "success") {
-                alert("✅ Aライン >> 全作業完了しました！");
-                console.log("Aライン >> 全作業完了しました！ Sent IDs:", buttonId);
-              
-              // 2. Small timeout ensures the alert is dismissed before closing
+                // 1. Show your existing toast from common.js
+                showInfo("✅ Aライン >> 全作業完了しました！", 3000);
+
+                // 2. Disable the button and change text so the user knows it's done
+                $("#btnAMRReturn").text("送信完了").addClass("btn-secondary");
+
+                // 3. Wait 2.5 seconds, then ask the user before closing
                 setTimeout(function() {
-                    window.close();
-                }, 100);
+                    // Use confirm instead of alert
+                    let userConfirmed = confirm("✅ Aライン >> 作業が完了しました。ウィンドウを閉じますか？");
+                    
+                    if (userConfirmed) {
+                        console.log("User clicked OK. Closing tab...");
+                        window.close();
                         
+                        // Fallback for browsers that block window.close()
+                        setTimeout(function() {
+                            if (!window.closed) {
+                                alert("✅ Aライン >> ブラウザの制限により自動で閉じられませんでした。手動で閉じてください。");
+                            }
+                        }, 500);
+                    } else {
+                        console.log("User clicked Cancel. Tab remains open.");
+                    }
+                }, 2500);
             } else {
-                alert(response.message || "全作業失敗しました (Update failed).");
-                console.warn("Aライン >> 全作業失敗しました:", response.message);
+                showInfo("❌ " + (response.message || "全作業失敗しました (Update failed)."), 5000);
+                console.warn("Aライン >> 全作業失敗しました", response.message);
             }
         },
         error: function(xhr, status, error) {

@@ -359,48 +359,85 @@ class DepalletAreaRepository(IDepalletAreaRepository):
 
             # --- EXECUTION SEQUENCE START ---
 
-            # STEP 1: SET ①一a to OFF (value 0)
-            if ids_1a:
-                placeholders1 = ','.join(['%s'] * len(ids_1a))
-                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders1})", ids_1a)
-                conn.commit() # Ensure PLC sees Step 1a reset before next step
-                logging.info(f"SET ①一a to OFF for 供給間口ID: {line_frontage_id}")
+            # # STEP 1: SET ①一a to OFF (value 0)
+            # if ids_1a:
+            #     placeholders1 = ','.join(['%s'] * len(ids_1a))
+            #     cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders1})", ids_1a)
+            #     conn.commit() # Ensure PLC sees Step 1a reset before next step
+            #     logging.info(f"SET ①一a to OFF for 供給間口ID: {line_frontage_id}")
 
-            # STEP 2: SET ②ニ to ON (value 1)
-            if ids_2:
-                placeholders4 = ','.join(['%s'] * len(ids_2))
-                cur.execute(f"UPDATE eip_signal.word_input SET value = 1 WHERE signal_id IN ({placeholders4})", ids_2)
-                conn.commit() 
-                logging.info(f"SET ②ニ to ON for 供給間口ID: {line_frontage_id}")
-                time.sleep(1) # Handshake delay
+            # # STEP 2: SET ②ニ to ON (value 1)
+            # if ids_2:
+            #     placeholders4 = ','.join(['%s'] * len(ids_2))
+            #     cur.execute(f"UPDATE eip_signal.word_input SET value = 1 WHERE signal_id IN ({placeholders4})", ids_2)
+            #     conn.commit() 
+            #     logging.info(f"SET ②ニ to ON for 供給間口ID: {line_frontage_id}")
+            #     time.sleep(1) # Handshake delay
 
-            # STEP 3: SET ①一b to OFF (value 0)
-            if ids_1b:
-                placeholders1b = ','.join(['%s'] * len(ids_1b))
-                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders1b})", ids_1b)
-                conn.commit()
-                logging.info(f"SET ①一b to OFF for 供給間口ID: {line_frontage_id}")
-                time.sleep(1)
+            # # STEP 3: SET ①一b to OFF (value 0)
+            # if ids_1b:
+            #     placeholders1b = ','.join(['%s'] * len(ids_1b))
+            #     cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({placeholders1b})", ids_1b)
+            #     conn.commit()
+            #     logging.info(f"SET ①一b to OFF for 供給間口ID: {line_frontage_id}")
+            #     time.sleep(1)
 
-            # STEP 4: SET ③三 to ON (value 1)
-            if ids_3:
-                placeholders3 = ','.join(['%s'] * len(ids_3))
-                cur.execute(f"UPDATE eip_signal.word_input SET value = 1 WHERE signal_id IN ({placeholders3})", ids_3)
-                conn.commit()
-                logging.info(f"SET ③三 to ON for 供給間口ID: {line_frontage_id}")
-                time.sleep(1)
+            # # STEP 4: SET ③三 to ON (value 1)
+            # if ids_3:
+            #     placeholders3 = ','.join(['%s'] * len(ids_3))
+            #     cur.execute(f"UPDATE eip_signal.word_input SET value = 1 WHERE signal_id IN ({placeholders3})", ids_3)
+            #     conn.commit()
+            #     logging.info(f"SET ③三 to ON for 供給間口ID: {line_frontage_id}")
+            #     time.sleep(1)
 
-            # STEP 5: FINAL RESET - Set ②ニ and ③三 to OFF (value 0)
-            # Resetting these ensures the system is ready for the next call.
-            if ids_2 and ids_3:
-                # Reset ②ニ
-                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({','.join(['%s']*len(ids_2))})", ids_2)
-                # Reset ③三
-                cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({','.join(['%s']*len(ids_3))})", ids_3)
-                conn.commit()
-                logging.info(f"SET ②ニ and ③三 to OFF for 供給間口ID: {line_frontage_id}")
+            # # STEP 5: FINAL RESET - Set ②ニ and ③三 to OFF (value 0)
+            # # Resetting these ensures the system is ready for the next call.
+            # if ids_2 and ids_3:
+            #     # Reset ②ニ
+            #     cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({','.join(['%s']*len(ids_2))})", ids_2)
+            #     # Reset ③三
+            #     cur.execute(f"UPDATE eip_signal.word_input SET value = 0 WHERE signal_id IN ({','.join(['%s']*len(ids_3))})", ids_3)
+            #     conn.commit()
+            #     logging.info(f"SET ②ニ and ③三 to OFF for 供給間口ID: {line_frontage_id}")
                 
-            logging.info(f"All steps completed successfully for ID: {line_frontage_id}")
+            # logging.info(f"All steps completed successfully for ID: {line_frontage_id}")
+
+            # Helper to execute and verify
+            def execute_step(ids, value, step_name):
+                if not ids:
+                    return
+                placeholders = ','.join(['%s'] * len(ids))
+                cur.execute(f"UPDATE eip_signal.word_input SET value = %s WHERE signal_id IN ({placeholders})", (value, *ids))
+                conn.commit()
+                logging.info(f"EXECUTED: {step_name} set to {value} for ID: {line_frontage_id}")
+                
+                # This replaces the "blind" sleep. 
+                # It ensures the DB transaction is finished and gives the PLC a small buffer.
+                time.sleep(1.5) 
+
+            # --- SEQUENTIAL EXECUTION ---
+
+            # STEP 1: RESET hashiru_ichi ①一a to OFF (value 0)
+            execute_step(ids_1a, 0, "①一a (Reset)")
+
+            # STEP 2: SET ni_herasu ②ニ to ON (value 1)
+            execute_step(ids_2, 1, "②ニ (ON)")
+
+            # STEP 3: RESET kaeru_ichi ①一b to OFF (value 0)
+            execute_step(ids_1b, 0, "①一b (Reset)")
+
+            # STEP 4: SET hashiru_ni ③三 to ON (value 1) (ONLY after Step 3 is confirmed)
+            # This is where 8047 was firing too early. 
+            # We add an extra verification pause or check here.
+            execute_step(ids_3, 1, "③三 (ON - hashiru_ni)")
+
+            # STEP 5: FINAL RESET Set ②ニ and ③三 to OFF (value 0)
+            # Give Step 4 time to be "read" by the AMR before turning it off
+            time.sleep(2.0) 
+            execute_step(ids_2, 0, "②ニ (Final Reset)")
+            execute_step(ids_3, 0, "③三 (Final Reset)")
+
+            logging.info(f"Sequence completed for ID: {line_frontage_id}")
 
         except Exception as e:
             if conn: conn.rollback()

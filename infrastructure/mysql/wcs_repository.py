@@ -124,6 +124,11 @@ class WCSRepository(IWCSRepository):
     
     # TODO➞リン: 間口に搬送対象idを入力
     def insert_target_ids(self, button_id):
+        # --- MOCK MODE START ---
+        # logging.info(f"MOCK: Insert target IDS >> Received call for ID {button_id}")
+        # time.sleep(3) # This makes the spinner spin for 3 seconds
+        # return {"status": "success", "message": "Insert target IDS Mock response"}
+        # --- MOCK MODE END ---
         """
         Updates the signal_id in word_input table of eip_signal database based on the mapping in app_config.json.
         """
@@ -225,6 +230,11 @@ class WCSRepository(IWCSRepository):
 
     # TODO➞リン: 間口に搬送対象を呼び出す
     def call_target_ids(self, button_id):
+        # --- MOCK MODE START ---
+        # logging.info(f"MOCK: Call target ids >> Received call for ID {button_id}")
+        # time.sleep(3) # This makes the spinner spin for 3 seconds
+        # return {"status": "success", "message": "Call target IDS Mock response"}
+        # --- MOCK MODE END ---
         try:
             conn = self.db.wcs_pool.get_connection()
             conn.start_transaction()
