@@ -594,7 +594,8 @@ function callAMRReturn() {
         success: function(response) {
             if (response.status === "success") {
                 // 1. Show your existing toast from common.js
-                showInfo("✅ Bライン >> 全作業完了しました！", 3000);
+                // showInfo("✅ Bライン >> 全作業完了しました！", 3000);
+                showInfo("✅ 全作業完了しました！", 3000);
 
                 // 2. Disable the button and change text so the user knows it's done
                 $("#btnAMRReturn").text("送信完了").addClass("btn-secondary");
@@ -602,7 +603,8 @@ function callAMRReturn() {
                 // 3. Wait 2.5 seconds, then ask the user before closing
                 setTimeout(function() {
                     // Use confirm instead of alert
-                    let userConfirmed = confirm("✅ Bライン >> 作業が完了しました。ウィンドウを閉じますか？");
+                    // let userConfirmed = confirm("✅ Bライン >> 作業が完了しました。ウィンドウを閉じますか？");
+                    let userConfirmed = confirm("✅ 作業が完了しました。ウィンドウを閉じますか？");
                     
                     if (userConfirmed) {
                         console.log("User clicked OK. Closing tab...");
@@ -611,7 +613,8 @@ function callAMRReturn() {
                         // Fallback for browsers that block window.close()
                         setTimeout(function() {
                             if (!window.closed) {
-                                alert("✅ Bライン >> ブラウザの制限により自動で閉じられませんでした。手動で閉じてください。");
+                                // alert("✅ Bライン >> ブラウザの制限により自動で閉じられませんでした。手動で閉じてください。");
+                                alert("✅ ブラウザの制限により自動で閉じられませんでした。手動で閉じてください。");
                             }
                         }, 500);
                     } else {
@@ -658,7 +661,8 @@ function callAMRFlowrackOnly() {
         }),
         success: function(response) {
             if (response.status === "success") {
-                confirm("✅ Bライン >> フローラック単体発進に成功しました！");
+                // confirm("✅ Bライン >> フローラック単体発進に成功しました！");
+                confirm("フローラック単体発進に成功しました！");
                 console.log("Bライン >> フローラック単体発進に成功しました！ Sent IDs:", buttonId);
             } else {
                 alert(response.message || "更新に失敗しました (Update failed).");

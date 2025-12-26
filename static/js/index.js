@@ -110,7 +110,9 @@ $(document).ready(function () {
 function callToBLineDepalletMaguchi(id) {
     // TODO: to display 供給間口 
     const maguchiMap = {
-        1: "Bライン(R1)", 2: "Bライン(R2)", 3: "Bライン(R3)", 4: "Bライン(L1)", 5: "Bライン(L2)", 6: "Bライン(L3)"
+        // 1: "Bライン(R1)", 2: "Bライン(R2)", 3: "Bライン(R3)", 4: "Bライン(L1)", 5: "Bライン(L2)", 6: "Bライン(L3)"
+        1: "(R1)", 2: "(R2)", 3: "(R3)", 4: "(L1)", 5: "(L2)", 6: "(L3)"
+
     };
 
     const kyokuuMaguchi = maguchiMap[id] || "不明"; // Default if id is invalid
@@ -133,7 +135,8 @@ function callToBLineDepalletMaguchi(id) {
                             data: JSON.stringify({ "button_id": id }),
                             success: function (data) {
                                 console.log("insert_target_ids・間口に搬送対象idを入力 >> data >>", data);
-                                showInfo("✅ Bライン ➞ 間口に搬送対象idを入力 完了しました!");
+                                // showInfo("✅ Bライン ➞ 間口に搬送対象idを入力 完了しました!");
+                                showInfo("✅ 間口に搬送対象idを入力 完了しました!");
                                 $.ajax({
                                     url: "/api/call_target_ids",
                                     type: "POST",
@@ -141,7 +144,8 @@ function callToBLineDepalletMaguchi(id) {
                                     data: JSON.stringify({ "button_id": id }),
                                     success: function (data) {
                                         console.log("call_target_ids >> data >>", data);
-                                        showInfo("✅ Bライン ➞ 間口に搬送対象を呼び出ました!");
+                                        // showInfo("✅ Bライン ➞ 間口に搬送対象を呼び出ました!");
+                                        showInfo("✅ 間口に搬送対象を呼び出ました!");
                                         // const nextPageUrl = `/b_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
                                         // window.open(nextPageUrl, "_blank"); // Opens new tab
 
