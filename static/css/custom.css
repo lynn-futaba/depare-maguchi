@@ -1,6 +1,6 @@
 /* Make content fill available height */
 .content-area {
-  min-height: calc(100vh - 140px); /* header + footer */
+  min-height: calc(95vh - 140px); /* header + footer */
 }
 
 /* Bigger buttons for tablet */

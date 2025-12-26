@@ -181,64 +181,64 @@ function callToBLineDepalletMaguchi(id) {
 }
 
 
-// TODO: call to A LINE Depallet Maguchi
-function callToALineDepalletMaguchi(id) {
-    // TODO: to display 供給間口 
-    const maguchiMap = {
-        7: "Aライン(R1)", 8: "Aライン(R2)", 9: "Aライン(R3)", 10: "Aライン(L1)", 11: "Aライン(L2)", 12: "Aライン(L3)"
-    };
+// // TODO: call to A LINE Depallet Maguchi
+// function callToALineDepalletMaguchi(id) {
+//     // TODO: to display 供給間口 
+//     const maguchiMap = {
+//         7: "Aライン(R1)", 8: "Aライン(R2)", 9: "Aライン(R3)", 10: "Aライン(L1)", 11: "Aライン(L2)", 12: "Aライン(L3)"
+//     };
 
-    const kyokuuMaguchi = maguchiMap[id] || "不明 invalid ID"; // Default if id is invalid
+//     const kyokuuMaguchi = maguchiMap[id] || "不明 invalid ID"; // Default if id is invalid
 
-    const result = confirm(`供給間口 ${kyokuuMaguchi}を呼び出します`);
+//     const result = confirm(`供給間口 ${kyokuuMaguchi}を呼び出します`);
 
-    if (result) {
-        $.ajax({
-            url: "/api/line_frontage_click",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({ "frontage_id": id }),
-            success: function (data) {  
-                console.log('Data >> Start() status' , data);
-                if (data["status"] === "success") {
-                        $.ajax({
-                            url: "/api/insert_target_ids",
-                            type: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify({ "button_id": id }),
-                            success: function (data) {
-                                console.log("insert_target_ids・間口に搬送対象idを入力 >> data >>", data);
-                                showInfo("✅ 間口に搬送対象idを入力 完了しました!");
-                                $.ajax({
-                                    url: "/api/call_target_ids",
-                                    type: "POST",
-                                    contentType: "application/json",
-                                    data: JSON.stringify({ "button_id": id }),
-                                    success: function (data) {
-                                        console.log("call_target_ids >> data >>", data);
-                                        showInfo("✅ Aライン ➞ 間口に搬送対象を呼び出ました!");
-                                        const nextPageUrl = `/a_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
-                                        window.open(nextPageUrl, "_blank"); // Opens new tab
-                                    },
-                                    error: function (error) {
-                                        showInfo("❌Aライン ➞間口に搬送対象を呼び出せません", error);
-                                    }
-                                });
-                            },
-                            error: function (error) {
-                                showInfo("❌ 間口に搬送対象idを入力出来ません");
-                            }
-                        });
-                } else {
-                    alert("⚠️ No flow racks available");
-                }
-            },
-            error: function (error) {
-                alert("❌ Error in line_frontage_click");
-            }
-        });
-    } 
-}
+//     if (result) {
+//         $.ajax({
+//             url: "/api/line_frontage_click",
+//             type: "POST",
+//             contentType: "application/json",
+//             data: JSON.stringify({ "frontage_id": id }),
+//             success: function (data) {  
+//                 console.log('Data >> Start() status' , data);
+//                 if (data["status"] === "success") {
+//                         $.ajax({
+//                             url: "/api/insert_target_ids",
+//                             type: "POST",
+//                             contentType: "application/json",
+//                             data: JSON.stringify({ "button_id": id }),
+//                             success: function (data) {
+//                                 console.log("insert_target_ids・間口に搬送対象idを入力 >> data >>", data);
+//                                 showInfo("✅ 間口に搬送対象idを入力 完了しました!");
+//                                 $.ajax({
+//                                     url: "/api/call_target_ids",
+//                                     type: "POST",
+//                                     contentType: "application/json",
+//                                     data: JSON.stringify({ "button_id": id }),
+//                                     success: function (data) {
+//                                         console.log("call_target_ids >> data >>", data);
+//                                         showInfo("✅ Aライン ➞ 間口に搬送対象を呼び出ました!");
+//                                         const nextPageUrl = `/a_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
+//                                         window.open(nextPageUrl, "_blank"); // Opens new tab
+//                                     },
+//                                     error: function (error) {
+//                                         showInfo("❌Aライン ➞間口に搬送対象を呼び出せません", error);
+//                                     }
+//                                 });
+//                             },
+//                             error: function (error) {
+//                                 showInfo("❌ 間口に搬送対象idを入力出来ません");
+//                             }
+//                         });
+//                 } else {
+//                     alert("⚠️ No flow racks available");
+//                 }
+//             },
+//             error: function (error) {
+//                 alert("❌ Error in line_frontage_click");
+//             }
+//         });
+//     } 
+// }
 
 // TODO: かんばん抜きの発進を呼び出し
 function submitKanbanNuki() {

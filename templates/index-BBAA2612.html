@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>フタバ知立_310Dデパレ作業画面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <!-- Your local CSS -->
+    <link href="../../static/css/depallet/depallet.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" />
+    <!-- Your custom CSS (ADD THIS) -->
+    <link rel="stylesheet" href="../../static/css/custom.css">
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+  <header class="header py-3" style="background-color: ghostwhite;">
+    <div class="row justify-content-start text-success fw-bold">
+      <div class="col-2 fs-1 text-center" >FUTABA</div>
+
+      <div class="col-8 fs-1 text-center">        
+        310D デパレ作業画面 〈安全。品質。生産〉<span class="badge bg-danger rounded-pill fs-5"></span>
+      </div>
+      <!-- <button id="refreshButton" class="btn btn-light text-right my-2">更新</button> -->
+      <div class="col-2 fs-2 text-center">        
+        <span class="badge bg-danger rounded-pill fs-5">バージョン1 (12月26日)知立</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid pt-1 flex-grow-1 content-area">
+    <div class="row">      
+      <div class="container operation">
+        <div class="row justify-content-center my-2">
+          <div class="col-2">
+            <button type="button" class="btn btn-primary text-white w-100 fs-3" onclick="submitKanbanNuki()">かんばん抜き発進</button>
+          </div>
+          <div class="col-2">
+            <button type="button" class="btn btn-warning text-white w-100 fs-3 fs-3" onclick="submitKanbanSashi()">かんばん差し発進</button>
+          </div>
+          <div class="col-2">
+            <button type="button" class="btn btn-danger text-white w-100 fs-3" onclick="submitKanbanYobiDashi()">かんばん呼び出し</button>
+          </div>
+        </div>
+        <div class="row">
+          <!-- Left Side: Line B -->
+          <div class="col-12 col-lg-6 border-end">
+            <p class="bg-light text-center text-white border border-dark fw-bold my-2 fs-1" style="background-color: #fb8b4a !important;">
+              * LH
+            </p>
+
+            <!-- BL Table -->
+            <div class="line-status mb-3">
+              <table class="table table-bordered production-table text-center align-middle border-dark">
+                  <thead class="table-secondary border-dark">
+                      <tr>
+                          <th colspan="6" class="bg-warning text-dark" style="background-color: #ffb3de !important;"><h2 class="fs-2">Bライン</h2></th>
+                      </tr>
+                      <!-- <tr>
+                          <th>生産品番</th>
+                          <th>計画生産台数</th>
+                          <th>実績生産台数</th>
+                      </tr> -->
+                  </thead>
+                  <!-- <tbody id="b-l-product">
+                  </tbody> -->
+              </table>
+            </div>
+            <!-- BL Table button -->
+            <div class="frontage-status row g-3">
+                <div class="col-12 col-md-4 col-lg-4">
+                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
+                    <thead class="table-light border-dark">
+                      <tr>
+                        <th colspan="2" class="">
+                          <button type="button" class="btn btn-warning text-white w-100 fs-3" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(4)">供給間口<br>L1</button>
+                        </th>
+                      </tr>
+                      <!-- <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                      </tr> -->
+                    </thead>
+                    <!-- <tbody id="1"> -->
+                      <!-- Dynamic content -->
+                    <!-- </tbody> -->
+                  </table>
+                </div>
+                <div class="col-12 col-md-4 col-lg-4">
+                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
+                    <thead class="table-light border-dark">
+                      <tr>
+                        <th colspan="2" class="">
+                          <button type="button" class="btn btn-warning text-white w-100 fs-3" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(5)">供給間口<br>L2</button>
+                        </th>
+                      </tr>
+                      <!-- <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                      </tr> -->
+                    </thead>
+                    <!-- <tbody id="2"> -->
+                      <!-- Dynamic content -->
+                    <!-- </tbody> -->
+                  </table>
+                </div>
+                <div class="col-12 col-md-4 col-lg-4">
+                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
+                    <thead class="table-light border-dark">
+                      <tr>
+                        <th colspan="2" class="">
+                          <button type="button" class="btn btn-warning text-white w-100 fs-3" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(6)">供給間口<br>L3</button>
+                        </th>
+                      </tr>
+                      <!-- <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                      </tr> -->
+                    </thead>
+                    <!-- <tbody id="3"> -->
+                      <!-- Dynamic content -->
+                    <!-- </tbody> -->
+                  </table>
+                </div>
+            </div>
+
+            <!-- AL Table -->
+            <div class="line-status mb-3">
+              <table class="table table-bordered production-table text-center align-middle border-dark">
+                  <thead class="table-secondary border-dark">
+                      <tr>
+                          <th colspan="6" class="bg-warning text-dark" style="background-color: #98fb98 !important;"><h2 class="fs-2">Aライン</h2></th>
+                      </tr>
+                      <!-- <tr>
+                          <th>生産品番</th>
+                          <th>計画生産台数</th>
+                          <th>実績生産台数</th>
+                      </tr> -->
+                  </thead>
+                  <!-- <tbody id="a-l-product">
+                  </tbody> -->
+              </table>
+            </div>
+            <!-- AL Table button -->
+            <div class="frontage-status row g-3">
+                <div class="col-12 col-md-4 col-lg-4">
+                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
+                    <thead class="table-light border-dark">
+                      <tr>
+                        <th colspan="2" class="">
+                          <button type="button" class="btn btn-warning text-white w-100 fs-3" style="background-color: #fb8b4a !important;" onclick="callToALineDepalletMaguchi(10)">供給間口<br>L1</button>
+                        </th>
+                      </tr>
+                      <!-- <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                      </tr> -->
+                    </thead>
+                    <!-- <tbody id="1"> -->
+                      <!-- Dynamic content -->
+                    <!-- </tbody> -->
+                  </table>
+                </div>
+                <div class="col-12 col-md-4 col-lg-4">
+                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
+                    <thead class="table-light border-dark">
+                      <tr>
+                        <th colspan="2" class="">
+                          <button type="button" class="btn btn-warning text-white w-100 fs-3" style="background-color: #fb8b4a !important;" onclick="callToALineDepalletMaguchi(11)">供給間口<br>L2</button>
+                        </th>
+                      </tr>
+                      <!-- <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                      </tr> -->
+                    </thead>
+                    <!-- <tbody id="2"> -->
+                      <!-- Dynamic content -->
+                    <!-- </tbody> -->
+                  </table>
+                </div>
+                <div class="col-12 col-md-4 col-lg-4">
+                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
+                    <thead class="table-light border-dark">
+                      <tr>
+                        <th colspan="2" class="">
+                          <button type="button" class="btn btn-warning text-white w-100 fs-3" style="background-color: #fb8b4a !important;" onclick="callToALineDepalletMaguchi(12)">供給間口<br>L3</button>
+                        </th>
+                      </tr>
+                      <!-- <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                      </tr> -->
+                    </thead>
+                    <!-- <tbody id="3"> -->
+                      <!-- Dynamic content -->
+                    <!-- </tbody> -->
+                  </table>
+                </div>
+            </div>
+
+          </div>
+<!-- 
+          <div class="col-12 col-lg-2 border-end">
+            <div class="row">
+              <div class="col-6">
+                <button type="button" class="btn btn-warning text-white w-100 fs-3" onclick="submitKanbanNuki()">かんばん抜き<br>①発信</button>
+              </div>
+              <div class="col-6">
+                <button type="button" class="btn btn-success text-white w-100" onclick="submitKanbanSashi()">かんばん差し<br>②発信</button>
+              </div>
+            </div>
+          </div> -->
+          
+          <!-- Right Side: Line A -->
+          <div class="col-12 col-lg-6 border-end">
+            <p class="bg-success text-center text-white border border-dark fw-bold my-2 fs-1">
+              * RH
+            </p>
+
+            <!-- BR Table -->
+            <div class="line-status mb-3">
+              <table class="table table-bordered production-table text-center align-middle border-dark">
+                  <thead class="table-secondary border-dark">
+                      <tr>
+                          <th colspan="6" class="bg-primary text-dark" style="background-color: #ffb3de !important;"><h2 class="fs-2">Bライン</h2></th>
+                      </tr>
+                      <!-- <tr>
+                          <th>生産品番</th>
+                          <th>計画生産台数</th>
+                          <th>実績生産台数</th>
+                      </tr> -->
+                  </thead>
+                  <!-- <tbody id="b-r-product">
+                  </tbody> -->
+              </table>
+            </div>
+            <!-- BR Table button -->
+            <div class="frontage-status row g-3">
+                <div class="col-12 col-md-4 col-lg-4">
+                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
+                    <thead class="table-light border-dark">
+                      <tr>
+                        <th colspan="2" class="">
+                          <button type="button" class="btn btn-success w-100 fs-3" onclick="callToBLineDepalletMaguchi(1)">供給間口<br>R1</button>
+                        </th>
+                      </tr>
+                      <!-- <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                      </tr> -->
+                    </thead>
+                    <!-- <tbody id="1"> -->
+                      <!-- Dynamic content -->
+                    <!-- </tbody> -->
+                  </table>
+                </div>
+                <div class="col-12 col-md-4 col-lg-4">
+                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
+                    <thead class="table-light border-dark">
+                      <tr>
+                        <th colspan="2" class="">
+                          <button type="button" class="btn btn-success w-100 fs-3" onclick="callToBLineDepalletMaguchi(2)">供給間口<br>R2</button>
+                        </th>
+                      </tr>
+                      <!-- <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                      </tr> -->
+                    </thead>
+                    <!-- <tbody id="2"> -->
+                      <!-- Dynamic content -->
+                    <!-- </tbody> -->
+                  </table>
+                </div>
+                <div class="col-12 col-md-4 col-lg-4">
+                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
+                    <thead class="table-light border-dark">
+                      <tr>
+                        <th colspan="2" class="">
+                          <button type="button" class="btn btn-success w-100 fs-3" onclick="callToBLineDepalletMaguchi(3)">供給間口<br>R3</button>
+                        </th>
+                      </tr>
+                      <!-- <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                      </tr> -->
+                    </thead>
+                    <!-- <tbody id="3"> -->
+                      <!-- Dynamic content -->
+                    <!-- </tbody> -->
+                  </table>
+                </div>
+            </div>
+
+            <!-- AR Table -->
+            <div class="line-status mb-3">
+              <table class="table table-bordered production-table text-center align-middle border-dark">
+                  <thead class="table-secondary border-dark">
+                      <tr>
+                          <th colspan="6" class="bg-primary text-dark" style="background-color: #98fb98 !important;"><h2 class="fs-2">Aライン</h2></th>
+                      </tr>
+                      <!-- <tr>
+                          <th>生産品番</th>
+                          <th>計画生産台数</th>
+                          <th>実績生産台数</th>
+                      </tr> -->
+                  </thead>
+                  <!-- <tbody id="a-r-product">
+                  </tbody> -->
+              </table>
+            </div>
+
+            <!-- AR Table button -->
+            <div class="frontage-status row g-3">
+                <div class="col-12 col-md-4 col-lg-4">
+                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
+                    <thead class="table-light border-dark">
+                      <tr>
+                        <th colspan="2" class="">
+                          <button type="button" class="btn btn-success w-100 fs-3" onclick="callToALineDepalletMaguchi(7)">供給間口<br>R1</button>
+                        </th>
+                      </tr>
+                      <!-- <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                      </tr> -->
+                    </thead>
+                    <!-- <tbody id="1"> -->
+                      <!-- Dynamic content -->
+                    <!-- </tbody> -->
+                  </table>
+                </div>
+                <div class="col-12 col-md-4 col-lg-4">
+                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
+                    <thead class="table-light border-dark">
+                      <tr>
+                        <th colspan="2" class="">
+                          <button type="button" class="btn btn-success w-100 fs-3" onclick="callToALineDepalletMaguchi(8)">供給間口<br>R2</button>
+                        </th>
+                      </tr>
+                      <!-- <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                      </tr> -->
+                    </thead>
+                    <!-- <tbody id="2"> -->
+                      <!-- Dynamic content -->
+                    <!-- </tbody> -->
+                  </table>
+                </div>
+                <div class="col-12 col-md-4 col-lg-4">
+                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
+                    <thead class="table-light border-dark">
+                      <tr>
+                        <th colspan="2" class="">
+                          <button type="button" class="btn btn-success w-100 fs-3" onclick="callToALineDepalletMaguchi(9)">供給間口<br>R3</button>
+                        </th>
+                      </tr>
+                      <!-- <tr>
+                        <th>背番号</th>
+                        <th>在庫数</th>
+                      </tr> -->
+                    </thead>
+                    <!-- <tbody id="3"> -->
+                      <!-- Dynamic content -->
+                    <!-- </tbody> -->
+                  </table>
+                </div>
+            </div>
+          
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer mt-auto py-1 bg-success">
+    <div class="container text-center">
+      <span class="text-white fs-4">&copy; 2025 フタバ知立工場. All Rights Reserved.</span>
+
+    </div>
+  </footer>
+
+    
+    <!-- jQuery -->
+    <script src="../../static/js/jquery-3.7.0.min.js"></script>
+    <!-- Your custom JS -->
+    <script src="../../static/js/index.js"></script>
+    <script src="../../static/js/common.js"></script> <!-- TODO: added common message -->
+    <!-- Bootstrap JS Bundle (Popper + Bootstrap) -->
+    <script src="../../static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

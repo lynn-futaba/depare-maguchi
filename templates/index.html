@@ -29,39 +29,34 @@
   </header>
 
   <div class="container-fluid pt-1 flex-grow-1 content-area">
-    <div class="row">      
+    <div class="row mt-5">      
       <div class="container operation">
-        <div class="row justify-content-center my-2">
-          <div class="col-2">
+        <!-- <div class="row justify-content-center my-2">
+          <div class="col-4">
             <button type="button" class="btn btn-primary text-white w-100 fs-3" onclick="submitKanbanNuki()">かんばん抜き発進</button>
           </div>
-          <div class="col-2">
+          <div class="col-4">
             <button type="button" class="btn btn-warning text-white w-100 fs-3 fs-3" onclick="submitKanbanSashi()">かんばん差し発進</button>
           </div>
-          <div class="col-2">
+          <div class="col-4">
             <button type="button" class="btn btn-danger text-white w-100 fs-3" onclick="submitKanbanYobiDashi()">かんばん呼び出し</button>
           </div>
-        </div>
+        </div> -->
         <div class="row">
           <!-- Left Side: Line B -->
-          <div class="col-12 col-lg-6 border-end">
-            <p class="bg-light text-center text-white border border-dark fw-bold my-2 fs-1" style="background-color: #fb8b4a !important;">
+          <div class="col-12 col-lg-5 border-end">
+            <p class="bg-light text-center text-white border border-dark fw-bold mb-5 fs-1" style="background-color: #fb8b4a !important;">
               * LH
             </p>
 
             <!-- BL Table -->
             <div class="line-status mb-3">
               <table class="table table-bordered production-table text-center align-middle border-dark">
-                  <thead class="table-secondary border-dark">
-                      <tr>
-                          <th colspan="6" class="bg-warning text-dark" style="background-color: #ffb3de !important;"><h2 class="fs-2">Bライン</h2></th>
-                      </tr>
                       <!-- <tr>
                           <th>生産品番</th>
                           <th>計画生産台数</th>
                           <th>実績生産台数</th>
                       </tr> -->
-                  </thead>
                   <!-- <tbody id="b-l-product">
                   </tbody> -->
               </table>
@@ -124,113 +119,30 @@
                 </div>
             </div>
 
-            <!-- AL Table -->
-            <div class="line-status mb-3">
-              <table class="table table-bordered production-table text-center align-middle border-dark">
-                  <thead class="table-secondary border-dark">
-                      <tr>
-                          <th colspan="6" class="bg-warning text-dark" style="background-color: #98fb98 !important;"><h2 class="fs-2">Aライン</h2></th>
-                      </tr>
-                      <!-- <tr>
-                          <th>生産品番</th>
-                          <th>計画生産台数</th>
-                          <th>実績生産台数</th>
-                      </tr> -->
-                  </thead>
-                  <!-- <tbody id="a-l-product">
-                  </tbody> -->
-              </table>
-            </div>
-            <!-- AL Table button -->
-            <div class="frontage-status row g-3">
-                <div class="col-12 col-md-4 col-lg-4">
-                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
-                    <thead class="table-light border-dark">
-                      <tr>
-                        <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning text-white w-100 fs-3" style="background-color: #fb8b4a !important;" onclick="callToALineDepalletMaguchi(10)">供給間口<br>L1</button>
-                        </th>
-                      </tr>
-                      <!-- <tr>
-                        <th>背番号</th>
-                        <th>在庫数</th>
-                      </tr> -->
-                    </thead>
-                    <!-- <tbody id="1"> -->
-                      <!-- Dynamic content -->
-                    <!-- </tbody> -->
-                  </table>
-                </div>
-                <div class="col-12 col-md-4 col-lg-4">
-                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
-                    <thead class="table-light border-dark">
-                      <tr>
-                        <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning text-white w-100 fs-3" style="background-color: #fb8b4a !important;" onclick="callToALineDepalletMaguchi(11)">供給間口<br>L2</button>
-                        </th>
-                      </tr>
-                      <!-- <tr>
-                        <th>背番号</th>
-                        <th>在庫数</th>
-                      </tr> -->
-                    </thead>
-                    <!-- <tbody id="2"> -->
-                      <!-- Dynamic content -->
-                    <!-- </tbody> -->
-                  </table>
-                </div>
-                <div class="col-12 col-md-4 col-lg-4">
-                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
-                    <thead class="table-light border-dark">
-                      <tr>
-                        <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning text-white w-100 fs-3" style="background-color: #fb8b4a !important;" onclick="callToALineDepalletMaguchi(12)">供給間口<br>L3</button>
-                        </th>
-                      </tr>
-                      <!-- <tr>
-                        <th>背番号</th>
-                        <th>在庫数</th>
-                      </tr> -->
-                    </thead>
-                    <!-- <tbody id="3"> -->
-                      <!-- Dynamic content -->
-                    <!-- </tbody> -->
-                  </table>
-                </div>
-            </div>
 
           </div>
-<!-- 
-          <div class="col-12 col-lg-2 border-end">
-            <div class="row">
-              <div class="col-6">
-                <button type="button" class="btn btn-warning text-white w-100 fs-3" onclick="submitKanbanNuki()">かんばん抜き<br>①発信</button>
-              </div>
-              <div class="col-6">
-                <button type="button" class="btn btn-success text-white w-100" onclick="submitKanbanSashi()">かんばん差し<br>②発信</button>
-              </div>
-            </div>
-          </div> -->
           
+          <div class="col-12 col-lg-2">
+            <div class="row mb-4">
+              <button type="button" class="btn btn-primary text-white w-100 fs-3" onclick="submitKanbanNuki()">かんばん抜き発進</button>
+            </div>
+            <div class="row my-4">
+              <button type="button" class="btn btn-warning text-white w-100 fs-3 fs-3" onclick="submitKanbanSashi()">かんばん差し発進</button>
+            </div>
+            <div class="row">
+              <button type="button" class="btn btn-danger text-white w-100 fs-3" onclick="submitKanbanYobiDashi()">かんばん呼び出し</button>
+            </div>
+          </div>
+
           <!-- Right Side: Line A -->
-          <div class="col-12 col-lg-6 border-end">
-            <p class="bg-success text-center text-white border border-dark fw-bold my-2 fs-1">
+          <div class="col-12 col-lg-5 border-end">
+            <p class="bg-success text-center text-white border border-dark fw-bold mb-5 fs-1">
               * RH
             </p>
 
             <!-- BR Table -->
             <div class="line-status mb-3">
               <table class="table table-bordered production-table text-center align-middle border-dark">
-                  <thead class="table-secondary border-dark">
-                      <tr>
-                          <th colspan="6" class="bg-primary text-dark" style="background-color: #ffb3de !important;"><h2 class="fs-2">Bライン</h2></th>
-                      </tr>
-                      <!-- <tr>
-                          <th>生産品番</th>
-                          <th>計画生産台数</th>
-                          <th>実績生産台数</th>
-                      </tr> -->
-                  </thead>
                   <!-- <tbody id="b-r-product">
                   </tbody> -->
               </table>
@@ -292,83 +204,6 @@
                   </table>
                 </div>
             </div>
-
-            <!-- AR Table -->
-            <div class="line-status mb-3">
-              <table class="table table-bordered production-table text-center align-middle border-dark">
-                  <thead class="table-secondary border-dark">
-                      <tr>
-                          <th colspan="6" class="bg-primary text-dark" style="background-color: #98fb98 !important;"><h2 class="fs-2">Aライン</h2></th>
-                      </tr>
-                      <!-- <tr>
-                          <th>生産品番</th>
-                          <th>計画生産台数</th>
-                          <th>実績生産台数</th>
-                      </tr> -->
-                  </thead>
-                  <!-- <tbody id="a-r-product">
-                  </tbody> -->
-              </table>
-            </div>
-
-            <!-- AR Table button -->
-            <div class="frontage-status row g-3">
-                <div class="col-12 col-md-4 col-lg-4">
-                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
-                    <thead class="table-light border-dark">
-                      <tr>
-                        <th colspan="2" class="">
-                          <button type="button" class="btn btn-success w-100 fs-3" onclick="callToALineDepalletMaguchi(7)">供給間口<br>R1</button>
-                        </th>
-                      </tr>
-                      <!-- <tr>
-                        <th>背番号</th>
-                        <th>在庫数</th>
-                      </tr> -->
-                    </thead>
-                    <!-- <tbody id="1"> -->
-                      <!-- Dynamic content -->
-                    <!-- </tbody> -->
-                  </table>
-                </div>
-                <div class="col-12 col-md-4 col-lg-4">
-                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
-                    <thead class="table-light border-dark">
-                      <tr>
-                        <th colspan="2" class="">
-                          <button type="button" class="btn btn-success w-100 fs-3" onclick="callToALineDepalletMaguchi(8)">供給間口<br>R2</button>
-                        </th>
-                      </tr>
-                      <!-- <tr>
-                        <th>背番号</th>
-                        <th>在庫数</th>
-                      </tr> -->
-                    </thead>
-                    <!-- <tbody id="2"> -->
-                      <!-- Dynamic content -->
-                    <!-- </tbody> -->
-                  </table>
-                </div>
-                <div class="col-12 col-md-4 col-lg-4">
-                  <table class="table table-bordered frontage-table text-center align-middle border-dark">
-                    <thead class="table-light border-dark">
-                      <tr>
-                        <th colspan="2" class="">
-                          <button type="button" class="btn btn-success w-100 fs-3" onclick="callToALineDepalletMaguchi(9)">供給間口<br>R3</button>
-                        </th>
-                      </tr>
-                      <!-- <tr>
-                        <th>背番号</th>
-                        <th>在庫数</th>
-                      </tr> -->
-                    </thead>
-                    <!-- <tbody id="3"> -->
-                      <!-- Dynamic content -->
-                    <!-- </tbody> -->
-                  </table>
-                </div>
-            </div>
-          
             
           </div>
         </div>
@@ -376,8 +211,8 @@
     </div>
   </div>
 
-  <footer class="footer mt-auto py-1 bg-success">
-    <div class="container text-center">
+  <footer class="footer py-3 bg-success">
+    <div class="container text-center text-muted">
       <span class="text-white fs-4">&copy; 2025 フタバ知立工場. All Rights Reserved.</span>
 
     </div>
