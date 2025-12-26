@@ -573,7 +573,7 @@ $(document).ready(function () {
 });
 
 function callAMRReturn() { 
-
+    
     const params = new URLSearchParams(window.location.search);
     const buttonId = parseInt(params.get("id"));
 
@@ -593,12 +593,33 @@ function callAMRReturn() {
         }),
         success: function(response) {
             if (response.status === "success") {
-                confirm("✅ Bライン >> 全作業完了しました！");
-                console.log("Bライン >> 全作業完了しました！ Sent IDs:", buttonId);
-                // 3. Try to close it anyway (works if opened via script)
-                window.close();
+                // 1. Show your existing toast from common.js
+                showInfo("✅ Bライン >> 全作業完了しました！", 3000);
+
+                // 2. Disable the button and change text so the user knows it's done
+                $("#btnAMRReturn").text("送信完了").addClass("btn-secondary");
+
+                // 3. Wait 2.5 seconds, then ask the user before closing
+                setTimeout(function() {
+                    // Use confirm instead of alert
+                    let userConfirmed = confirm("✅ Bライン >> 作業が完了しました。ウィンドウを閉じますか？");
+                    
+                    if (userConfirmed) {
+                        console.log("User clicked OK. Closing tab...");
+                        window.close();
+                        
+                        // Fallback for browsers that block window.close()
+                        setTimeout(function() {
+                            if (!window.closed) {
+                                alert("✅ Bライン >> ブラウザの制限により自動で閉じられませんでした。手動で閉じてください。");
+                            }
+                        }, 500);
+                    } else {
+                        console.log("User clicked Cancel. Tab remains open.");
+                    }
+                }, 2500);
             } else {
-                alert(response.message || "全作業失敗しました (Update failed).");
+                showInfo("❌ " + (response.message || "全作業失敗しました (Update failed)."), 5000);
                 console.warn("Bライン >> 全作業失敗しました", response.message);
             }
         },
