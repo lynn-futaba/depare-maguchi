@@ -604,19 +604,23 @@ function callAMRReturn() {
                 setTimeout(function() {
                     // Use confirm instead of alert
                     // let userConfirmed = confirm("✅ Bライン >> 作業が完了しました。ウィンドウを閉じますか？");
-                    let userConfirmed = confirm("✅ 作業が完了しました。ウィンドウを閉じますか？");
+                    let userConfirmed = confirm("✅ 作業が完了しました。ブラウザタブを閉じますか？");
                     
                     if (userConfirmed) {
-                        console.log("User clicked OK. Closing tab...");
-                        window.close();
-                        
-                        // Fallback for browsers that block window.close()
-                        setTimeout(function() {
-                            if (!window.closed) {
-                                // alert("✅ Bライン >> ブラウザの制限により自動で閉じられませんでした。手動で閉じてください。");
-                                alert("✅ ブラウザの制限により自動で閉じられませんでした。手動で閉じてください。");
-                            }
-                        }, 500);
+                        // reset 0 for take_count in config
+                        // 1. Start the reset
+                        // 2. ONLY close the window once the reset is finished
+                        resetAllTakeCounts(function() {
+                            console.log("Reset finished. Now closing tab...");
+                            window.close();
+                            
+                            // Fallback
+                            setTimeout(function() {
+                                if (!window.closed) {
+                                    alert("✅ ブラウザの制限により自動で閉じられませんでした。手動で閉じてください。");
+                                }
+                            }, 500);
+                        });
                     } else {
                         console.log("User clicked Cancel. Tab remains open.");
                     }
@@ -680,5 +684,23 @@ function callAMRFlowrackOnly() {
         }
     }); 
 }
+
+function resetAllTakeCounts(callback) {
+    $.ajax({
+        url: '/api/reset_all_take_counts',
+        type: 'POST',
+        success: function(response) {
+            console.log("Reset successful");
+            showInfo("🔄 データをリセットして終了しています...", 2000);
+            if (callback) callback(); // Run the next step (closing the window)
+        },
+        error: function(err) {
+            console.error("Reset failed", err);
+            alert("Reset failed, window will not close.");
+        }
+    });
+}
+
+
 
 

@@ -376,6 +376,41 @@ class DepalletWebServer:
                 logging.error(f"[app.py >> get_empty_kotatsu_status() >> エラー] : {e}")
                 # Return 400 or 500 error for AJAX 'error' block to catch
                 return jsonify({"status": "error", "message": str(e)}), 400
+            
+        @app.route('/api/reset_all_take_counts', methods=['POST'])
+        def reset_all_take_counts():
+            try:
+                with file_lock:
+                    # 1. Load current config
+                    with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
+                        config = json.load(f)
+
+                    take_count = config.get("take_count")
+                    if not isinstance(take_count, dict):
+                        return jsonify({"status": "error", "message": "take_count section missing"}), 500
+
+                    # 2. Reset ALL keys to "0"
+                    for key in take_count:
+                        take_count[key] = "0"
+
+                    config["take_count"] = take_count
+
+                    logging.info(f"[app.py >> reset_all_take_counts() >> 成功] Found: {take_count}")
+
+                    # 3. Save the file
+                    tmp_path = CONFIG_PATH + ".tmp"
+                    with open(tmp_path, 'w', encoding='utf-8') as f:
+                        json.dump(config, f, ensure_ascii=False, indent=2)
+                    os.replace(tmp_path, CONFIG_PATH)
+
+                    # 4. Refresh internal logic (if needed)
+                    get_depallet_area_by_plat()
+
+                    return jsonify({"status": "success", "message": "All take counts reset to 0"})
+
+            except Exception as e:
+                logging.error(f"[app.py >> reset_all_take_counts() >> エラー] : {e}")
+                return jsonify({"status": "error", "message": str(e)}), 500
         
 if __name__ == "__main__":
     depallet_app = None # TODO➞リン
