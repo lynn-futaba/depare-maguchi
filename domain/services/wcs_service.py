@@ -36,11 +36,19 @@ class WCSService:
     def dispallet(self, depallet_area):
        try:
            if depallet_area is None:
-               raise Exception("WCSService >> Depallet Area is None")
+               raise Exception("WCS Service >> Depallet Area is None")
            self.wcs_repo.dispallet(depallet_area)
-           logging.info("[WCSService >> dispallet() >> 成功]")
+           logging.info("[WCS Service >> dispallet() >> 成功]")
        except Exception as e:
-           raise Exception(f"WCSService >> Error Dispallet: {e}")
+           raise Exception(f"WCS Service >> Error Dispallet: {e}")
+       
+    def get_empty_kotatsu_status(self):
+       try:
+           supplier_names = self.wcs_repo.get_empty_kotatsu_status()
+           logging.info("[WCS Service >> get_empty_kotatsu_status() >> 成功]")
+           return supplier_names
+       except Exception as e:
+           raise Exception(f"[WCS Service >> get_empty_kotatsu_status() >> エラー]: {e}")
        
     
 

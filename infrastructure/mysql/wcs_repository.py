@@ -438,6 +438,55 @@ class WCSRepository(IWCSRepository):
 
         logging.info("[dispallet] Function completed")
         return
+    
+    # TODO➞リン: get_empty_kotatsu_status
+    def get_empty_kotatsu_status(self):
+        conn = None
+        cur = None
+        try:
+            conn = self.db.wcs_pool.get_connection()
+            # Use dictionary=True so we can access columns by name
+            cur = conn.cursor(dictionary=True) 
+
+            # SQL Logic:
+            # 1. Join t_shelf_status with t_location_status to confirm existence.
+            # 2. Join m_product to get the supplier name.
+            # 3. Filter for 'EMPTY' status and 'K' prefix.
+            # 4. Group by supplier and sort by the OLDEST (MIN) update time.
+            filter_sql = """
+                SELECT mp.supplier_name
+                FROM `futaba-chiryu-3building`.t_shelf_status AS ts
+                INNER JOIN `futaba-chiryu-3building`.t_location_status AS tl
+                    ON ts.shelf_code = tl.shelf_code
+                INNER JOIN `futaba-chiryu-3building`.m_product AS mp 
+                    ON ts.step_kanban_no = mp.kanban_no
+                WHERE ts.kotatsu_status = %s 
+                AND ts.shelf_code LIKE 'K%%'
+                ORDER BY ts.update_datetime ASC
+            """
+
+            cur.execute(filter_sql, ("EMPTY",))
+            results = cur.fetchall()
+
+            if not results:
+                logging.info("[WCSRepository >> get_empty_kotatsu_status() >> No EMPTY K-shelves found.]")
+                return [] # Return empty list if no data
+
+            # Create a clean list of strings: ["Supplier A", "Supplier B"]
+            supplier_list = [row["supplier_name"] for row in results]
+            
+            logging.info(f"[WCSRepository >> get_empty_kotatsu_status() >> Found {len(supplier_list)} suppliers in order.]")
+            return supplier_list
+
+        except Exception as e:
+            logging.error(f"[WCSRepository >> get_empty_kotatsu_status() >> エラー]: {e}")
+            raise Exception(f"[WCSRepository >> get_empty_kotatsu_status() >> エラー]: {e}")
+            
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
 
 if __name__ == "__main__":
     from mysql_db import MysqlDb

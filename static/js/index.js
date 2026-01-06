@@ -1,110 +1,176 @@
 $(document).ready(function () {
  
     function refreshPage() {
-        $.ajax({
-            url: "/api/get_product_infos",
-            type: "GET",
+
+        getEmptyKotatsuStatus();
+        // $.ajax({
+        //     url: "/api/get_product_infos",
+        //     type: "GET",
           
-             success: function (data) {
-                // console.log('get_product_infos >>', data); // TODO:
-                updateProductInfo(data);
-            },
-            error: function (error) {
-                console.error("Error fetching data:", error);
-            }
-        });
+        //      success: function (data) {
+        //         // console.log('get_product_infos >>', data); // TODO:
+        //         updateProductInfo(data);
+        //     },
+        //     error: function (error) {
+        //         console.error("Error fetching data:", error);
+        //     }
+        // });
 
-        function updateProductInfo(data) {
+        // function updateProductInfo(data) {
 
-            let arProductData = JSON.parse(data[0]); // TODO: add
-            let alProductLData = JSON.parse(data[1]); // TODO: add
-            let brProductRData = JSON.parse(data[2]); // TODO: add
-            let blProductLData = JSON.parse(data[3]); // TODO: add
-            let lineData = JSON.parse(data[4]);
+        //     let arProductData = JSON.parse(data[0]); // TODO: add
+        //     let alProductLData = JSON.parse(data[1]); // TODO: add
+        //     let brProductRData = JSON.parse(data[2]); // TODO: add
+        //     let blProductLData = JSON.parse(data[3]); // TODO: add
+        //     let lineData = JSON.parse(data[4]);
 
-            let tbodyARProduct = $('#a-r-product');
-            let tbodyALProduct = $('#a-l-product');
+        //     let tbodyARProduct = $('#a-r-product');
+        //     let tbodyALProduct = $('#a-l-product');
 
-            let tbodyBRProduct = $('#b-r-product');
-            let tbodyBLProduct = $('#b-l-product');
+        //     let tbodyBRProduct = $('#b-r-product');
+        //     let tbodyBLProduct = $('#b-l-product');
 
             
 
-            tbodyARProduct.empty();
-            tbodyALProduct.empty();
-            tbodyBRProduct.empty();
-            tbodyBLProduct.empty();
+        //     tbodyARProduct.empty();
+        //     tbodyALProduct.empty();
+        //     tbodyBRProduct.empty();
+        //     tbodyBLProduct.empty();
 
-            let displayARProduct = `
-                <tr>
-                    <td>${arProductData.product.kanban_id}</td>
-                    <td>${arProductData.planned_num}</td>
-                    <td>${arProductData.output_num}</td>
-                </tr>
-            `;
-            tbodyARProduct.append(displayARProduct);
+        //     let displayARProduct = `
+        //         <tr>
+        //             <td>${arProductData.product.kanban_id}</td>
+        //             <td>${arProductData.planned_num}</td>
+        //             <td>${arProductData.output_num}</td>
+        //         </tr>
+        //     `;
+        //     tbodyARProduct.append(displayARProduct);
 
-            let displayALProduct = `
-                <tr>
-                    <td>${alProductLData.product.kanban_id}</td>
-                    <td>${alProductLData.planned_num}</td>
-                    <td>${alProductLData.output_num}</td>
-                </tr>
-            `;
-            tbodyALProduct.append(displayALProduct);
+        //     let displayALProduct = `
+        //         <tr>
+        //             <td>${alProductLData.product.kanban_id}</td>
+        //             <td>${alProductLData.planned_num}</td>
+        //             <td>${alProductLData.output_num}</td>
+        //         </tr>
+        //     `;
+        //     tbodyALProduct.append(displayALProduct);
 
-            let displayBRProduct = `
-                <tr>
-                    <td>${brProductRData.product.kanban_id}</td>
-                    <td>${brProductRData.planned_num}</td>
-                    <td>${brProductRData.output_num}</td>
-                </tr>
-            `;
-            tbodyBRProduct.append(displayBRProduct);
+        //     let displayBRProduct = `
+        //         <tr>
+        //             <td>${brProductRData.product.kanban_id}</td>
+        //             <td>${brProductRData.planned_num}</td>
+        //             <td>${brProductRData.output_num}</td>
+        //         </tr>
+        //     `;
+        //     tbodyBRProduct.append(displayBRProduct);
 
-            let displayBLProduct = `
-                <tr>
-                    <td>${blProductLData.product.kanban_id}</td>
-                    <td>${blProductLData.planned_num}</td>
-                    <td>${blProductLData.output_num}</td>
-                </tr>
-            `;
-            tbodyBLProduct.append(displayBLProduct);
+        //     let displayBLProduct = `
+        //         <tr>
+        //             <td>${blProductLData.product.kanban_id}</td>
+        //             <td>${blProductLData.planned_num}</td>
+        //             <td>${blProductLData.output_num}</td>
+        //         </tr>
+        //     `;
+        //     tbodyBLProduct.append(displayBLProduct);
 
 
           
-            Object.keys(lineData).forEach((key) => {
+        //     Object.keys(lineData).forEach((key) => {
 
-                let line = lineData[key]
-                // TODO: current frontages is {}, need to ask for testing
-                Object.keys(line.frontages).forEach((key) => {
+        //         let line = lineData[key]
+        //         // TODO: current frontages is {}, need to ask for testing
+        //         Object.keys(line.frontages).forEach((key) => {
                    
-                    let frontage = line.frontages[key];
-                    let tbody = $(`#${frontage.id}`);
-                    tbody.empty();
+        //             let frontage = line.frontages[key];
+        //             let tbody = $(`#${frontage.id}`);
+        //             tbody.empty();
 
-                    Object.keys(frontage.inventories).forEach((key) => {
-                        let rack = frontage.inventories[key];
+        //             Object.keys(frontage.inventories).forEach((key) => {
+        //                 let rack = frontage.inventories[key];
                                           
-                        let row = `
-                        <tr>
-                            <td>${rack.part.kanban_id}</td>
-                            <td>${rack.case_quantity}</td>
-                        </tr>`;
-                        tbody.append(row);
+        //                 let row = `
+        //                 <tr>
+        //                     <td>${rack.part.kanban_id}</td>
+        //                     <td>${rack.case_quantity}</td>
+        //                 </tr>`;
+        //                 tbody.append(row);
 
-                    });
-                });
-            });
-        }  
+        //             });
+        //         });
+        //     });
+        // }  
     };
 
     // 定期実行 TODO: comment out
-    // setInterval(refreshPage, 5000); // TODO
-    // $('#refreshButton').on('click', function () {
-    //     refreshPage();
-    // });
+    setInterval(refreshPage, 3000); // TODO
+    $('#refreshButton').on('click', function () {
+        refreshPage();
+    });
 });
+
+// TODO: GET Empty Kotatsu Status
+function getEmptyKotatsuStatus() {
+    $.ajax({
+        url: "/api/get_empty_kotatsu_status",
+        type: "GET",
+        success: function (data) {
+            const $alertContainer = $("#kotatsu-alert");
+            const $leftList = $("#left-list");
+            const $rightList = $("#right-list");
+
+            if (data.status === "success" && data.suppliers && data.suppliers.length > 0) {
+                // Clear old data
+                $leftList.empty();
+                $rightList.empty();
+
+                let leftCounter = 0;
+                let rightCounter = 0;
+
+                data.suppliers.forEach(function(name) {
+                    // 1. Determine side based on supplier_name
+                    // Assumes names like "Supplier-L" or "L-Supplier"
+                    let side = "";
+                    if (name.includes("L")) side = "L";
+                    else if (name.includes("R")) side = "R";
+
+                    // 2. Determine if it is the first item for that specific side
+                    let isFirstForSide = false;
+                    if (side === "L") {
+                        isFirstForSide = (leftCounter === 0);
+                        leftCounter++;
+                    } else if (side === "R") {
+                        isFirstForSide = (rightCounter === 0);
+                        rightCounter++;
+                    }
+
+                    // 3. Create HTML
+                    let label = isFirstForSide ? '<span class="text-primary">Next ➞ </span>' : '・';
+                    let html = '<div class="border-bottom py-2">' + label + name + ' が空です。</div>';
+
+                    // 4. Append to the correct side
+                    if (side === "L") {
+                        $leftList.append(html);
+                    } else if (side === "R") {
+                        $rightList.append(html);
+                    }
+                });
+
+                // Show alert only if at least one side has content
+                if (leftCounter > 0 || rightCounter > 0) {
+                    $alertContainer.removeClass("d-none");
+                } else {
+                    $alertContainer.addClass("d-none");
+                }
+            } else {
+                $alertContainer.addClass("d-none");
+            }
+        },
+        error: function (error) {
+            $("#kotatsu-alert").addClass("d-none");
+            console.error("AJAX Error:", error);
+        }
+    });
+}
 
 // TODO: call to B LINE Depallet Maguchi
 function callToBLineDepalletMaguchi(id) {

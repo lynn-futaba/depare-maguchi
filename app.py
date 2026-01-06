@@ -350,10 +350,33 @@ class DepalletWebServer:
             except Exception as e:
                 logging.error(f"[app.py >> call_AMR_flowrack_only() >> エラー] : {e}")
                 return abort(400, str(e))
+            
+        @app.route("/api/get_empty_kotatsu_status", methods=["GET"])
+        def get_empty_kotatsu_status():
+            try:
+                # 1. Call the application layer (ensure the middle layers also 'return' the result!)
+                supplier_list = self._depallet_app.get_empty_kotatsu_status()
+                
+                # 2. Check if the list has content
+                if supplier_list and len(supplier_list) > 0:
+                    logging.info(f"[app.py >> get_empty_kotatsu_status() >> 成功] Found: {supplier_list}")
+                    return jsonify({
+                        "status": "success", 
+                        "suppliers": supplier_list,
+                        "message": f"{len(supplier_list)}件の空き仕入先が見つかりました。"
+                    }), 200
+                else:
+                    return jsonify({
+                        "status": "empty", 
+                        "suppliers": [],
+                        "message": "現在、対象の空き棚はありません。"
+                    }), 200
 
+            except Exception as e:
+                logging.error(f"[app.py >> get_empty_kotatsu_status() >> エラー] : {e}")
+                # Return 400 or 500 error for AJAX 'error' block to catch
+                return jsonify({"status": "error", "message": str(e)}), 400
         
-
-
 if __name__ == "__main__":
     depallet_app = None # TODO➞リン
     try:

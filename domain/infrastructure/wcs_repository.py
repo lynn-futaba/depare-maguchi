@@ -33,3 +33,8 @@ class IWCSRepository(ABC):
     def dispallet(self, depallet_area):
         pass
 
+    # ���o
+    @abstractmethod  # TODO modified
+    def get_empty_kotatsu_status(self):
+        pass
+

@@ -279,6 +279,15 @@ class DepalletApplication():
         self.wcs_service.dispallet(self.new_depallet_area)
         logging.info(f"[app.py >> get_depallet_area_by_plat_json() >> Take Count saved to DB successfully]")
         return util.to_json(self.new_depallet_area)
+    
+    # TODO➞リン: Added
+    def get_empty_kotatsu_status(self):
+        try:
+            logging.info("[DepalletApplication >> get_empty_kotatsu_status() >> 成功]")
+            return self.wcs_service.get_empty_kotatsu_status()
+        except Exception as e:
+            logging.error(f"[DepalletApplication >> get_empty_kotatsu_status() >> エラー] : {e}")
+            raise Exception(f"DepalletApplication >> get_empty_kotatsu_status >> エラー]: {e}")
 
 if __name__ == "__main__":
 
