@@ -28,7 +28,8 @@ class WCSService:
     def call_target_ids(self, button_id):
         try:
             logging.info("[WCSService >> call_target_ids() >> 成功]")
-            self.wcs_repo.call_target_ids(button_id)
+            process_list = self.wcs_repo.call_target_ids(button_id)
+            return process_list
         except Exception as e:
             logging.error(f"[WCSService >> call_target_ids() >> エラー]: {e}")
             raise Exception(f"[WCSService >> call_target_ids() >> エラー]: {e}")
@@ -49,6 +50,14 @@ class WCSService:
            return supplier_names
        except Exception as e:
            raise Exception(f"[WCS Service >> get_empty_kotatsu_status() >> エラー]: {e}")
+       
+    def get_fill_kotatsu_status(self):
+       try:
+           has_fill_kotatsu = self.wcs_repo.get_fill_kotatsu_status()
+           logging.info("[WCS Service >> get_fill_kotatsu_status() >> 成功]")
+           return has_fill_kotatsu
+       except Exception as e:
+           raise Exception(f"[WCS Service >> get_fill_kotatsu_status() >> エラー]: {e}")
        
     
 

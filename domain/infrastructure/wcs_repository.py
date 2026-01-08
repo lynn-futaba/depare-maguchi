@@ -38,3 +38,10 @@ class IWCSRepository(ABC):
     def get_empty_kotatsu_status(self):
         pass
 
+    # ���o
+    @abstractmethod  # TODO modified
+    def get_fill_kotatsu_status(self):
+        pass
+
+    
+

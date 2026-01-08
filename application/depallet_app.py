@@ -151,7 +151,7 @@ class DepalletApplication():
     def call_target_ids(self, button_id):
         try:
             logging.info("[DepalletApplication >> call_target_ids() >> 成功]")
-            self.wcs_service.call_target_ids(button_id)
+            return self.wcs_service.call_target_ids(button_id)
         except Exception as e:
             logging.error(f"[DepalletApplication >> call_target_ids() >> エラー] : {e}")
             raise Exception(f"DepalletApplication >> call_target_ids() >> エラー]: {e}")
@@ -288,6 +288,15 @@ class DepalletApplication():
         except Exception as e:
             logging.error(f"[DepalletApplication >> get_empty_kotatsu_status() >> エラー] : {e}")
             raise Exception(f"DepalletApplication >> get_empty_kotatsu_status >> エラー]: {e}")
+        
+    # TODO➞リン: Added
+    def get_fill_kotatsu_status(self):
+        try:
+            logging.info("[DepalletApplication >> get_fill_kotatsu_status() >> 成功]")
+            return self.wcs_service.get_fill_kotatsu_status()
+        except Exception as e:
+            logging.error(f"[DepalletApplication >> get_fill_kotatsu_status() >> エラー] : {e}")
+            raise Exception(f"DepalletApplication >> get_fill_kotatsu_status >> エラー]: {e}")
 
 if __name__ == "__main__":
 

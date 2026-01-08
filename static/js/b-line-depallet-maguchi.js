@@ -10,8 +10,19 @@ $(document).ready(function () {
         const idValue = parseInt(params.get("id"));
         const nameValue = params.get("name");
 
+        document.getElementById("tagName").textContent = 'デパレ間口 <' + nameValue + '>';
+
         console.log("nameValue >>>.", nameValue);
 
+        if (nameValue.includes("R")) {
+            document.getElementById("kotatsu-R").style.display = "block";
+            document.getElementById("kotatsu-L").style.display = "none";
+        } 
+
+        if (nameValue.includes("L")) {
+            document.getElementById("kotatsu-R").style.display = "none";
+            document.getElementById("kotatsu-L").style.display = "block";
+        } 
 
         if (nameValue.includes("R1")) {
             document.getElementById("layout-R1").style.display = "block";
@@ -73,6 +84,8 @@ $(document).ready(function () {
             document.getElementById("layout-L1").style.display = "none";
             document.getElementById("layout-L2").style.display = "none";
             document.getElementById("layout-L3").style.display = "none";
+            document.getElementById("kotatsu-R").style.display = "none";
+            document.getElementById("kotatsu-L").style.display = "none";
         }
 
         $.ajax({
@@ -150,6 +163,8 @@ $(document).ready(function () {
             const targetShelves = globalShelfMap[idValue] || [];
         
             document.getElementById("frontageName").textContent = 'デパレ間口 <' + nameValue + '>';
+            
+
         
             targetShelves.forEach((shelfNum, shelfIndex) => {
                 const platId = targetPlats[shelfIndex];
@@ -211,11 +226,11 @@ $(document).ready(function () {
                         // Add row to shelf table
                         tbody.append(`
                             <tr id="${rowId}">
-                                <td><button class="btn btn-success btn-sm submit-pallet" data-plat="${platId}" data-kanban="${stepKanbanNo}">＋</button></td>
+                                <td><button class="btn btn-success btn-sm submit-pallet fs-3" data-plat="${platId}" data-kanban="${stepKanbanNo}">✙</button></td>
                                 <td>${stepKanbanNo}</td>
                                 <td>${loadNum}</td>
                                 <td id="take-count-${rowId}">${takeCount}</td>
-                                <td><button class="btn btn-danger btn-sm submit-depallet" data-plat="${platId}" data-kanban="${stepKanbanNo}">ー</button></td>
+                                <td><button class="btn btn-danger btn-sm submit-depallet fs-3" data-plat="${platId}" data-kanban="${stepKanbanNo}">ー</button></td>
                             </tr>
                         `);
                         
@@ -600,6 +615,9 @@ function callAMRReturn() {
                 // 2. Disable the button and change text so the user knows it's done
                 $("#btnAMRReturn").text("送信完了").addClass("btn-secondary");
 
+                // reset 0 for take_count in config
+                resetAllTakeCounts();
+
                 // 3. Wait 2.5 seconds, then ask the user before closing
                 setTimeout(function() {
                     // Use confirm instead of alert
@@ -607,20 +625,16 @@ function callAMRReturn() {
                     let userConfirmed = confirm("✅ 作業が完了しました。ブラウザタブを閉じますか？");
                     
                     if (userConfirmed) {
-                        // reset 0 for take_count in config
-                        // 1. Start the reset
-                        // 2. ONLY close the window once the reset is finished
-                        resetAllTakeCounts(function() {
-                            console.log("Reset finished. Now closing tab...");
-                            window.close();
-                            
-                            // Fallback
-                            setTimeout(function() {
-                                if (!window.closed) {
-                                    alert("✅ ブラウザの制限により自動で閉じられませんでした。手動で閉じてください。");
-                                }
-                            }, 500);
-                        });
+                        console.log("User clicked OK. Closing tab...");
+                        window.close();
+                        
+                        // Fallback for browsers that block window.close()
+                        setTimeout(function() {
+                            if (!window.closed) {
+                                // alert("✅ Bライン >> ブラウザの制限により自動で閉じられませんでした。手動で閉じてください。");
+                                alert("✅ ブラウザの制限により自動で閉じられませんでした。手動で閉じてください。");
+                            }
+                        }, 500);
                     } else {
                         console.log("User clicked Cancel. Tab remains open.");
                     }
@@ -685,19 +699,19 @@ function callAMRFlowrackOnly() {
     }); 
 }
 
-function resetAllTakeCounts(callback) {
+function resetAllTakeCounts() {
+    // --- NEW: Reset all take counts before closing ---
     $.ajax({
-        url: '/api/reset_all_take_counts',
+        url: "/api/reset_all_take_counts",
         type: 'POST',
-        success: function(response) {
-            console.log("Reset successful");
-            showInfo("🔄 データをリセットして終了しています...", 2000);
-            if (callback) callback(); // Run the next step (closing the window)
+        contentType: 'application/json',
+        success: function(resetRes) {
+            showInfo("🔄 データをリセットして終了しています...", 3000);
+            console.log("Take counts reset successfully.");
         },
         error: function(err) {
-            console.error("Reset failed", err);
-            alert("Reset failed, window will not close.");
-        }
+            console.error("Failed to reset take counts:", err);
+        },
     });
 }
 

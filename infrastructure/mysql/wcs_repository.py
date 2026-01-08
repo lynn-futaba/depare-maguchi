@@ -135,7 +135,6 @@ class WCSRepository(IWCSRepository):
         try:
             # Fetch mapping from the config loader internally checks if the JSON file was updated
             # 1. This now returns the LIST of tuples/lists directly
-
             creates_raw = self.cfg.get_insert_target_ids_by_button(button_id)
     
             # Convert list of lists to list of tuples manually
@@ -267,6 +266,33 @@ class WCSRepository(IWCSRepository):
             logging.info(f"[WCSRepository >> call_target_ids() >> Updated IDs]: {signal_ids}")
 
             conn.commit()
+
+            # --- STEP 3: Polling for ANY using_flag == 1 ---
+            # Since we can't specify a WHERE clause, we check if any record is active.
+            check_sql = "SELECT COUNT(*) FROM `futaba-chiryu-3building`.t_location_status WHERE using_flag = 1"
+            
+            max_wait = 45  # Seconds to wait for AMR
+            success = False
+            
+            for _ in range(max_wait):
+                cur.execute(check_sql)
+                result = cur.fetchone()
+                
+                # If at least one row has using_flag = 1
+                if result and result[0] > 0:
+                    success = True
+                    break
+                
+                time.sleep(1)
+                conn.ping(reconnect=True) 
+
+            if success:
+                logging.info(f"[WCSRepository >> call_target_ids() >> processing_status IDs]: {result}")
+                return {"status": "success", "processing_status": "completed"}
+            else:
+                # If no flag was seen after 45 seconds, we timeout
+                return {"status": "timeout", "message": "No AMR activity detected"}
+        
         except Exception as e:
             if conn:
                 conn.rollback()
@@ -487,6 +513,49 @@ class WCSRepository(IWCSRepository):
                 cur.close()
             if conn:
                 conn.close()
+
+
+    def get_fill_kotatsu_status(self):
+        conn = None
+        cur = None
+        try:
+            conn = self.db.wcs_pool.get_connection()
+            cur = conn.cursor(dictionary=True) 
+
+            # 1. Join tables immediately to get all valid status records
+            sql = """
+                SELECT ts.kotatsu_status, ts.step_kanban_no
+                FROM `futaba-chiryu-3building`.t_shelf_status AS ts
+                INNER JOIN `futaba-chiryu-3building`.m_product AS mp 
+                    ON ts.step_kanban_no = mp.kanban_no
+                ORDER BY ts.update_datetime ASC
+            """
+            cur.execute(sql)
+            results = cur.fetchall()
+
+            # 2. Logic Handling:
+            # Check if ANY of the retrieved records have the status "FILL"
+            has_fill = any(row["kotatsu_status"] == "FILL" for row in results)
+
+            if has_fill:
+                # If "FILL" exists in the results, return an empty list
+                logging.info(f"[WCSRepository] 'FILL' status found in joined records. Returning empty list: {results}")
+                return []
+            else:
+                # If "FILL" does NOT exist, return the list of kanban numbers
+                logging.info("[WCSRepository] No 'FILL' status found. Returning kanban list.")
+                return [row["step_kanban_no"] for row in results]
+
+        except Exception as e:
+            logging.error(f"[WCSRepository >> get_fill_kotatsu_status() >> Error]: {e}")
+            raise e
+            
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+
 
 if __name__ == "__main__":
     from mysql_db import MysqlDb
