@@ -306,8 +306,16 @@ function callToBLineDepalletMaguchi(id) {
                         console.log("Kotatsu Data >>", kotatsuData);
                         if (kotatsuData.kotatsu_status === "fill") {
                             // CASE: BUSY
-                            let loadingMsg = `⚠️${kyokuuMaguchi} 選択した材料がみつかりました。` + "\n" + `${kotatsuData.message}` || "搬送中です。。";
-                            triggerBuhinCallsWithLoading(id, loadingMsg, kyokuuMaguchi);
+                            // let loadingMsg = `⚠️${kyokuuMaguchi} 選択した材料がみつかりました。` + "\n" + `${kotatsuData.message}` || "搬送中です。。";
+                            // triggerBuhinCallsWithLoading(id, loadingMsg, kyokuuMaguchi);
+                            let fillMsg = `${kyokuuMaguchi} 選択した材料がみつかりました。` + "\n" + `⚠️${kotatsuData.message}` || "搬送中です。。";
+                            // Show custom large dialog
+                            showLargeConfirm(fillMsg).then((userConfirmed) => {
+                                if (userConfirmed) {
+                                    triggerBuhinCallsWithConfirmDialog(id, kyokuuMaguchi);
+                                }
+                            });
+
                         }   else {
                                 // CASE: IDLE
                                 let kanbanMessage = kotatsuData.kanban_list?.map(no => `${no}`).join(", ") || "";
@@ -315,7 +323,7 @@ function callToBLineDepalletMaguchi(id) {
                                 // Show custom large dialog
                                 showLargeConfirm(statusMsg).then((userConfirmed) => {
                                     if (userConfirmed) {
-                                        processStartSequence(id, kyokuuMaguchi);
+                                        triggerBuhinCallsWithConfirmDialog(id, kyokuuMaguchi);
                                     }
                                 });
                             }
@@ -418,27 +426,20 @@ function showLargeConfirm(message) {
 }
 
 // Logic to open child window and start background monitoring
-function processStartSequence(id, kyokuuMaguchi) {
+// function processStartSequence(id, kyokuuMaguchi) {
+//     // 2. Start the backend call chain
+//     triggerBuhinCallsWithConfirmDialog(id, openedWindow);
+// }
 
-    // 1. Open the Maguchi page immediately (Child Window)
-    const windowIdentifier = `maguchi_${id}_${kyokuuMaguchi}`;
-    const nextPageUrl = `/b_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
-    const openedWindow = window.open(nextPageUrl, windowIdentifier);
-
-    // 2. Start the backend call chain
-    triggerBuhinCallsWithConfirmDialog(id, openedWindow);
-}
-
-function triggerBuhinCallsWithConfirmDialog(id, childWindow) {
+function triggerBuhinCallsWithConfirmDialog(id, kyokuuMaguchi) {
     $.ajax({ // 部品を呼ぶためAMR信号にIDsをまずは入力します。
         url: "/api/insert_target_ids",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({ "button_id": id }),
         success: function () {
-            showInfo("✅搬送IDsを入力しました。", 1000);
+            showInfo("✅搬送IDsを入力しました。", 2000);
 
-            // Long-polling call: waits for using_flag == 1 in the backend
             $.ajax({ // IDsをAMR信号に入れした後で部品を呼び出します。
                 url: "/api/call_target_ids",
                 type: "POST",
@@ -447,10 +448,16 @@ function triggerBuhinCallsWithConfirmDialog(id, childWindow) {
                 timeout: 60000, 
                 success: function (response) {
                     if (response.processing_status === "completed") {
-                        showInfo("✅搬送完了しました。", 1000);
+                        showInfo("✅搬送完了しました。", 2000);
+                        
+                        // 1. Open the Maguchi page immediately (Child Window)
+                        const windowIdentifier = `maguchi_${id}_${kyokuuMaguchi}`;
+                        const nextPageUrl = `/b_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
+                        const openedWindow = window.open(nextPageUrl, windowIdentifier);
+
                         // Focus the newly opened tab if possible
-                        if (childWindow && !childWindow.closed) {
-                            childWindow.focus();
+                        if (openedWindow) {
+                            openedWindow.focus();
                         }
                     } else {
                         showInfo("🛑部品を呼び出し中です。");
