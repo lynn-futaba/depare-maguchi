@@ -1,7 +1,7 @@
 import time
 import logging
 
-from typing import Any, Dict, List, Optional
+from typing import Optional
 
 from domain.models.part import Part
 from domain.models.line import LineFrontage
@@ -120,7 +120,7 @@ class WCSRepository(IWCSRepository):
             conn.close()
         return
     
-    # TODO➞リン: 間口に搬送対象idを入力
+    # TODO➞リン: 間口に搬送対象idを入力、部品を呼ぶためAMR信号にIDsをまずは入力します。
     def insert_target_ids(self, button_id):
         # --- MOCK MODE START ---
         # logging.info(f"MOCK: Insert target IDS >> Received call for ID {button_id}")
@@ -140,10 +140,10 @@ class WCSRepository(IWCSRepository):
             # Convert list of lists to list of tuples manually
             creates = [tuple(x) for x in creates_raw]
             
-            logging.info(f"[WCSRepository >> insert_target_ids() >> creates_map.]: {creates}")
+            logging.info(f"[WCSRepository >> insert_target_ids() >> 部品を呼ぶためAMR信号に入力したIDs.]: {creates}")
 
             if not creates:
-                logging.info(f"[WCSRepository >> insert_target_ids() >> No mappings found for given button_id]: {creates}")
+                logging.info(f"[WCSRepository >> insert_target_ids() >> No found 部品を呼ぶためAMR信号に入力したIDs.]: {creates}")
                 return
 
             kanban_map = {
@@ -225,12 +225,12 @@ class WCSRepository(IWCSRepository):
             if conn:
                 conn.close()
 
-    # TODO➞リン: 間口に搬送対象を呼び出す
+    # TODO➞リン: 間口に搬送対象を呼び出す、IDsをAMR信号に入れした後で部品を呼び出し
     def call_target_ids(self, button_id):
         # --- MOCK MODE START ---
         # logging.info(f"MOCK: Call target ids >> Received call for ID {button_id}")
         # time.sleep(3) # This makes the spinner spin for 3 seconds
-        # return {"status": "success", "message": "Call target IDS Mock response"}
+        # return { "status": "success", "message": "Call target IDS Mock response",  "processing_status": "completed", "updated_count": 5 }
         # --- MOCK MODE END ---
         try:
             conn = self.db.wcs_pool.get_connection()
@@ -266,32 +266,38 @@ class WCSRepository(IWCSRepository):
             logging.info(f"[WCSRepository >> call_target_ids() >> Updated IDs]: {signal_ids}")
 
             conn.commit()
+        
+            return {
+                "status": "success", 
+                "processing_status": "completed",
+                "updated_count": cur.rowcount
+            }
 
             # --- STEP 3: Polling for ANY using_flag == 1 ---
-            # Since we can't specify a WHERE clause, we check if any record is active.
-            check_sql = "SELECT COUNT(*) FROM `futaba-chiryu-3building`.t_location_status WHERE using_flag = 1"
+            # TODO: リン. May be supported later by 平野さん
+            # check_sql = "SELECT COUNT(*) FROM `futaba-chiryu-3building`.t_location_status WHERE using_flag = 1"
             
-            max_wait = 45  # Seconds to wait for AMR
-            success = False
+            # max_wait = 45  # Seconds to wait for AMR
+            # success = False
             
-            for _ in range(max_wait):
-                cur.execute(check_sql)
-                result = cur.fetchone()
+            # for _ in range(max_wait):
+            #     cur.execute(check_sql)
+            #     result = cur.fetchone()
                 
-                # If at least one row has using_flag = 1
-                if result and result[0] > 0:
-                    success = True
-                    break
+            #     # If at least one row has using_flag = 1
+            #     if result and result[0] > 0:
+            #         success = True
+            #         break
                 
-                time.sleep(1)
-                conn.ping(reconnect=True) 
+            #     time.sleep(1)
+            #     conn.ping(reconnect=True) 
 
-            if success:
-                logging.info(f"[WCSRepository >> call_target_ids() >> processing_status IDs]: {result}")
-                return {"status": "success", "processing_status": "completed"}
-            else:
-                # If no flag was seen after 45 seconds, we timeout
-                return {"status": "timeout", "message": "No AMR activity detected"}
+            # if success:
+            #     logging.info(f"[WCSRepository >> call_target_ids() >> using_flag = 1 detected]: {result}")
+            #     return {"status": "success", "processing_status": "completed"}
+            # else:
+            #     # If no flag was seen after 45 seconds, we timeout
+            #     return {"status": "timeout", "message": "No AMR activity >> using_flag = 1 detected"}
         
         except Exception as e:
             if conn:
@@ -303,72 +309,6 @@ class WCSRepository(IWCSRepository):
                 cur.close()
             if conn:
                 conn.close()
-
-    # add sugiura ###################################################
-    # デパレ箱数登録
-    # def dispallet(self, depallet_area):
-    #     try:
-    #         conn = self.db.wcs_pool.get_connection()
-    #         conn.start_transaction()
-    #         cur = conn.cursor()
-
-    #         logging.info(f"[WCSRepository >> dispallet() >> depallet_area]: {depallet_area}")
-
-    #         for i in depallet_area:
-    #             id = None
-    #             data = None
-    #             if i == "20":
-    #                 id = 8405
-    #                 data = depallet_area[i][0]
-    #             elif i == "21":
-    #                 id = 8411
-    #                 data = depallet_area[i][0]
-    #             elif i == "22":
-    #                 id = 8417
-    #                 data = depallet_area[i][0]
-    #             elif i == "23":
-    #                 id = 8423
-    #                 data = depallet_area[i][0]
-    #             elif i == "24":
-    #                 id = 8429
-    #                 data = depallet_area[i][0]
-    #             elif i == "25":
-    #                 id = 8505
-    #                 data = depallet_area[i][0]
-    #             elif i == "26":
-    #                 id = 8511
-    #                 data = depallet_area[i][0]
-    #             elif i == "27":
-    #                 id = 8517
-    #                 data = depallet_area[i][0]
-    #             elif i == "28":
-    #                 id = 8523
-    #                 data = depallet_area[i][0]
-    #             elif i == "29":
-    #                 id = 8529
-    #                 data = depallet_area[i][0]
-
-                
-
-    #             num = abs(int(data["take_count"]))
-    #             result = cur.execute("""
-    #                         UPDATE `eip_signal`.word_input
-    #                         SET value = %s
-    #                         WHERE signal_id = %s
-    #                         """, (num, id,))
-                
-    #             logging.info(f"[WCSRepository >> dispallet() >> Query result]: {result}")
-
-    #         conn.commit()
-
-    #     except Exception as e:
-    #         conn.rollback()
-    #         raise Exception(f"[WCSRepository >> dispallet() >> Error] : {e}")
-
-    #     finally:
-    #         cur.close()
-    #         conn.close()
-    #     return
 
     # デパレ箱数登録
     def dispallet(self, depallet_area):
@@ -514,8 +454,8 @@ class WCSRepository(IWCSRepository):
             if conn:
                 conn.close()
 
-
-    def get_fill_kotatsu_status(self):
+    # TODO➞リン: check_kotatsu_fill_or_not
+    def check_kotatsu_fill_or_not(self):
         conn = None
         cur = None
         try:
@@ -526,12 +466,28 @@ class WCSRepository(IWCSRepository):
             sql = """
                 SELECT ts.kotatsu_status, ts.step_kanban_no
                 FROM `futaba-chiryu-3building`.t_shelf_status AS ts
+                INNER JOIN `futaba-chiryu-3building`.t_location_status AS tl
+                    ON ts.shelf_code = tl.shelf_code
                 INNER JOIN `futaba-chiryu-3building`.m_product AS mp 
                     ON ts.step_kanban_no = mp.kanban_no
+                WHERE ts.kotatsu_status = %s
                 ORDER BY ts.update_datetime ASC
             """
-            cur.execute(sql)
+            cur.execute(sql, ("FILL",))
             results = cur.fetchall()
+
+            # MOCK: START
+            # results = [
+            #     {'kotatsu_status': 'NO_FILL', 'step_kanban_no': 'サ607'},
+            #     {'kotatsu_status': 'NO_FILL', 'step_kanban_no': '3202'}, 
+            #     {'kotatsu_status': 'NO_FILL', 'step_kanban_no': 'オ070'}, 
+            #     {'kotatsu_status': 'NO_FILL', 'step_kanban_no': 'T704'}, 
+            #     # {'kotatsu_status': 'FILL', 'step_kanban_no': '5121'},
+            #     # {'kotatsu_status': 'FILL', 'step_kanban_no': 'サ607'}, 
+            #     # {'kotatsu_status': 'FILL', 'step_kanban_no': '5140'},
+            #     # {'kotatsu_status': 'FILL', 'step_kanban_no': 'T621'} 
+            # ];
+            # MOCK: END
 
             # 2. Logic Handling:
             # Check if ANY of the retrieved records have the status "FILL"
@@ -547,7 +503,7 @@ class WCSRepository(IWCSRepository):
                 return [row["step_kanban_no"] for row in results]
 
         except Exception as e:
-            logging.error(f"[WCSRepository >> get_fill_kotatsu_status() >> Error]: {e}")
+            logging.error(f"[WCSRepository >> check_kotatsu_fill_or_not() >> Error]: {e}")
             raise e
             
         finally:
@@ -555,6 +511,72 @@ class WCSRepository(IWCSRepository):
                 cur.close()
             if conn:
                 conn.close()
+
+# add sugiura ###################################################
+    # デパレ箱数登録
+    # def dispallet(self, depallet_area):
+    #     try:
+    #         conn = self.db.wcs_pool.get_connection()
+    #         conn.start_transaction()
+    #         cur = conn.cursor()
+
+    #         logging.info(f"[WCSRepository >> dispallet() >> depallet_area]: {depallet_area}")
+
+    #         for i in depallet_area:
+    #             id = None
+    #             data = None
+    #             if i == "20":
+    #                 id = 8405
+    #                 data = depallet_area[i][0]
+    #             elif i == "21":
+    #                 id = 8411
+    #                 data = depallet_area[i][0]
+    #             elif i == "22":
+    #                 id = 8417
+    #                 data = depallet_area[i][0]
+    #             elif i == "23":
+    #                 id = 8423
+    #                 data = depallet_area[i][0]
+    #             elif i == "24":
+    #                 id = 8429
+    #                 data = depallet_area[i][0]
+    #             elif i == "25":
+    #                 id = 8505
+    #                 data = depallet_area[i][0]
+    #             elif i == "26":
+    #                 id = 8511
+    #                 data = depallet_area[i][0]
+    #             elif i == "27":
+    #                 id = 8517
+    #                 data = depallet_area[i][0]
+    #             elif i == "28":
+    #                 id = 8523
+    #                 data = depallet_area[i][0]
+    #             elif i == "29":
+    #                 id = 8529
+    #                 data = depallet_area[i][0]
+
+                
+
+    #             num = abs(int(data["take_count"]))
+    #             result = cur.execute("""
+    #                         UPDATE `eip_signal`.word_input
+    #                         SET value = %s
+    #                         WHERE signal_id = %s
+    #                         """, (num, id,))
+                
+    #             logging.info(f"[WCSRepository >> dispallet() >> Query result]: {result}")
+
+    #         conn.commit()
+
+    #     except Exception as e:
+    #         conn.rollback()
+    #         raise Exception(f"[WCSRepository >> dispallet() >> Error] : {e}")
+
+    #     finally:
+    #         cur.close()
+    #         conn.close()
+    #     return
 
 
 if __name__ == "__main__":

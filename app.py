@@ -189,12 +189,7 @@ class DepalletWebServer:
             try:
                 button_id = request.json.get('button_id')
                 logging.info("[app.py >> call_target_ids() >> 成功]")
-                # Capture the dictionary returned by your polling logic
-                # This will be {"status": "success", "processing_status": "completed"} 
-                # OR {"status": "timeout", "message": "..."}
                 result = self._depallet_app.call_target_ids(button_id)
-                
-                # Return the actual result from the repository logic
                 return jsonify(result)
     
             except Exception as e:
@@ -274,7 +269,6 @@ class DepalletWebServer:
             except Exception as e:
                 logging.error(f"[app.py >> get_depallet_area_by_plat() >> エラー]: {e}")
                 return abort(400, str(e))
-
 
         # 取出数量 更新
         file_lock = threading.Lock()
@@ -418,13 +412,13 @@ class DepalletWebServer:
                 logging.error(f"[app.py >> reset_all_take_counts() >> エラー] : {e}")
                 return jsonify({"status": "error", "message": str(e)}), 500
             
-        @app.route("/api/get_fill_kotatsu_status", methods=["GET"])
-        def get_fill_kotatsu_status():
+        @app.route("/api/check_kotatsu_fill_or_not", methods=["GET"])
+        def check_kotatsu_fill_or_not():
             try:
                 # 1. Call the application layer
                 # If any record in DB is "FILL", this will be []
                 # If NO records are "FILL", this will be [kanban1, kanban2, ...]
-                result_list = self._depallet_app.get_fill_kotatsu_status()
+                result_list = self._depallet_app.check_kotatsu_fill_or_not()
                 
                 # 2. Check if the list has content
                 # If len > 0, it means the repo found NO "FILL" status.
@@ -432,21 +426,22 @@ class DepalletWebServer:
                     logging.info(f"[app.py] No active FILL status found. Items available: {result_list}")
                     return jsonify({
                         "status": "success", 
+                        "kotatsu_status": "no_fill",
                         "kanban_list": result_list, # Return the list to the frontend
-                        "message": "呼び出しますか ?" # "Would you like to call?"
+                        "message": "搬送を開始ますか ?" # "Would you like to call?"
                     }), 200
                 
                 # 3. If the list is empty, it means 'FILL' was detected in the repository logic.
                 else:
                     logging.info("[app.py] Active 'FILL' status detected in system.")
                     return jsonify({
-                        "status": "empty", 
-                        "kotatsu_status": "FILL",
-                        "message": "搬送中です。" # "Currently transporting."
+                        "status": "success",
+                        "kotatsu_status": "fill",
+                        "message": "搬送中です。。" # "Currently transporting."
                     }), 200
 
             except Exception as e:
-                logging.error(f"[app.py >> get_fill_kotatsu_status() >> エラー] : {e}")
+                logging.error(f"[app.py >> check_kotatsu_fill_or_not() >> エラー] : {e}")
                 return jsonify({"status": "error", "message": str(e)}), 400
         
 if __name__ == "__main__":

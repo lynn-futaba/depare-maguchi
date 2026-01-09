@@ -199,7 +199,7 @@ function getEmptyKotatsuStatus() {
 //                     // --- NEW CHECK START ---
 //                     // STEP 2: Check Kotatsu status BEFORE inserting IDs
 //                     $.ajax({
-//                         url: "/api/get_fill_kotatsu_status",
+//                         url: "/api/check_kotatsu_fill_or_not",
 //                         type: "GET",
 //                         success: function (kotatsuData) {
 //                             let fullMessage = "";
@@ -300,25 +300,24 @@ function callToBLineDepalletMaguchi(id) {
                     
                     // Step 2: Check AMR/Kotatsu Status (Logic preserved)
                     $.ajax({
-                        url: "/api/get_fill_kotatsu_status",
+                        url: "/api/check_kotatsu_fill_or_not",
                         type: "GET",
                         success: function (kotatsuData) {
-                            if (kotatsuData.status === "empty") {
-                                // CASE: BUSY
-                                let statusMsg =  `⚠️ 現在${kotatsuData.message}`;
-
-                            if (confirm(statusMsg)) {
-                                // Start the process and pass a "UI handle" to remove later
-                                startWorkSequence(id, kyokuuMaguchi, statusMsg);
-                            }                            
-                        } 
-                            
-                            else {
+                        console.log("Kotatsu Data >>", kotatsuData);
+                        if (kotatsuData.kotatsu_status === "fill") {
+                            // CASE: BUSY
+                            let loadingMsg = `⚠️${kyokuuMaguchi} 選択した材料がみつかりました。` + "\n" + `${kotatsuData.message}` || "搬送中です。。";
+                            triggerBuhinCallsWithLoading(id, loadingMsg, kyokuuMaguchi);
+                        }   else {
                                 // CASE: IDLE
-                                let kanbanMessage = kotatsuData.kanban_list?.map(no => `${no} が無いです。`).join("\n") || "";
-                                if (confirm(`${kanbanMessage}\n\n${kotatsuData.message}`)) {
-                                    processStartSequence(id, kyokuuMaguchi, "搬送指示を送信中...");
-                                }
+                                let kanbanMessage = kotatsuData.kanban_list?.map(no => `${no}`).join(", ") || "";
+                                let statusMsg = `(${kyokuuMaguchi})` + `${kanbanMessage} の材料が見つかりません。` + "\n" + `${kotatsuData.message}`; 
+                                // Show custom large dialog
+                                showLargeConfirm(statusMsg).then((userConfirmed) => {
+                                    if (userConfirmed) {
+                                        processStartSequence(id, kyokuuMaguchi);
+                                    }
+                                });
                             }
                         }
                     });
@@ -328,85 +327,32 @@ function callToBLineDepalletMaguchi(id) {
     }
 }
 
-function startWorkSequence(id, kyokuuMaguchi, message) {
-    // 1. Create a unique ID for this specific process "child" element
-    const processId = "proc_" + new Date().getTime();
+// Helper to control the overlay
+function toggleLoading(show, message = "処理中。。") {
+    const overlay = document.getElementById("loading-overlay");
+    const textField = document.getElementById("loading-text");
     
-    // 2. Open Maguchi Window immediately
-    const nextPageUrl = `/b_line_depallet_maguchi?id=${id}&name=${kyokuuMaguchi}`;
-    const childWin = window.open(nextPageUrl, `win_${id}`);
-
-    // 3. Show a "Processing Card" instead of an overlay
-    // This adds a small, fixed notification box that we can easily .remove()
-    const statusHtml = `
-        <div id="${processId}" class="alert alert-warning shadow-lg" 
-             style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; min-width: 300px;">
-            <div class="d-flex align-items-center">
-                <div class="spinner-border spinner-border-sm me-3"></div>
-                <strong>${kyokuuMaguchi}: ${message}</strong>
-            </div>
-        </div>`;
-    $('body').append(statusHtml);
-
-    // 4. Run the backend chain
-    triggerBuhinCallStepsOther(id, processId, childWin);
+    if (show) {
+        textField.textContent = message;
+        overlay.style.display = "flex";
+    } else {
+        overlay.style.display = "none";
+    }
 }
 
-function triggerBuhinCallStepsOther(id, elementId, childWin) {
-    $.ajax({
+function triggerBuhinCallsWithLoading(id, loadingMsg, kyokuuMaguchi) {
+    // Show big centered loading screen
+    toggleLoading(true, loadingMsg);
+
+    $.ajax({ // 部品を呼ぶためAMR信号にIDsをまずは入力します。
         url: "/api/insert_target_ids",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({ "button_id": id }),
         success: function () {
-            $.ajax({
-                url: "/api/call_target_ids",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({ "button_id": id }),
-                timeout: 65000, 
-                success: function (response) {
-                    // --- REMOVE THE CHILD ELEMENT EASILY ---
-                    $(`#${elementId}`).remove(); 
-
-                    if (response.processing_status === "completed") {
-                        showInfo("✅ 搬送開始を確認しました！");
-                        if (childWin) childWin.focus();
-                    }
-                },
-                error: function () {
-                    $(`#${elementId}`).remove();
-                    showInfo("エラーが発生しました。");
-                }
-            });
-        }
-    });
-}
-// Logic to open child window and start background monitoring
-function processStartSequence(id, kyokuuMaguchi, initialMsg) {
-
-    showInfo(initialMsg, 50000);
-
-    // 1. Open the Maguchi page immediately (Child Window)
-    const windowIdentifier = `maguchi_${id}_${kyokuuMaguchi}`;
-    const nextPageUrl = `/b_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
-    const openedWindow = window.open(nextPageUrl, windowIdentifier);
-
-    // 2. Start the backend call chain
-    triggerBuhinCallSteps(id, openedWindow);
-}
-
-function triggerBuhinCallSteps(id, childWindow) {
-    $.ajax({
-        url: "/api/insert_target_ids",
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({ "button_id": id }),
-        success: function () {
-            showInfo("AMRの応答を待機中...", 5000);
-
-            // Long-polling call: waits for using_flag == 1 in the backend
-            $.ajax({
+            showInfo("✅搬送IDsを入力しました。", 1000);
+            // Long-polling call
+            $.ajax({ // IDsをAMR信号に入力した後で搬送完了しました。
                 url: "/api/call_target_ids",
                 type: "POST",
                 contentType: "application/json",
@@ -414,24 +360,109 @@ function triggerBuhinCallSteps(id, childWindow) {
                 timeout: 60000, 
                 success: function (response) {
                     if (response.processing_status === "completed") {
-                        // Success Toast
-                        showInfo("✅ 搬送開始を確認しました！", 3000);
-                        
+                        showInfo("✅搬送完了しました。", 1000);
+                        // HIDE overlay when completed
+                        toggleLoading(false);
+                        // Combine id and name to create a unique reference for the window
+                        const windowIdentifier = `maguchi_${id}_${kyokuuMaguchi}`;
+                        const nextPageUrl = `/b_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
+
+                        // Providing 'windowIdentifier' instead of '_blank' tells the browser 
+                        // to reuse the tab if it is already open.
+                        const openedWindow = window.open(nextPageUrl, windowIdentifier);
+
+                        // This ensures the existing tab is brought to the front (focused) if it was already open
+                        if (openedWindow) {
+                            openedWindow.focus();
+                        }
+                    } else {
+                        // Keep loading visible if not completed
+                        showInfo("🛑部品を呼び出し中です。");
+                    }
+                },
+                error: function () {
+                    showError("❌コタツFILLある場合を呼び出し中に エラーが発生しました。");
+                    toggleLoading(false); // Hide so user can try again
+                }
+            });
+        },
+        error: function () {
+            showError("❌部品を呼ぶためAMR信号にIDsを入れ時に失敗しました。");
+            toggleLoading(false); // Hide on error
+        }
+    });
+}
+
+function showLargeConfirm(message) {
+    return new Promise((resolve) => {
+        const overlay = $('#confirm-overlay'); // Using jQuery since your code uses it
+        const textContainer = $('#confirm-text');
+        
+        // 1. Set the message
+        textContainer.text(message);
+
+        // 2. Show the overlay (overrides the 'none' in your HTML)
+        overlay.css('display', 'flex');
+
+        // 3. Setup Button Clicks
+        $('#confirm-yes').off('click').on('click', function() {
+            overlay.hide();
+            resolve(true);
+        });
+
+        $('#confirm-no').off('click').on('click', function() {
+            overlay.hide();
+            resolve(false);
+        });
+    });
+}
+
+// Logic to open child window and start background monitoring
+function processStartSequence(id, kyokuuMaguchi) {
+
+    // 1. Open the Maguchi page immediately (Child Window)
+    const windowIdentifier = `maguchi_${id}_${kyokuuMaguchi}`;
+    const nextPageUrl = `/b_line_depallet_maguchi?id=${encodeURIComponent(id)}&name=${encodeURIComponent(kyokuuMaguchi)}`;
+    const openedWindow = window.open(nextPageUrl, windowIdentifier);
+
+    // 2. Start the backend call chain
+    triggerBuhinCallsWithConfirmDialog(id, openedWindow);
+}
+
+function triggerBuhinCallsWithConfirmDialog(id, childWindow) {
+    $.ajax({ // 部品を呼ぶためAMR信号にIDsをまずは入力します。
+        url: "/api/insert_target_ids",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ "button_id": id }),
+        success: function () {
+            showInfo("✅搬送IDsを入力しました。", 1000);
+
+            // Long-polling call: waits for using_flag == 1 in the backend
+            $.ajax({ // IDsをAMR信号に入れした後で部品を呼び出します。
+                url: "/api/call_target_ids",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ "button_id": id }),
+                timeout: 60000, 
+                success: function (response) {
+                    if (response.processing_status === "completed") {
+                        showInfo("✅搬送完了しました。", 1000);
                         // Focus the newly opened tab if possible
                         if (childWindow && !childWindow.closed) {
                             childWindow.focus();
                         }
                     } else {
-                        showInfo("タイムアウト: AMRの反応がありません。");
+                        showInfo("🛑部品を呼び出し中です。");
                     }
                 },
                 error: function () {
-                    showInfo("搬送呼び出し中にエラーが発生しました。");
+                    showError("❌コタツFILL無い場合を呼び出し中にエラーが発生しました。");
                 }
             });
         },
         error: function () {
-            showInfo("データの登録に失敗しました。");
+            showError("❌部品を呼ぶためAMR信号にIDsを入れ時に失敗しました。");
         }
     });
 }

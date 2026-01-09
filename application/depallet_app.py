@@ -290,13 +290,13 @@ class DepalletApplication():
             raise Exception(f"DepalletApplication >> get_empty_kotatsu_status >> エラー]: {e}")
         
     # TODO➞リン: Added
-    def get_fill_kotatsu_status(self):
+    def check_kotatsu_fill_or_not(self):
         try:
-            logging.info("[DepalletApplication >> get_fill_kotatsu_status() >> 成功]")
-            return self.wcs_service.get_fill_kotatsu_status()
+            logging.info("[DepalletApplication >> check_kotatsu_fill_or_not() >> 成功]")
+            return self.wcs_service.check_kotatsu_fill_or_not()
         except Exception as e:
-            logging.error(f"[DepalletApplication >> get_fill_kotatsu_status() >> エラー] : {e}")
-            raise Exception(f"DepalletApplication >> get_fill_kotatsu_status >> エラー]: {e}")
+            logging.error(f"[DepalletApplication >> check_kotatsu_fill_or_not() >> エラー] : {e}")
+            raise Exception(f"DepalletApplication >> check_kotatsu_fill_or_not >> エラー]: {e}")
 
 if __name__ == "__main__":
 

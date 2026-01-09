@@ -615,7 +615,7 @@ function callAMRReturn() { // You can define it like this to ensure it's global
                     }
                 }, 2500);
             } else {
-                showInfo("❌ " + (response.message || "全作業失敗しました (Update failed)."), 5000);
+                showError("❌ " + (response.message || "全作業失敗しました (Update failed)."), 5000);
                 console.warn("Aライン >> 全作業失敗しました", response.message);
             }
         },

@@ -118,7 +118,7 @@
 
               <div id="kotatsu-L" style="display:none;">
                 <div class="card mb-3">
-                  <div class="card-header text-white text-center bg-warning" style="background-color: orange !important;">
+                  <div class="card-header text-white text-center bg-warning" style="background-color: #fb8b4a !important;">
                     <b>間口5</b>
                   </div>
                   <div class="card-body text-center bg-light">
@@ -132,7 +132,7 @@
                 </div>
   
                 <div class="card mb-3">
-                  <div class="card-header text-white text-center bg-warning" style="background-color: orange !important;">
+                  <div class="card-header text-white text-center bg-warning" style="background-color: #fb8b4a !important;">
                     <b>間口4</b>
                   </div>
                   <div class="card-body text-center bg-light">
@@ -145,7 +145,7 @@
                 </div>
   
                 <div class="card mb-3">
-                  <div class="card-header text-white text-center bg-warning" style="background-color: orange !important;">
+                  <div class="card-header text-white text-center bg-warning" style="background-color: #fb8b4a !important;">
                     <b>間口3</b>
                   </div>
                   <div class="card-body text-center bg-light">
@@ -158,7 +158,7 @@
                 </div>
   
                 <div class="card mb-3">
-                  <div class="card-header text-white text-center bg-warning" style="background-color: orange !important;">
+                  <div class="card-header text-white text-center bg-warning" style="background-color: #fb8b4a !important;">
                     <b>間口2</b>
                   </div>
                   <div class="card-body text-center bg-light">
@@ -171,7 +171,7 @@
                 </div>
   
                 <div class="card mb-3">
-                  <div class="card-header text-white text-center bg-warning" style="background-color: orange !important;">
+                  <div class="card-header text-white text-center bg-warning" style="background-color: #fb8b4a !important;">
                     <b>間口1</b>
                   </div>
                   <div class="card-body text-center bg-light">
@@ -604,17 +604,23 @@
               </div>
             </div>
             </div>
-            <div class="container text-danger mb-2">
-              <label>*部品取出完了後に押してください</label> <br><br>
-              <button id="btnAMRReturn" class="btn btn-primary mr-5 fs-2" onclick="callAMRReturn()">
-                <span id="spinnerAMRReturn" class="spinner-grow spinner-grow-sm text-danger d-none" role="status" aria-hidden="true"></span>
-                <span>全作業完了</span>
-              </button>
-            
-              <button id="btnAMRFlowrack" class="btn btn-success fs-2" onclick="callAMRFlowrackOnly()">
-                <span id="spinnerAMRFlowrack" class="spinner-grow spinner-grow-sm text-danger d-none" role="status" aria-hidden="true"></span>
-                <span>フローラック単体発進</span>
-              </button>
+            <div class="row text-danger">
+              <label>*部品取出完了後に押してください</label>
+            </div>
+            <div class="row mt-3">
+              <div class="col-5">
+                <button id="btnAMRReturn" class="btn btn-primary mr-5 fs-3 fw-bold btn-lg" onclick="callAMRReturn()">
+                  <span id="spinnerAMRReturn" class="spinner-grow spinner-grow-sm text-danger d-none" role="status" aria-hidden="true"></span>
+                  <span>全作業完了</span>
+                </button>
+              </div>
+              
+              <div class="col-7">
+                <button id="btnAMRFlowrack" class="btn btn-success fs-3 fw-bold btn-lg" onclick="callAMRFlowrackOnly()">
+                  <span id="spinnerAMRFlowrack" class="spinner-grow spinner-grow-sm text-danger d-none" role="status" aria-hidden="true"></span>
+                  <span>フローラック単体発進</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

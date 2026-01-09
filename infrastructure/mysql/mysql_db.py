@@ -11,7 +11,7 @@ class MysqlDb:
             self.eip_signal_pool = pooling.MySQLConnectionPool(**MYSQL_EIP_DB)
 
         except Error as e:
-            print(f"Error while connecting to MySQL using Connection pool {e}")
+            print(f"⚠️ OFFLINE MODE: Database connection failed >> Error while connecting to MySQL using Connection pool: {e}")
 
     def get_connection(self, db):
         if db == 'depal':

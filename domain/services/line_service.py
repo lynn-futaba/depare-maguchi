@@ -27,8 +27,19 @@ class LineService:
         
     def get_product_infos(self, lines: Sequence[Line]) -> tuple[ProductInfo, ProductInfo, ProductInfo, ProductInfo]:
         
+        # --- MOCK START OF TEST BYPASS ---
+        # If lines are empty (due to DB error) or you just want to force test mode:
+        # if not lines or len(lines) < 4:
+        #     print("⚠️ Warning: Database unavailable or lines empty. Loading Mock Data for testing.")
+            
+        #     # Create 4 dummy ProductInfo objects (adjust attributes to match your actual class)
+        #     mock_info = ProductInfo("MOCK_ID", "MOCK_NAME", 0, 0) 
+        #     return (mock_info, mock_info, mock_info, mock_info)
+        # --- MOCK END OF TEST BYPASS ---
+
         if lines is None:
             raise ValueError("get_product_infos: 'lines' is None. Load lines before calling this method.")
+        
         if len(lines) < 4:
             ids = [getattr(l, "id", None) for l in lines]
             raise ValueError(

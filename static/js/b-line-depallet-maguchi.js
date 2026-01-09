@@ -11,6 +11,7 @@ $(document).ready(function () {
         const nameValue = params.get("name");
 
         document.getElementById("tagName").textContent = 'デパレ間口 <' + nameValue + '>';
+        document.getElementById("frontageName").textContent = 'デパレ間口 <' + nameValue + '>';
 
         console.log("nameValue >>>.", nameValue);
 
@@ -161,11 +162,7 @@ $(document).ready(function () {
 
             const targetPlats = globalButtonIdMap[idValue] || [];
             const targetShelves = globalShelfMap[idValue] || [];
-        
-            document.getElementById("frontageName").textContent = 'デパレ間口 <' + nameValue + '>';
-            
 
-        
             targetShelves.forEach((shelfNum, shelfIndex) => {
                 const platId = targetPlats[shelfIndex];
                 const items = result[platId] || [];
@@ -640,13 +637,13 @@ function callAMRReturn() {
                     }
                 }, 2500);
             } else {
-                showInfo("❌ " + (response.message || "全作業失敗しました (Update failed)."), 5000);
-                console.warn("Bライン >> 全作業失敗しました", response.message);
+                showError("❌ " + (response.message || "全作業失敗しました (Update failed)."), 5000);
+                console.warn("全作業失敗しました", response.message);
             }
         },
         error: function(xhr, status, error) {
-            console.error("Error updating Bライン >> 全作業失敗しました:", error);
-            alert("Bライン >> 全作業失敗しました.");
+            console.error("Error updating >> 全作業失敗しました:", error);
+            alert("❌全作業失敗しました。");
         },
         complete: function() {
             // --- 2. Stop Loading State ---
@@ -680,16 +677,16 @@ function callAMRFlowrackOnly() {
         success: function(response) {
             if (response.status === "success") {
                 // confirm("✅ Bライン >> フローラック単体発進に成功しました！");
-                confirm("フローラック単体発進に成功しました！");
-                console.log("Bライン >> フローラック単体発進に成功しました！ Sent IDs:", buttonId);
+                confirm("フローラック単体発進に完了しました。");
+                console.log("フローラック単体発進に完了しました。！ Sent IDs:", buttonId);
             } else {
                 alert(response.message || "更新に失敗しました (Update failed).");
-                console.warn("Bライン >> フローラック単体発進 return Update failed:", response.message);
+                console.warn("フローラック単体発進 return Update failed:", response.message);
             }
         },
         error: function(xhr, status, error) {
             console.error("Error updating Bライン >> フローラック単体発進 return:", error);
-            alert("Bライン フローラック単体発進 return>> サーバーエラーが発生しました.");
+            alert("❌フローラック単体発進に失敗しました。");
         },
         complete: function() {
             // 2. Exit Loading State (always runs)
@@ -706,7 +703,7 @@ function resetAllTakeCounts() {
         type: 'POST',
         contentType: 'application/json',
         success: function(resetRes) {
-            showInfo("🔄 データをリセットして終了しています...", 3000);
+            showInfo("🔄 設定データをリセットして終了しています...", 3000);
             console.log("Take counts reset successfully.");
         },
         error: function(err) {

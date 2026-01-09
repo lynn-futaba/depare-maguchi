@@ -14,6 +14,31 @@
 
 <body class="d-flex flex-column min-vh-100">
 
+  <div id="loading-overlay" class="loading-overlay" style="display: none;">
+    <div class="text-center">
+      <div class="spinner-container mb-4">
+        <div class="spinner-grow text-primary" style="width: 5rem; height: 5rem;" role="status"></div>
+        <div class="spinner-grow text-success" style="width: 5rem; height: 5rem;" role="status"></div>
+        <div class="spinner-grow text-warning" style="width: 5rem; height: 5rem;" role="status"></div>
+        <div class="spinner-grow text-danger" style="width: 5rem; height: 5rem;" role="status"></div>
+      </div>
+      <div id="loading-text" class="display-1 fw-bold text-white text-uppercase">
+        Processing...
+      </div>
+    </div>
+  </div>
+
+  <div id="confirm-overlay" class="loading-overlay" style="display: none;">
+    <div class="text-center bg-light p-5 rounded-5 border border-5 border-primary shadow-lg fs-1" style="max-width: 80%;">
+      <div id="confirm-text" class="display-4 fw-bold text-dark mb-5 text-start" style="white-space: pre-line;">
+        </div>
+      <div class="d-flex justify-content-center gap-5">
+        <button id="confirm-yes" class="btn btn-success btn-lg fs-1 px-5 py-3 shadow">OK</button>
+        <button id="confirm-no" class="btn btn-danger btn-lg fs-1 px-5 py-3 shadow">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <header class="header py-3" style="background-color: ghostwhite;">
     <div class="row justify-content-start text-success fw-bold">
       <div class="col-2 fs-1 text-center" >FUTABA</div>
@@ -31,17 +56,6 @@
   <div class="container-fluid pt-1 flex-grow-1 content-area">
     <div class="row mt-5">      
       <div class="container operation">
-        <!-- <div class="row justify-content-center my-2">
-          <div class="col-4">
-            <button type="button" class="btn btn-primary text-white w-100 fs-2" onclick="submitKanbanNuki()">かんばん抜き発進</button>
-          </div>
-          <div class="col-4">
-            <button type="button" class="btn btn-warning text-white w-100 fs-2" onclick="submitKanbanSashi()">かんばん差し発進</button>
-          </div>
-          <div class="col-4">
-            <button type="button" class="btn btn-danger text-white w-100 fs-2" onclick="submitKanbanYobiDashi()">かんばん呼び出し</button>
-          </div>
-        </div> -->
         <div class="row">
           <!-- Left Side: Line B -->
           <div class="col-12 col-lg-5 border-end">
@@ -68,7 +82,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning text-white w-100 fs-2" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(4)">供給間口<br>L1</button>
+                          <button type="button" class="btn btn-warning text-white w-100 fs-2 fw-bold" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(4)">供給間口<br>L1</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -86,7 +100,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning text-white w-100 fs-2" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(5)">供給間口<br>L2</button>
+                          <button type="button" class="btn btn-warning text-white w-100 fs-2 fw-bold" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(5)">供給間口<br>L2</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -104,7 +118,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-warning text-white w-100 fs-2" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(6)">供給間口<br>L3</button>
+                          <button type="button" class="btn btn-warning text-white w-100 fs-2 fw-bold" style="background-color: #fb8b4a !important;" onclick="callToBLineDepalletMaguchi(6)">供給間口<br>L3</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -124,13 +138,13 @@
           
           <div class="col-12 col-lg-2">
             <div class="row mb-4">
-              <button type="button" class="btn btn-primary text-white w-100 fs-2" onclick="submitKanbanNuki()">かんばん抜き発進</button>
+              <button type="button" class="btn btn-primary text-white w-100 fs-2 fw-bold" onclick="submitKanbanNuki()">かんばん抜き発進</button>
             </div>
             <div class="row my-4">
-              <button type="button" class="btn btn-warning text-white w-100 fs-2" onclick="submitKanbanSashi()">かんばん差し発進</button>
+              <button type="button" class="btn btn-warning text-white w-100 fs-2 fw-bold" onclick="submitKanbanSashi()">かんばん差し発進</button>
             </div>
             <div class="row">
-              <button type="button" class="btn btn-danger text-white w-100 fs-2" onclick="submitKanbanYobiDashi()">かんばん呼び出し</button>
+              <button type="button" class="btn btn-danger text-white w-100 fs-2 fw-bold" onclick="submitKanbanYobiDashi()">かんばん呼び出し</button>
             </div>
           </div>
 
@@ -154,7 +168,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-success w-100 fs-2" onclick="callToBLineDepalletMaguchi(1)">供給間口<br>R1</button>
+                          <button type="button" class="btn btn-success w-100 fs-2 fw-bold" onclick="callToBLineDepalletMaguchi(1)">供給間口<br>R1</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -172,7 +186,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-success w-100 fs-2" onclick="callToBLineDepalletMaguchi(2)">供給間口<br>R2</button>
+                          <button type="button" class="btn btn-success w-100 fs-2 fw-bold" onclick="callToBLineDepalletMaguchi(2)">供給間口<br>R2</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -190,7 +204,7 @@
                     <thead class="table-light border-dark">
                       <tr>
                         <th colspan="2" class="">
-                          <button type="button" class="btn btn-success w-100 fs-2" onclick="callToBLineDepalletMaguchi(3)">供給間口<br>R3</button>
+                          <button type="button" class="btn btn-success w-100 fs-2 fw-bold" onclick="callToBLineDepalletMaguchi(3)">供給間口<br>R3</button>
                         </th>
                       </tr>
                       <!-- <tr>
@@ -229,7 +243,7 @@
 
   <footer class="footer py-3 bg-success">
     <div class="container text-center text-muted">
-      <span class="text-white fs-4">&copy; 2025 フタバ知立工場. All Rights Reserved.</span>
+      <span class="text-white fs-4">&copy; 2025 フタバ産業株式会社【知立工場】. All Rights Reserved.</span>
 
     </div>
   </footer>
